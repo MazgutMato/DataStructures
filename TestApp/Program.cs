@@ -1,14 +1,17 @@
 ﻿using DataStructures;
 
-BSTree<int> tree = new BSTree<int>();
+var BStree = new BSTree<int>();
+BStree.Add(10);
+BStree.Add(2);
+BStree.Add(8);
+BStree.Add(4);
+BStree.Add(9);
+BStree.Add(6);
+BStree.Add(5);
+BStree.Add(7);
+BStree.Add(16);
+BStree.Add(18);
+BStree.Add(1);
+BStree.Remove(2);
 
-tree.Add(4);
-tree.Add(6);
-tree.Add(2);
-tree.Add(3);
-tree.Add(5);
-
-Console.WriteLine(tree.Find(6));
-Console.WriteLine(tree.Find(4));
-
-Console.WriteLine("Hello, World!");
+Console.WriteLine();

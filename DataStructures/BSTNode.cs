@@ -20,5 +20,11 @@ namespace DataStructures
             this.Data = paData;
             this.Parent = paParent;
         }
+        public bool IsLeaf() {
+            if (this.RightNode == null && this.LeftNode == null) {
+                return true;
+            }
+            return false;
+        }
     }
 }
