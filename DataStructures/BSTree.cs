@@ -75,7 +75,7 @@ namespace DataStructures
 
             return findNode;
         }
-        public bool Remove(T data) { 
+        public bool Delete(T data) { 
             var removeNode = this.FindNode(data);
             //Dont found removed Node
             if(removeNode == null)
@@ -84,32 +84,15 @@ namespace DataStructures
             }
             //Removed leaf Node
             if (removeNode.IsLeaf()) {
-                //Removed Node is Root
-                if (removeNode.Parent == null)
-                {
-                    this.Root = null;
-                    return true;
-                }
-                //Is right or left son of parent
-                var compResult = removeNode.Data.CompareTo(removeNode.Parent.Data);
-                if (compResult == -1)
-                {
-                    removeNode.Parent.LeftNode = null;
-                }
-                else if (compResult == 1) 
-                {
-                    removeNode.Parent.RightNode = null;
-                }
-                removeNode.Parent = null;
-                return true;
+                this.DeleteLeaf(removeNode);
             }
             //Removed node has one child
             if(removeNode.LeftNode == null) {
                 //Removed Node is Root
                 if (removeNode.Parent == null)
                 {
-                    this.Root.RightNode = null;
-                    this.Root = removeNode;
+                    this.Root = removeNode.RightNode;
+                    this.Root.Parent = null;
                     return true;
                 }
                 //Is right or left son of parent
@@ -122,16 +105,14 @@ namespace DataStructures
                 {
                     removeNode.Parent.RightNode = removeNode.RightNode;
                 }
-                removeNode.Parent = null;
-                removeNode.RightNode = null;
                 return true;
             }
             if (removeNode.RightNode == null)
             {
                 if (removeNode.Parent == null)
                 {
-                    this.Root.LeftNode = null;
-                    this.Root = removeNode;
+                    this.Root = removeNode.LeftNode;
+                    this.Root.Parent = null;
                     return true;
                 }
                 //Is right or left son of parent
@@ -158,13 +139,42 @@ namespace DataStructures
             }
             //Change removeNode to inorderSuccessor
             removeNode.Data = inorderSuccessor.Data;
-            inorderSuccessor.RightNode.Parent = inorderSuccessor.Parent;
-            inorderSuccessor.Parent.LeftNode = removeNode.RightNode;
 
-            inorderSuccessor.Parent = null;
-            inorderSuccessor.RightNode = null;
+            //Inorder succesor is leaf
+            if (inorderSuccessor.IsLeaf()) { 
+                this.DeleteLeaf(inorderSuccessor);
+                return true;
+            }
+            //Inorder succesor has right child
+            inorderSuccessor.RightNode.Parent = inorderSuccessor.Parent;
+            if(removeNode.Parent == null)
+            {
+                inorderSuccessor.Parent.RightNode = inorderSuccessor.RightNode;
+            } else
+            {
+                inorderSuccessor.Parent.LeftNode = inorderSuccessor.RightNode;
+            }
             return true;
         }
-
+        private bool DeleteLeaf(BSTNode<T> paLeaf)
+        {
+            //Removed Node is Root
+            if (paLeaf.Parent == null)
+            {
+                this.Root = null;
+                return true;
+            }
+            //Removed from parent
+            var compResult = paLeaf.Data.CompareTo(paLeaf.Parent.Data);
+            if (compResult == -1)
+            {
+                paLeaf.Parent.LeftNode = null;
+            }
+            else if (compResult == 1 || compResult == 0)
+            {
+                paLeaf.Parent.RightNode = null;
+            }
+            return true;
+        }
     }
 }
