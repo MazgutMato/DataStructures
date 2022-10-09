@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,7 +49,10 @@ namespace DataStructures
         }
         public T? Find(T data) {
             var findNode = this.FindNode(data);
-            return findNode.Data;
+            if (findNode != null) {
+                return findNode.Data;
+            }
+            return default(T);
         }
 
         private BSTNode<T>? FindNode(T data)
@@ -84,7 +88,7 @@ namespace DataStructures
             }
             //Removed leaf Node
             if (removeNode.IsLeaf()) {
-                this.DeleteLeaf(removeNode);
+                return this.DeleteLeaf(removeNode);               
             }
             //Removed node has one child
             if(removeNode.LeftNode == null) {
@@ -141,9 +145,8 @@ namespace DataStructures
             removeNode.Data = inorderSuccessor.Data;
 
             //Inorder succesor is leaf
-            if (inorderSuccessor.IsLeaf()) { 
-                this.DeleteLeaf(inorderSuccessor);
-                return true;
+            if (inorderSuccessor.IsLeaf()) {
+                return this.DeleteLeaf(inorderSuccessor);
             }
             //Inorder succesor has right child
             inorderSuccessor.RightNode.Parent = inorderSuccessor.Parent;
