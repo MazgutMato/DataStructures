@@ -9,6 +9,7 @@ namespace DataStructures
     public class BSTree<T> where T : IComparable<T>
     {
         public BSTNode<T> Root { get; set; }
+        public int Count { get; set; }
         public bool Add(T data) {
             BSTNode<T> Parent = null;
             var Child = this.Root;
@@ -45,6 +46,7 @@ namespace DataStructures
                 }
             }
 
+            this.Count++;
             return true;
         }
         public T? Find(T data) {
@@ -97,6 +99,7 @@ namespace DataStructures
                 {
                     this.Root = removeNode.RightNode;
                     this.Root.Parent = null;
+                    this.Count--;
                     return true;
                 }
                 //Is right or left son of parent
@@ -109,6 +112,7 @@ namespace DataStructures
                 {
                     removeNode.Parent.RightNode = removeNode.RightNode;
                 }
+                this.Count--;
                 return true;
             }
             if (removeNode.RightNode == null)
@@ -117,6 +121,7 @@ namespace DataStructures
                 {
                     this.Root = removeNode.LeftNode;
                     this.Root.Parent = null;
+                    this.Count--;
                     return true;
                 }
                 //Is right or left son of parent
@@ -131,6 +136,7 @@ namespace DataStructures
                 }
                 removeNode.Parent = null;
                 removeNode.LeftNode = null;
+                this.Count--;
                 return true;
             }
             //Else search inorderSuccessor
@@ -157,6 +163,7 @@ namespace DataStructures
             {
                 inorderSuccessor.Parent.LeftNode = inorderSuccessor.RightNode;
             }
+            this.Count--;
             return true;
         }
         private bool DeleteLeaf(BSTNode<T> paLeaf)
@@ -165,6 +172,7 @@ namespace DataStructures
             if (paLeaf.Parent == null)
             {
                 this.Root = null;
+                this.Count--;
                 return true;
             }
             //Removed from parent
@@ -177,6 +185,7 @@ namespace DataStructures
             {
                 paLeaf.Parent.RightNode = null;
             }
+            this.Count--;
             return true;
         }
     }
