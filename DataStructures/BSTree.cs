@@ -56,7 +56,24 @@ namespace DataStructures
             }
             return default(T);
         }
-
+        public bool RotateLeft(T data)
+        {
+            var node = this.FindNode(data);
+            if (node != null)
+            {
+                return node.RotateLeft();
+            }
+            return false;
+        }
+        public bool RotateRight(T data)
+        {
+            var node = this.FindNode(data);
+            if (node != null)
+            {
+                return node.RotateRight();
+            }
+            return false;
+        }
         private BSTNode<T>? FindNode(T data)
         {
             var Child = this.Root;

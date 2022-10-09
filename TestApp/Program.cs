@@ -1,6 +1,5 @@
 ﻿using DataStructures;
 using System.Collections;
-using System.Collections.Specialized;
 
 var BStree = new BSTree<int>();
 var ControlArray = new ArrayList();
@@ -17,7 +16,13 @@ var pocetNajdi = Convert.ToInt32(Console.ReadLine());
 Console.Write("Zadaj pomer opercii vymaz v %: ");
 var pocetVymaz = Convert.ToInt32(Console.ReadLine());
 
-if ((pocetVloz + pocetNajdi + pocetVymaz) != 100) {
+Console.Write("Zadaj pomer opercii rotuj v %: ");
+var pocetRotuj = Convert.ToInt32(Console.ReadLine());
+
+Console.Write("Zadaj pocet nahodne generovanych vkladanych cisel: ");
+var generovaneCisla = Convert.ToInt32(Console.ReadLine());
+
+if ((pocetVloz + pocetNajdi + pocetVymaz + pocetRotuj) != 100) {
     Console.WriteLine("Sucet pomerov poctu operacii musi byt 100%!");
     return;
 }
@@ -29,6 +34,7 @@ var random = new Random();
 var celkovoVloz = 0;
 var celkovoVymaz = 0;
 var celkovoNajdi = 0;
+var celkovoRotuj = 0;
 
 for (int i = 0; i < pocetOperacii; i++)
 {    
@@ -36,8 +42,11 @@ for (int i = 0; i < pocetOperacii; i++)
     if (rand < pocetVloz)
     {
         celkovoVloz++;
-        BStree.Add(i + 1);
-        ControlArray.Add(i + 1);
+        var vkladaneCislo = random.Next(1, generovaneCisla + 1);
+        if (BStree.Add(vkladaneCislo))
+        {
+            ControlArray.Add(vkladaneCislo);
+        }        
     }
     else if (rand < pocetVloz + pocetNajdi) 
     {
@@ -50,7 +59,7 @@ for (int i = 0; i < pocetOperacii; i++)
         {
             BStree.Find(0);
         }
-    } else
+    } else if (rand < pocetVloz + pocetNajdi + pocetVymaz)
     {
         celkovoVymaz++;
         if (ControlArray.Count > 0)
@@ -62,17 +71,29 @@ for (int i = 0; i < pocetOperacii; i++)
         {
             BStree.Delete(0);
         }
+    } else
+    {
+        celkovoRotuj++;
+        var typRotacie = random.Next(2);
+        if (BStree.Count > 0)
+        {
+            var rotovanyPrvokIndex = random.Next(BStree.Count);
+            if (typRotacie == 0)
+            {
+                BStree.RotateRight((int)ControlArray[rotovanyPrvokIndex]);
+            } else            
+            {
+                BStree.RotateLeft((int)ControlArray[rotovanyPrvokIndex]);
+            }
+        }
     }
-    Console.Clear();
-    Console.WriteLine("Prebiehaju operacie, prosim cakajte!!!");
-    Console.WriteLine("Pocet operacii vloz: {0}", celkovoVloz);
-    Console.WriteLine("Pocet operacii najdi: {0}", celkovoNajdi);
-    Console.WriteLine("Pocet operacii vymaz: {0}", celkovoVymaz);
 }
+Console.WriteLine("Pocet operacii vloz: {0}", celkovoVloz);
+Console.WriteLine("Pocet operacii najdi: {0}", celkovoNajdi);
+Console.WriteLine("Pocet operacii vymaz: {0}", celkovoVymaz);
+Console.WriteLine("Pocet operacii vymaz: {0}", celkovoRotuj);
 
 Console.WriteLine("Vsetky operacie prebehli uspesne!");
-
-var BSTIterator = new BSTIterator<int>(BStree.Root);
 
 Console.WriteLine("Prebieha konrola prvkov struktury, prosim cakajte!");
 
@@ -89,9 +110,22 @@ foreach(var data in ControlArray)
 {
     if (BStree.Find((int)data) == 0)
     {
-        Console.WriteLine("{0} sa v strukture nenasiel!");
+        Console.WriteLine("{0} sa v strukture nenasiel!",data);
         return;
     }
 }
 
 Console.WriteLine("Vsetky prvky sa v strukture nasli!");
+
+Console.Write("Prvky v strukture:\n BST: \t");
+var BSTIterator = new BSTIterator<int>(BStree.Root);
+foreach (var data in BSTIterator.Path)
+{
+    Console.Write("{0} ", data.Data);
+}
+
+Console.Write("\nPole: \t");
+foreach (var data in ControlArray)
+{
+    Console.Write("{0} ", data);
+}
