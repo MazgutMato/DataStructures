@@ -56,21 +56,93 @@ namespace DataStructures
             }
             return default(T);
         }
-        public bool RotateLeft(T data)
-        {
-            var node = this.FindNode(data);
-            if (node != null)
-            {
-                return node.RotateLeft();
-            }
-            return false;
-        }
         public bool RotateRight(T data)
         {
             var node = this.FindNode(data);
             if (node != null)
             {
-                return node.RotateRight();
+                if (node.LeftNode == null)
+                {
+                    return false;
+                }
+                var leftNode = node.LeftNode;
+
+                if (node.Parent != null)
+                {
+                    leftNode.Parent = node.Parent;
+                    if (leftNode.Data.CompareTo((leftNode.Parent).Data) < 0)
+                    {
+                        (leftNode.Parent).LeftNode = leftNode;
+                    }
+                    else
+                    {
+                        (leftNode.Parent).RightNode = leftNode;
+                    }
+                }
+                else
+                {
+                    leftNode.Parent = null;
+                    this.Root = leftNode;
+                }
+
+                if (leftNode.RightNode != null)
+                {
+                    node.LeftNode = leftNode.RightNode;
+                    (node.LeftNode).Parent = node;
+                }else
+                {
+                    node.LeftNode = null;
+                }
+
+                node.Parent = leftNode;
+                leftNode.RightNode = node;
+
+                return true;
+            }
+            return false;
+        }
+        public bool RotateLeft(T data)
+        {
+            var node = this.FindNode(data);
+            if (node != null)
+            {
+                if (node.RightNode == null)
+                {
+                    return false;
+                }
+                var rightNode = node.RightNode;
+
+                if (node.Parent != null)
+                {
+                    rightNode.Parent = node.Parent;
+                    if (rightNode.Data.CompareTo((rightNode.Parent).Data) < 0)
+                    {
+                        (rightNode.Parent).LeftNode = rightNode;
+                    }
+                    else
+                    {
+                        (rightNode.Parent).RightNode = rightNode;
+                    }
+                }
+                else
+                {
+                    rightNode.Parent = null;
+                    this.Root = rightNode;
+                }
+
+                if (rightNode.LeftNode != null)
+                {
+                    node.RightNode = rightNode.LeftNode;
+                    (node.RightNode).Parent = node;
+                } else
+                {
+                    node.RightNode = null;
+                }
+
+                node.Parent = rightNode;
+                rightNode.LeftNode = node;
+
+                return true;
             }
             return false;
         }
