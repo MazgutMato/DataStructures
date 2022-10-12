@@ -8,5 +8,6 @@ namespace DataStructures.Tree
 {
     public abstract class AbstractTree<T> where T : IComparable<T>
     {
+        public AbstractTreeNode<T> Root { get; set; }
     }
 }

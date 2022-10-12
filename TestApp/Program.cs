@@ -1,5 +1,6 @@
 ﻿using DataStructures;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 var BStree = new BSTree<int>();
 var ControlArray = new ArrayList();
@@ -46,6 +47,7 @@ for (int i = 0; i < pocetOperacii; i++)
         if (BStree.Add(vkladaneCislo))
         {
             ControlArray.Add(vkladaneCislo);
+            Console.WriteLine("Vklada {0}",vkladaneCislo);
         }        
     }
     else if (rand < pocetVloz + pocetNajdi) 
@@ -64,8 +66,14 @@ for (int i = 0; i < pocetOperacii; i++)
         celkovoVymaz++;
         if (ControlArray.Count > 0)
         {
-            BStree.Delete((int)ControlArray[ControlArray.Count - 1]);
-            ControlArray.RemoveAt(ControlArray.Count - 1);
+            var mazaneCislo = ControlArray[random.Next(ControlArray.Count)];
+            BStree.Delete(Convert.ToInt32(mazaneCislo));
+            Console.WriteLine("Maze {0}", mazaneCislo);
+            if (BStree.Find(Convert.ToInt32(mazaneCislo)) != 0)
+            {
+                throw new Exception();
+            }
+            ControlArray.Remove(mazaneCislo);           
         }
         else
         {
@@ -77,13 +85,15 @@ for (int i = 0; i < pocetOperacii; i++)
         var typRotacie = random.Next(2);
         if (BStree.Count > 0)
         {
-            var rotovanyPrvokIndex = random.Next(BStree.Count);
+            var rotovanyPrvokIndex = random.Next(0,BStree.Count);
             if (typRotacie == 0)
             {
                 BStree.RotateRight((int)ControlArray[rotovanyPrvokIndex]);
+                Console.WriteLine("Rotuje doprava {0}", (int)ControlArray[rotovanyPrvokIndex]);
             } else            
             {
                 BStree.RotateLeft((int)ControlArray[rotovanyPrvokIndex]);
+                Console.WriteLine("Rotuje dolava {0}", (int)ControlArray[rotovanyPrvokIndex]);
             }
         }
     }

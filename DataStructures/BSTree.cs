@@ -72,11 +72,11 @@ namespace DataStructures
                     leftNode.Parent = node.Parent;
                     if (leftNode.Data.CompareTo((leftNode.Parent).Data) < 0)
                     {
-                        (leftNode.Parent).LeftNode = leftNode;
+                        ((BSTNode<T>)leftNode.Parent).LeftNode = leftNode;
                     }
                     else
                     {
-                        (leftNode.Parent).RightNode = leftNode;
+                        ((BSTNode<T>)leftNode.Parent).RightNode = leftNode;
                     }
                 }
                 else
@@ -117,11 +117,11 @@ namespace DataStructures
                     rightNode.Parent = node.Parent;
                     if (rightNode.Data.CompareTo((rightNode.Parent).Data) < 0)
                     {
-                        (rightNode.Parent).LeftNode = rightNode;
+                        ((BSTNode<T>)rightNode.Parent).LeftNode = rightNode;
                     }
                     else
                     {
-                        (rightNode.Parent).RightNode = rightNode;
+                        ((BSTNode<T>)rightNode.Parent).RightNode = rightNode;
                     }
                 }
                 else
@@ -195,11 +195,13 @@ namespace DataStructures
                 var compResult = removeNode.Data.CompareTo(removeNode.Parent.Data);
                 if (compResult == -1)
                 {
-                    removeNode.Parent.LeftNode = removeNode.RightNode;
+                    ((BSTNode<T>)removeNode.Parent).LeftNode = removeNode.RightNode;
+                    (removeNode.RightNode).Parent = removeNode.Parent;
                 }
                 else if (compResult == 1)
                 {
-                    removeNode.Parent.RightNode = removeNode.RightNode;
+                    ((BSTNode<T>)removeNode.Parent).RightNode = removeNode.RightNode;
+                    (removeNode.RightNode).Parent = removeNode.Parent;
                 }
                 this.Count--;
                 return true;
@@ -217,14 +219,14 @@ namespace DataStructures
                 var compResult = removeNode.Data.CompareTo(removeNode.Parent.Data);
                 if (compResult == -1)
                 {
-                    removeNode.Parent.LeftNode = removeNode.LeftNode;
+                    ((BSTNode<T>)removeNode.Parent).LeftNode = removeNode.LeftNode;
+                    (removeNode.LeftNode).Parent = removeNode.Parent;
                 }
                 else if (compResult == 1)
                 {
-                    removeNode.Parent.RightNode = removeNode.LeftNode;
+                    ((BSTNode<T>)removeNode.Parent).RightNode = removeNode.LeftNode;
+                    (removeNode.LeftNode).Parent = removeNode.Parent;
                 }
-                removeNode.Parent = null;
-                removeNode.LeftNode = null;
                 this.Count--;
                 return true;
             }
@@ -238,20 +240,28 @@ namespace DataStructures
             }
             //Change removeNode to inorderSuccessor
             removeNode.Data = inorderSuccessor.Data;
-
+            //Inorder successor is rightNode
+            if (removeNode.Data.CompareTo(removeNode.RightNode.Data) == 0)
+            {
+                if (inorderSuccessor.IsLeaf())
+                {
+                    removeNode.RightNode = null;
+                    this.Count--;
+                    return true;
+                }
+                //Has right child
+                removeNode.RightNode = inorderSuccessor.RightNode;
+                removeNode.RightNode.Parent = removeNode;
+                this.Count--;
+                return true;
+            }           
             //Inorder succesor is leaf
-            if (inorderSuccessor.IsLeaf()) {
+            if (inorderSuccessor.IsLeaf()) {               
                 return this.DeleteLeaf(inorderSuccessor);
             }
             //Inorder succesor has right child
             inorderSuccessor.RightNode.Parent = inorderSuccessor.Parent;
-            if(removeNode.Parent == null)
-            {
-                inorderSuccessor.Parent.RightNode = inorderSuccessor.RightNode;
-            } else
-            {
-                inorderSuccessor.Parent.LeftNode = inorderSuccessor.RightNode;
-            }
+            ((BSTNode<T>)inorderSuccessor.Parent).LeftNode = inorderSuccessor.RightNode;
             this.Count--;
             return true;
         }
@@ -268,14 +278,17 @@ namespace DataStructures
             var compResult = paLeaf.Data.CompareTo(paLeaf.Parent.Data);
             if (compResult == -1)
             {
-                paLeaf.Parent.LeftNode = null;
+                ((BSTNode<T>)paLeaf.Parent).LeftNode = null;
+                this.Count--;
+                return true;
             }
-            else if (compResult == 1 || compResult == 0)
+            else if (compResult == 1)
             {
-                paLeaf.Parent.RightNode = null;
+                ((BSTNode<T>)paLeaf.Parent).RightNode = null;
+                this.Count--;
+                return true;
             }
-            this.Count--;
-            return true;
+            return false;
         }
     }
 }
