@@ -1,10 +1,19 @@
-﻿using DataStructures;
+﻿using DataStructures.Iterator;
+using DataStructures.Tree.BSTree;
 using System.Collections;
 using System.Runtime.InteropServices;
 
 var BStree = new BSTree<int>();
 var ControlArray = new ArrayList();
 
+BStree.Add(4);
+BStree.Add(1);
+BStree.Add(3);
+BStree.Add(2);
+BStree.BalanceTree();
+Console.WriteLine();
+
+/*
 Console.Write("Zadaj celkovy pocet opercii: ");
 var pocetOperacii = Convert.ToInt32(Console.ReadLine());
 
@@ -107,7 +116,7 @@ Console.WriteLine("Vsetky operacie prebehli uspesne!");
 
 Console.WriteLine("Prebieha konrola prvkov struktury, prosim cakajte!");
 
-if(ControlArray.Count == BStree.Count)
+if (ControlArray.Count == BStree.Count)
 {
     Console.WriteLine("Pocet prvkov struktury je spravny!");
 }
@@ -128,10 +137,10 @@ foreach(var data in ControlArray)
 Console.WriteLine("Vsetky prvky sa v strukture nasli!");
 
 Console.Write("Prvky v strukture:\n BST: \t");
-var BSTIterator = new BSTIterator<int>(BStree.Root);
-foreach (var data in BSTIterator.Path)
+var BSTIterator = new BSTIterator<int>(BStree);
+while (BSTIterator.HasNext())
 {
-    Console.Write("{0} ", data.Data);
+    Console.Write("{0} ", BSTIterator.MoveNext());
 }
 
 Console.Write("\nPole: \t");
@@ -139,3 +148,5 @@ foreach (var data in ControlArray)
 {
     Console.Write("{0} ", data);
 }
+
+*/
