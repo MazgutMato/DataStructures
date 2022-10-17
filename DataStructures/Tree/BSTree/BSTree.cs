@@ -363,43 +363,49 @@ namespace DataStructures.Tree.BSTree
         {
             BSTNode<T> current = this.Root;
             Stack<BSTNode<T>> stack = new Stack<BSTNode<T>>();
-
+            //tree is empty
             if (current == null)
             {
                 return;
             }
-
+            //iterete tree and set height
             while (current != null || stack.Count > 0)
             {
+                //go to left
                 while (current != null)
                 {
-                    stack.Push(current);                    
+                    stack.Push(current);
+                    current.LeftHeight = 0;
+                    current.RightHeight = 0;
                     current = current.LeftNode;
-                    if(current != null)
-                    {
-                        ((BSTNode<T>)current.Parent).LeftHeight++;
-                    }
                 }
+                //take right if left is null
                 current = stack.Peek();
                 current = current.RightNode;
-                if (current != null)
+                if(current != null)
                 {
-                    ((BSTNode<T>)current.Parent).RightHeight++;
+                    current.LeftHeight = 0;
+                    current.RightHeight = 0;
+
                 }
+                //update height when delete node from stack
                 var deleteNode = stack.Pop();
-                var deleteParent = this.GetParent(deleteNode);
-                if(deleteParent != null)
+                while(this.GetParent(deleteNode) != null)
                 {
-                    var compResult = deleteNode.Data.CompareTo(deleteParent.Data);
-                    if(compResult == -1)
+                    var compResult = deleteNode.Data.CompareTo(this.GetParent(deleteNode).Data);
+                    if (compResult == -1)
                     {
-                        deleteParent.LeftHeight += Math.Max(deleteNode.LeftHeight, deleteNode.RightHeight);
-                    } else if(compResult == 1)
-                    {
-                        deleteParent.RightHeight += Math.Max(deleteNode.LeftHeight, deleteNode.RightHeight); 
+                        this.GetParent(deleteNode).LeftHeight =
+                            Math.Max(deleteNode.LeftHeight, deleteNode.RightHeight) + 1;
                     }
-                }
-               
+                    else if (compResult == 1)
+                    {
+                        this.GetParent(deleteNode).RightHeight =
+                            Math.Max(deleteNode.LeftHeight, deleteNode.RightHeight) + 1;
+                    }
+                    //change delete node to parent
+                    deleteNode = this.GetParent(deleteNode);
+                }            
             }
         }
         public void BalanceTree()
@@ -410,7 +416,7 @@ namespace DataStructures.Tree.BSTree
             while (inorderIterator.HasNext())
             {
                 current = inorderIterator.Path.Dequeue();
-                while (current.GetHeight() != 1 && current.GetHeight() != 0 && current.GetHeight() != -1)
+                while (Math.Abs(current.GetHeight()) > 1)
                 {
                     if (current.GetHeight() > 1)
                     {

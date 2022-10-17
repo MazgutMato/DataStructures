@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 var BStree = new BSTree<int>();
 var ControlArray = new ArrayList();
 
+
 Console.Write("Zadaj celkovy pocet opercii: ");
 var pocetOperacii = Convert.ToInt32(Console.ReadLine());
 
