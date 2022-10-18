@@ -5,7 +5,9 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataStructures", "DataStructures\DataStructures.csproj", "{9602C1BA-CACA-4863-A8FC-33214B746137}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{2AC60EB4-A772-478E-A01A-38013E3D5668}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp", "TestApp\TestApp.csproj", "{2AC60EB4-A772-478E-A01A-38013E3D5668}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectronicHealthCard", "ElectronicHealthCard\ElectronicHealthCard.csproj", "{63464963-9D0C-428F-B3F7-D3B14FE8A0A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2AC60EB4-A772-478E-A01A-38013E3D5668}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AC60EB4-A772-478E-A01A-38013E3D5668}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AC60EB4-A772-478E-A01A-38013E3D5668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63464963-9D0C-428F-B3F7-D3B14FE8A0A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63464963-9D0C-428F-B3F7-D3B14FE8A0A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63464963-9D0C-428F-B3F7-D3B14FE8A0A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63464963-9D0C-428F-B3F7-D3B14FE8A0A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

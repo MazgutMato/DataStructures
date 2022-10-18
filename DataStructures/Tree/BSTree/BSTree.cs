@@ -194,13 +194,13 @@ namespace DataStructures.Tree.BSTree
                 {
                     if (heightChange.Data.CompareTo(heightChange.Parent.Data) < 0)
                     {
-                        ((BSTNode<T>)heightChange.Parent).LeftHeight = Math.Max(heightChange.LeftHeight, heightChange.RightHeight) + 1;
+                        this.GetParent(heightChange).LeftHeight = Math.Max(heightChange.LeftHeight, heightChange.RightHeight) + 1;
                     }
                     else
                     {
-                        ((BSTNode<T>)heightChange.Parent).RightHeight = Math.Max(heightChange.LeftHeight, heightChange.RightHeight) + 1;
+                        this.GetParent(heightChange).RightHeight = Math.Max(heightChange.LeftHeight, heightChange.RightHeight) + 1;
                     }
-                    heightChange = ((BSTNode<T>)heightChange.Parent);
+                    heightChange = this.GetParent(heightChange);
                 }
 
                 return true;
@@ -356,7 +356,7 @@ namespace DataStructures.Tree.BSTree
             }
             return false;
         }
-        private void SetHeight()
+        private void SetNodesHeight()
         {
             BSTNode<T> current = this.Root;
             Stack<BSTNode<T>> stack = new Stack<BSTNode<T>>();
@@ -405,19 +405,46 @@ namespace DataStructures.Tree.BSTree
                 }            
             }
         }
-        public int GetHeight(T data)
+        public int GetNodeHeight(T data)
         {
             var node = this.FindNode(data);
             return node.GetHeight();
         }
         public void BalanceTree()
         {
-            this.SetHeight();
-            BSTIterator<T> inorderIterator = new BSTIterator<T>(this);
-            BSTNode<T> current;
-            while (inorderIterator.HasNext())
+            //Set heihgts
+            this.SetNodesHeight();
+            //Make levelorder traversal
+            var queue = new Queue<BSTNode<T>>();
+            var levelOrder = new Stack<BSTNode<T>>();   
+            
+            if(this.Root == null)
             {
-                current = inorderIterator.Path.Dequeue();
+                return;
+            }
+
+            queue.Enqueue(this.Root);
+            while (queue.Count > 0)
+            {
+                var topNode = queue.Dequeue();
+
+                levelOrder.Push(topNode);
+
+                if(topNode.LeftNode != null)
+                {
+                    queue.Enqueue(topNode.LeftNode);
+                }
+
+                if (topNode.RightNode != null)
+                {
+                    queue.Enqueue(topNode.RightNode);
+                }
+            }
+            //Balance tree
+            BSTNode<T> current;
+            while (levelOrder.Count > 0)
+            {
+                current = levelOrder.Pop();
                 while (Math.Abs(current.GetHeight()) > 1)
                 {
                     if (current.GetHeight() > 1)
@@ -441,7 +468,7 @@ namespace DataStructures.Tree.BSTree
                         Console.WriteLine("Rotuje {0} doprava", current.Data);
                     }
                 }                
-            }
+            }            
         }
         private BSTNode<T>? GetParent(BSTNode<T> node)
         {

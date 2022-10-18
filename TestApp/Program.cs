@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 var BStree = new BSTree<int>();
 var ControlArray = new ArrayList();
 
-
 Console.Write("Zadaj celkovy pocet opercii: ");
 var pocetOperacii = Convert.ToInt32(Console.ReadLine());
 
@@ -100,7 +99,7 @@ for (int i = 0; i < pocetOperacii; i++)
         while (iterator.HasNext())
         {
             var cislo = iterator.MoveNext();
-            var height = BStree.GetHeight(cislo);            
+            var height = BStree.GetNodeHeight(cislo);            
             Console.Write(" {0}({1})", cislo, height);
             if (Math.Abs(height) > 1)
             {
@@ -110,10 +109,10 @@ for (int i = 0; i < pocetOperacii; i++)
         Console.WriteLine();
     }
 }
-Console.WriteLine("Pocet operacii vloz: {0}", celkovoVloz);
+Console.WriteLine("\nPocet operacii vloz: {0}", celkovoVloz);
 Console.WriteLine("Pocet operacii najdi: {0}", celkovoNajdi);
 Console.WriteLine("Pocet operacii vymaz: {0}", celkovoVymaz);
-Console.WriteLine("Pocet operacii vymaz: {0}", celkovoBalancuj);
+Console.WriteLine("Pocet operacii balancuj: {0}", celkovoBalancuj);
 
 Console.WriteLine("Vsetky operacie prebehli uspesne!");
 
