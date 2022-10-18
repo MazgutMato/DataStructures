@@ -19,16 +19,13 @@ var pocetNajdi = Convert.ToInt32(Console.ReadLine());
 Console.Write("Zadaj pomer opercii vymaz v %: ");
 var pocetVymaz = Convert.ToInt32(Console.ReadLine());
 
-Console.Write("Zadaj pomer opercii rotuj v %: ");
-var pocetRotuj = Convert.ToInt32(Console.ReadLine());
-
 Console.Write("Zadaj pomer opercii balancuj v %: ");
 var pocetBalancuj = Convert.ToInt32(Console.ReadLine());
 
 Console.Write("Zadaj pocet nahodne generovanych vkladanych cisel: ");
 var generovaneCisla = Convert.ToInt32(Console.ReadLine());
 
-if ((pocetVloz + pocetNajdi + pocetVymaz + pocetRotuj + pocetBalancuj) != 100) {
+if ((pocetVloz + pocetNajdi + pocetVymaz + pocetBalancuj) != 100) {
     Console.WriteLine("Sucet pomerov poctu operacii musi byt 100%!");
     return;
 }
@@ -40,7 +37,6 @@ var random = new Random();
 var celkovoVloz = 0;
 var celkovoVymaz = 0;
 var celkovoNajdi = 0;
-var celkovoRotuj = 0;
 var celkovoBalancuj = 0;
 
 for (int i = 0; i < pocetOperacii; i++)
@@ -54,14 +50,23 @@ for (int i = 0; i < pocetOperacii; i++)
         {
             ControlArray.Add(vkladaneCislo);
             Console.WriteLine("Vklada {0}",vkladaneCislo);
-        }        
+        }
+        if(BStree.Find(vkladaneCislo) != vkladaneCislo)
+        {
+            throw new InvalidOperationException("Cannot find inserted data!");
+        }
     }
     else if (rand < pocetVloz + pocetNajdi) 
     {
-        celkovoNajdi++;
-        if(ControlArray.Count > 0)
+        celkovoNajdi++;        
+        if (ControlArray.Count > 0)
         {
-            BStree.Find((int)ControlArray[ControlArray.Count - 1]);
+            var hladaneCislo = Convert.ToInt32(ControlArray[random.Next(ControlArray.Count)]);
+            Console.WriteLine("Hlada sa {0}", hladaneCislo);
+            if (BStree.Find(hladaneCislo) != hladaneCislo)
+            {
+                throw new InvalidOperationException("Cannot find data!");
+            }
         }
         else
         {
@@ -77,7 +82,7 @@ for (int i = 0; i < pocetOperacii; i++)
             Console.WriteLine("Maze {0}", mazaneCislo);
             if (BStree.Find(Convert.ToInt32(mazaneCislo)) != 0)
             {
-                throw new Exception();
+                throw new InvalidOperationException("Cannot delete data!");
             }
             ControlArray.Remove(mazaneCislo);           
         }
@@ -85,34 +90,29 @@ for (int i = 0; i < pocetOperacii; i++)
         {
             BStree.Delete(0);
         }
-    } else if (rand < pocetVloz + pocetNajdi + pocetVymaz + pocetRotuj)
-    {
-        celkovoRotuj++;
-        var typRotacie = random.Next(2);
-        if (BStree.Count > 0)
-        {
-            var rotovanyPrvokIndex = random.Next(0,BStree.Count);
-            if (typRotacie == 0)
-            {
-                BStree.RotateRight((int)ControlArray[rotovanyPrvokIndex]);
-                Console.WriteLine("Rotuje doprava {0}", (int)ControlArray[rotovanyPrvokIndex]);
-            } else            
-            {
-                BStree.RotateLeft((int)ControlArray[rotovanyPrvokIndex]);
-                Console.WriteLine("Rotuje dolava {0}", (int)ControlArray[rotovanyPrvokIndex]);
-            }
-        }
-    } else
+    }else
     {
         celkovoBalancuj++;
         BStree.BalanceTree();
         Console.WriteLine("Balancuje");
+        Console.Write("\tBST:");
+        var iterator = new BSTIterator<int>(BStree);
+        while (iterator.HasNext())
+        {
+            var cislo = iterator.MoveNext();
+            var height = BStree.GetHeight(cislo);            
+            Console.Write(" {0}({1})", cislo, height);
+            if (Math.Abs(height) > 1)
+            {
+                throw new InvalidOperationException("Tree is not balance!");
+            }
+        }
+        Console.WriteLine();
     }
 }
 Console.WriteLine("Pocet operacii vloz: {0}", celkovoVloz);
 Console.WriteLine("Pocet operacii najdi: {0}", celkovoNajdi);
 Console.WriteLine("Pocet operacii vymaz: {0}", celkovoVymaz);
-Console.WriteLine("Pocet operacii vymaz: {0}", celkovoRotuj);
 Console.WriteLine("Pocet operacii vymaz: {0}", celkovoBalancuj);
 
 Console.WriteLine("Vsetky operacie prebehli uspesne!");
@@ -121,23 +121,22 @@ Console.WriteLine("Prebieha konrola prvkov struktury, prosim cakajte!");
 
 if (ControlArray.Count == BStree.Count)
 {
-    Console.WriteLine("\nPocet prvkov struktury je spravny!");
+    Console.WriteLine("\nPocet prvkov struktury je spravny!" +
+        "\n\tBST:{0}\n\tPole:{1}",BStree.Count,ControlArray.Count);
 }
 else
 {
-    Console.WriteLine("\nPocet prvkov struktury nie je spravny!");
+    Console.WriteLine("\nPocet prvkov struktury nie je spravny!" +
+        "\n\tBST:{0}\n\tPole:{1}", BStree.Count, ControlArray.Count);
 }
 
 foreach(var data in ControlArray)
 {
     if (BStree.Find((int)data) == 0)
     {
-        Console.WriteLine("{0} sa v strukture nenasiel!",data);
-        return;
+        Console.WriteLine("\t{0} sa v strukture nenasiel!",data);
     }
 }
-
-Console.WriteLine("\nVsetky prvky sa v strukture nasli!");
 
 Console.Write("\nPrvky v strukture:\n BST: \t");
 var BSTIterator = new BSTIterator<int>(BStree);
@@ -147,6 +146,7 @@ while (BSTIterator.HasNext())
 }
 
 Console.Write("\nPole: \t");
+ControlArray.Sort();
 foreach (var data in ControlArray)
 {
     Console.Write("{0} ", data);

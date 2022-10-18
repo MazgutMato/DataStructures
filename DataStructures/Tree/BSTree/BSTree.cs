@@ -69,9 +69,8 @@ namespace DataStructures.Tree.BSTree
             }
             return default;
         }
-        public bool RotateRight(T data)
+        private bool RotateRight(BSTNode<T> node)
         {
-            var node = FindNode(data);
             if (node != null)
             {
                 if (node.LeftNode == null)
@@ -138,9 +137,8 @@ namespace DataStructures.Tree.BSTree
             }
             return false;
         }
-        public bool RotateLeft(T data)
+        private bool RotateLeft(BSTNode<T> node)
         {
-            var node = FindNode(data);
             if (node != null)
             {
                 if (node.RightNode == null)
@@ -358,8 +356,7 @@ namespace DataStructures.Tree.BSTree
             }
             return false;
         }
-
-        public void SetHeight()
+        private void SetHeight()
         {
             BSTNode<T> current = this.Root;
             Stack<BSTNode<T>> stack = new Stack<BSTNode<T>>();
@@ -408,6 +405,11 @@ namespace DataStructures.Tree.BSTree
                 }            
             }
         }
+        public int GetHeight(T data)
+        {
+            var node = this.FindNode(data);
+            return node.GetHeight();
+        }
         public void BalanceTree()
         {
             this.SetHeight();
@@ -420,19 +422,23 @@ namespace DataStructures.Tree.BSTree
                 {
                     if (current.GetHeight() > 1)
                     {
-                        if(current.RightNode.GetHeight() < 0)
+                        while(current.RightNode.GetHeight() < 0)
                         {
-                            this.RotateRight(current.RightNode.Data);
+                            this.RotateRight(current.RightNode);
+                            Console.WriteLine("Rotuje {0} doprava",current.RightNode.Data);
                         }
-                        this.RotateLeft(current.Data);
+                        this.RotateLeft(current);
+                        Console.WriteLine("Rotuje {0} doprava", current.Data);
                     }
                     if (current.GetHeight() < -1)
                     {
-                        if (current.LeftNode.GetHeight() > 0)
+                        while (current.LeftNode.GetHeight() > 0)
                         {
-                            this.RotateLeft(current.LeftNode.Data);
+                            this.RotateLeft(current.LeftNode);
+                            Console.WriteLine("Rotuje {0} dolava", current.LeftNode.Data);
                         }
-                        this.RotateRight(current.Data);
+                        this.RotateRight(current);
+                        Console.WriteLine("Rotuje {0} doprava", current.Data);
                     }
                 }                
             }
