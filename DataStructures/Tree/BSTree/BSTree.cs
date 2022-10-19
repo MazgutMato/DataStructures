@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace DataStructures.Tree.BSTree
 {
@@ -63,11 +64,41 @@ namespace DataStructures.Tree.BSTree
         public T? Find(T data)
         {
             var findNode = FindNode(data);
-            if (findNode != null)
+            if (findNode != null && data.CompareTo(findNode.Data) == 0)
             {
                 return findNode.Data;
             }
             return default;
+        }
+        public bool FindRange(T min, T max, ICollection<T> structure)
+        {
+            return this.FindNodeRange(this.Root, min, max, structure);            
+        }
+        private bool FindNodeRange(BSTNode<T> node,T min, T max, ICollection<T> structure)
+        {
+
+            if (node == null)
+            {
+                return false;
+            }                
+
+            int cmpLow = min.CompareTo(node.Data);
+            int cmpHigh = max.CompareTo(node.Data);
+
+            if (cmpLow < 0)
+            {
+                FindNodeRange(node.LeftNode, min, max, structure);
+            }
+            if (cmpLow <= 0 && cmpHigh >= 0)
+            {
+                structure.Add(node.Data);
+            }
+            if (cmpHigh > 0)
+            {
+                FindNodeRange(node.RightNode, min, max, structure);
+            }
+
+            return true;
         }
         private bool RotateRight(BSTNode<T> node)
         {
@@ -210,27 +241,29 @@ namespace DataStructures.Tree.BSTree
         }
         private BSTNode<T>? FindNode(T data)
         {
-            var Child = Root;
+            var Child = this.Root;
+            var LastHeigher = this.GetParent(this.Root);
             BSTNode<T> findNode = null;
 
             while (Child != null && findNode == null)
-            {
+            {                
                 int compResult = data.CompareTo(Child.Data);
                 if (compResult == 0)
                 {
-                    findNode = Child;
+                    return findNode;
                 }
                 else if (compResult == 1)
-                {
+                {                    
                     Child = Child.RightNode;
                 }
                 else
-                {
+                {   
+                    LastHeigher = Child;
                     Child = Child.LeftNode;
-                }
+                }                
             }
-
-            return findNode;
+            //Return last higher if dont find node
+            return LastHeigher;
         }
         public bool Delete(T data)
         {
