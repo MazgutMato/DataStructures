@@ -1,9 +1,13 @@
-﻿namespace ElectronicHealthCard.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ElectronicHealthCard.Models
 {
     public class Record : IComparable<Record>
     {
+        [Required]
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        [Required]
         public string Diagnoze { get; set; }
         public Record()
         {

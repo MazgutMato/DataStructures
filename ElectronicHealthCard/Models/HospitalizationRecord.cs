@@ -9,8 +9,8 @@ namespace ElectronicHealthCard.Models
         public BSTree<Record> Records { get; set; }
         public HospitalizationRecord()
         {
-            Patient = null;
-            Hospital = null;
+            Patient = new Patient();
+            Hospital = new Hospital();
             Records = new BSTree<Record>();
         }
         public HospitalizationRecord(Patient patient, Hospital hospital)
@@ -22,7 +22,7 @@ namespace ElectronicHealthCard.Models
         public int CompareTo(HospitalizationRecord? other)
         {
             var comHospital = this.Hospital.Name.CompareTo(other.Hospital.Name);
-            var comPacient = this.Patient.PatientId.CompareTo(other.Patient);            
+            var comPacient = this.Patient.PatientId.CompareTo(other.Patient.PatientId);            
             if(comHospital != 0)
             {
                 return comHospital;

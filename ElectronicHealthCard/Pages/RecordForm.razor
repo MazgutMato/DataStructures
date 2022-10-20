@@ -5,6 +5,7 @@
 @inject NavigationManager navigatorManager
 
 <EditForm Model="@Hospital">
+    <DataAnnotationsValidator />
     <h3>Add Record</h3>
     <hr />
     <div class="form-group">
@@ -13,12 +14,14 @@
         </label>
         <div>
             <InputText id="name" class="form-control" placeholder="Hospital name"
-                       @bind-Value="Hospital.Name" />
+                @bind-Value="Hospital.Name"/>
+            <ValidationMessage For="@(() => Hospital.Name)" />
         </div>
     </div>
 </EditForm>
 
 <EditForm Model="@Patient">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="patientId">
             Patient Id
@@ -26,11 +29,13 @@
         <div>
             <InputText id="patientId" class="form-control" placeholder="Patient Id"
                        @bind-Value="Patient.PatientId" />
+            <ValidationMessage For="@(() => Patient.PatientId)" />
         </div>
     </div>
 </EditForm>
 
 <EditForm Model="@Record">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="diagnoze">
             Date of hospitalization
@@ -38,6 +43,7 @@
         <div>
             <InputDate id="diagnoze" class="form-control" placeholder="Diagnoze"
                        @bind-Value="Record.Start" />
+            <ValidationMessage For="@(() => Record.Start)" />
         </div>
     </div>
     <div class="form-group">
@@ -47,17 +53,16 @@
         <div>
             <InputText id="diagnoze" class="form-control" placeholder="Diagnoze"
                        @bind-Value="Record.Diagnoze" />
+            <ValidationMessage For="@(() => Record.Diagnoze)" />
         </div>
     </div>
-</EditForm>
+</EditForm>   
 
-    <div>
-        <button class="btn btn-primary" @onclick="@(() => {
-                this.AddRecord();
-            })">
-            Add
-        </button>
-    </div>    
+<div>
+    <button class="btn btn-primary" @onclick="SubmitForm">
+        Add
+    </button>
+</div>
 
 @if (Message != null)
     {
@@ -65,23 +70,36 @@
     }
 
 @code {
-    public Hospital Hospital { get; set; } = new Hospital();
-    public Patient Patient { get; set; } = new Patient();
-    public Record Record { get; set; } = new Record();
+    private Hospital Hospital { get; set; } = new Hospital();
+    private Patient Patient = new Patient();
+    private Record Record = new Record();
     public string Message { get; set; } = null;
 
-    public void AddRecord()
+    public void SubmitForm()
     {
+        if(Hospital.Name == null){
+            Message = "Hospital name cannot be empty!";
+            return;
+        }
         var FindHospital = hospitalController.FindHospital(Hospital);
         if(FindHospital == null)
         {
             Message = "Hospital not found!";
             return;
         }
+        if (Patient.PatientId == null)
+        {
+            Message = "Patient Id name cannot be empty!";
+            return;
+        }
         var FindPatient = patientController.FindPatient(Patient);
         if(FindPatient == null)
         {
             Message = "Patient not found!";
+            return;
+        }
+        if(Record.Diagnoze == null){
+            Message = "Diagnoze cannot be empty!";
             return;
         }
         if(hospitalizationRecordsController.AddRecord(FindHospital, FindPatient, Record)){
