@@ -241,29 +241,25 @@ namespace DataStructures.Tree.BSTree
         }
         private BSTNode<T>? FindNode(T data)
         {
-            var Child = this.Root;
-            var LastHeigher = this.GetParent(this.Root);
-            BSTNode<T> findNode = null;
+            var findNode = this.Root;
 
-            while (Child != null && findNode == null)
+            while (findNode != null)
             {                
-                int compResult = data.CompareTo(Child.Data);
+                int compResult = data.CompareTo(findNode.Data);
                 if (compResult == 0)
                 {
                     return findNode;
                 }
                 else if (compResult == 1)
                 {                    
-                    Child = Child.RightNode;
+                    findNode = findNode.RightNode;
                 }
                 else
                 {   
-                    LastHeigher = Child;
-                    Child = Child.LeftNode;
+                    findNode = findNode.LeftNode;
                 }                
-            }
-            //Return last higher if dont find node
-            return LastHeigher;
+            }            
+            return findNode;
         }
         public bool Delete(T data)
         {

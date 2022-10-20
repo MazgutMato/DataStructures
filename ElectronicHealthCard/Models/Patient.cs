@@ -1,9 +1,15 @@
-﻿namespace ElectronicHealthCard.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ElectronicHealthCard.Models
 {
     public class Patient : IComparable<Patient>
     {
+        [Required]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "Patient Id consist of 10 digits!")]
         public string PatientId { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
         public Patient() { }

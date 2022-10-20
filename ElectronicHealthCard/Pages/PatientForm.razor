@@ -2,16 +2,18 @@
 @inject PatientsController patientController
 @inject NavigationManager navigatorManager
 
-<EditForm Model="@Patient">
+<EditForm Model="@Patient" OnValidSubmit="@PatientFormSubmit">
+    <DataAnnotationsValidator />
     <h3>Add Patient</h3>
     <hr />
-    <div class="form-group">
+    <div class="form-group mb-2">
         <label for="firstName">
             First Name
         </label>
         <div>
             <InputText id="firstName" class="form-control" placeholder="First Name"
                        @bind-Value="Patient.FirstName" />
+            <ValidationMessage For="@(() => Patient.FirstName)" />
         </div>
     </div>
     <div class="form-group row">
@@ -21,18 +23,20 @@
         <div>
             <InputText id="lastName" class="form-control" placeholder="Last Name"
                        @bind-Value="Patient.LastName" />
+            <ValidationMessage For="@(() => Patient.LastName)" />
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row mb-2">
         <label for="patientId">
             PatientID
         </label>
         <div>
             <InputText id="patientId" class="form-control" placeholder="Patient Id"
                        @bind-Value="Patient.PatientId" />
+            <ValidationMessage For="@(() => Patient.PatientId)" />
         </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row mb-2">
         <label for="birthDate">
             Birth Date
         </label>
@@ -40,15 +44,9 @@
             <InputDate id="birthDate" class="form-control" placeholder="Birth Date"
                        @bind-Value="Patient.BirthDate" />
         </div>
-    </div>
+    </div>    
     <div>
-        <button class="btn btn-primary" @onclick="@(() => {
-                if(patientController.AddPatient(this.Patient)){
-                    Message = "Successfuly added!";
-                } else {
-                    Message = "Patient already exists!";
-                }               
-            })">Add</button>
+        <button type="submit" class="btn btn-primary">Add</button>
     </div>
      @if(Message != null){
         <p>@Message</p>
@@ -58,4 +56,16 @@
 @code {
     public Patient Patient { get; set; } = new Patient();
     public string Message { get; set; } = null;
+
+    public void PatientFormSubmit(){
+       
+        if (patientController.AddPatient(this.Patient))
+        {
+            Message = "Successfuly added!";
+        }
+        else
+        {
+            Message = "Patient already exists!";
+        }
+    }
 }

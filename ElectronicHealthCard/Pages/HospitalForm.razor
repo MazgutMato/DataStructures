@@ -2,7 +2,7 @@
 @inject HospitalsController hospitalController
 @inject NavigationManager navigatorManager
 
-<EditForm Model="@Hospital">
+<EditForm Model="@Hospital" OnValidSubmit="@FormSubmit">
     <h3>Add Hospital</h3>
     <hr />
     <div class="form-group">
@@ -15,13 +15,7 @@
         </div>
     </div>
     <div>
-        <button class="btn btn-primary" @onclick="@(() => {
-                if(hospitalController.AddHospital(this.Hospital)){
-                    Message = "Successfuly added!";
-                } else {
-                    Message = "Hospital already exists!";
-                }
-            })">
+        <button type="submit" class="btn btn-primary">
             Add
         </button>
     </div>
@@ -34,4 +28,15 @@
 @code {
     public Hospital Hospital { get; set; } = new Hospital();
     public string Message { get; set; } = null;
+
+    public void FormSubmit(){
+        if (hospitalController.AddHospital(this.Hospital))
+        {
+            Message = "Successfuly added!";
+        }
+        else
+        {
+            Message = "Hospital already exists!";
+        }
+    }
 }

@@ -25,15 +25,7 @@
         }
         public int CompareTo(Record? other)
         {            
-            var comStart = this.Start.CompareTo(other.Start);
-            var comEnd = this.End.CompareTo(other.End);
-            if (comStart != 0)
-            {
-                return comStart;
-            } else
-            {
-                return comEnd;
-            }
+            return this.Start.CompareTo(other.Start);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿@page "/recordForm"
+@inject HospitalizationRecordsController hospitalizationRecordsController
 @inject HospitalsController hospitalController
 @inject PatientsController patientController
 @inject NavigationManager navigatorManager
@@ -29,6 +30,26 @@
     </div>
 </EditForm>
 
+<EditForm Model="@Record">
+    <div class="form-group">
+        <label for="diagnoze">
+            Date of hospitalization
+        </label>
+        <div>
+            <InputDate id="diagnoze" class="form-control" placeholder="Diagnoze"
+                       @bind-Value="Record.Start" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="diagnoze">
+            Diagnoze
+        </label>
+        <div>
+            <InputText id="diagnoze" class="form-control" placeholder="Diagnoze"
+                       @bind-Value="Record.Diagnoze" />
+        </div>
+    </div>
+</EditForm>
 
     <div>
         <button class="btn btn-primary" @onclick="@(() => {
@@ -46,6 +67,7 @@
 @code {
     public Hospital Hospital { get; set; } = new Hospital();
     public Patient Patient { get; set; } = new Patient();
+    public Record Record { get; set; } = new Record();
     public string Message { get; set; } = null;
 
     public void AddRecord()
@@ -56,11 +78,16 @@
             Message = "Hospital not found!";
             return;
         }
-        var FindPatient = hospitalController.FindHospital(Hospital);
+        var FindPatient = patientController.FindPatient(Patient);
         if(FindPatient == null)
         {
             Message = "Patient not found!";
             return;
+        }
+        if(hospitalizationRecordsController.AddRecord(FindHospital, FindPatient, Record)){
+            Message = "Record was inserted!";
+        } else {
+            Message = "Record with same hospitalization date exists!";
         }
     }
 }
