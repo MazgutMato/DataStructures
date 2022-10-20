@@ -1,0 +1,48 @@
+﻿@page "/patientForm"
+@inject PatientsController patientController
+@inject NavigationManager navigatorManager
+
+<EditForm Model="@Patient">
+    <h3>Add Patient</h3>
+    <hr />
+    <div class="form-group">
+        <label for="firstName">
+            First Name
+        </label>
+        <div>
+            <InputText id="firstName" class="form-control" placeholder="First Name"
+                       @bind-Value="Patient.FirstName" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="lastName">
+            Last Name
+        </label>
+        <div>
+            <InputText id="lastName" class="form-control" placeholder="Last Name"
+                       @bind-Value="Patient.LastName" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="patientId">
+            Email
+        </label>
+        <div>
+            <InputText id="patientId" class="form-control" placeholder="Patient Id"
+                       @bind-Value="Patient.PatientId" />
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary" @onclick="@(() => {
+                if(patientController.AddPatient(this.Patient)){
+                    navigatorManager.NavigateTo("/patients");
+                } else {
+                }               
+            })">Add</button>
+    </div>
+</EditForm>
+
+@code {
+    public Patient Patient { get; set; } = new Patient();    
+
+}

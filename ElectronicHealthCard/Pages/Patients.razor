@@ -1,0 +1,56 @@
+﻿@page "/patients"
+@inject PatientsController patientsController
+@inject NavigationManager navigatorManager
+
+<PageTitle>Patients</PageTitle>
+
+<div>
+    <h3>Patients</h3>
+    <button class="btn btn-primary" @onclick="@(()=>navigatorManager.NavigateTo("/patientForm"))">Add new</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Patient ID</th>
+            <th>Birth Date</th>
+            <th>Operation</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (patientsController.GetCount() > 0)
+        {
+            @while (this.PatientsIterator.HasNext())
+            {
+                var patient = this.PatientsIterator.MoveNext();
+                <tr>
+                    <td>@patient.FirstName</td>
+                    <td>@patient.LastName</td>
+                    <td>@patient.PatientId</td>
+                    <td>@patient.BirthDate</td>
+                    <td><button class="btn btn-primary">Edit</button></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                No such data!
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Iterator<Patient> PatientsIterator;
+
+    #region Overrides of ComponentBase
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.PatientsIterator = this.patientsController.GetPatients();
+    } 
+
+    #endregion
+}

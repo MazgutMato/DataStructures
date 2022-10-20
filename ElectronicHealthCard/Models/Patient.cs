@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ElectronicHealthCard.Model
+﻿namespace ElectronicHealthCard.Models
 {
     public class Patient : IComparable<Patient>
     {
@@ -12,6 +6,7 @@ namespace ElectronicHealthCard.Model
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
+        public Patient() { }
         public Patient(string patientId, string firstName, string lastName, DateTime birthDate)
         {
             PatientId = patientId;

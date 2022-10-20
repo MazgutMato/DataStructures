@@ -3,6 +3,8 @@ using DataStructures.Tree.BSTree;
 using System.Collections;
 using System.Runtime.InteropServices;
 
+var itrik = new BSTIterator<int>(null);
+
 var BStree = new BSTree<int>();
 var ControlArray = new List<int>();
 

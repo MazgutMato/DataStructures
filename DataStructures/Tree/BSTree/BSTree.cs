@@ -14,7 +14,7 @@ namespace DataStructures.Tree.BSTree
         public int Count { get; set; }
         public Iterator<T> createIterator()
         {
-            throw new NotImplementedException();
+            return new BSTIterator<T>(this);
         }
         public bool Add(T data)
         {

@@ -9,14 +9,17 @@ namespace DataStructures.Iterator
 {
     public class BSTIterator<T> : Iterator<T> where T : IComparable<T>
     {
-        public Queue<BSTNode<T>> Path;
+        private Queue<BSTNode<T>> Path;
 
-        public BSTIterator(BSTree<T> tree)
+        public BSTIterator(BSTree<T>? tree)
         {
             Path = new Queue<BSTNode<T>>();
-            GenerateInorderPath(tree.Root);
+            if(tree != null)
+            {
+                GenerateInorderPath(tree.Root);
+            }            
         }
-        private void GenerateInorderPath(BSTNode<T> root)
+        private void GenerateInorderPath(BSTNode<T>? root)
         {
             BSTNode<T> current = root;
             Stack<BSTNode<T>> stack = new Stack<BSTNode<T>>();
