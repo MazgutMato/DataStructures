@@ -1,0 +1,52 @@
+﻿@page "/hospitals"
+@inject HospitalsController hospitalsController
+@inject NavigationManager navigatorManager
+
+<PageTitle>Hospitals</PageTitle>
+
+<div>
+    <h3>Hospitals</h3>
+    <button class="btn btn-primary" @onclick="@(()=>navigatorManager.NavigateTo("/hospitalForm"))">Add new</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Operation</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (hospitalsController.GetCount() > 0)
+        {
+            @while (this.HospitalIterator.HasNext())
+            {
+                var hospital = this.HospitalIterator.MoveNext();
+                        <tr>
+                            <td>@hospital.Name</td>
+                            <td><button class="btn btn-primary">Records</button></td>
+                        </tr>
+            }
+        }
+        else
+        {
+                <tr>
+                    No such data!
+                </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Iterator<Hospital> HospitalIterator;
+
+    #region Overrides of ComponentBase
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.HospitalIterator = this.hospitalsController.GetPatients();
+    }
+
+    #endregion
+}

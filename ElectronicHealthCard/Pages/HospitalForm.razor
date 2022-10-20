@@ -1,0 +1,37 @@
+﻿@page "/hospitalForm"
+@inject HospitalsController hospitalController
+@inject NavigationManager navigatorManager
+
+<EditForm Model="@Hospital">
+    <h3>Add Hospital</h3>
+    <hr />
+    <div class="form-group">
+        <label for="name">
+            Name
+        </label>
+        <div>
+            <InputText id="name" class="form-control" placeholder="Name"
+                       @bind-Value="Hospital.Name" />
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary" @onclick="@(() => {
+                if(hospitalController.AddHospital(this.Hospital)){
+                    Message = "Successfuly added!";
+                } else {
+                    Message = "Hospital already exists!";
+                }
+            })">
+            Add
+        </button>
+    </div>
+    @if (Message != null)
+    {
+        <p>@Message</p>
+    }
+</EditForm>
+
+@code {
+    public Hospital Hospital { get; set; } = new Hospital();
+    public string Message { get; set; } = null;
+}
