@@ -23,5 +23,9 @@ namespace ElectronicHealthCard.Controllers
         {
             return Patients.createIterator();
         }
+        public Patient FindPatient(Patient patient)
+        {
+            return Patients.Find(patient);
+        }
     }
 }

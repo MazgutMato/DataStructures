@@ -23,5 +23,9 @@ namespace ElectronicHealthCard.Controllers
         {
             return Hospitals.createIterator();
         }
+        public Hospital FindHospital(Hospital hospital)
+        {
+            return Hospitals.Find(hospital);
+        }
     }
 }

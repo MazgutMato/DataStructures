@@ -24,15 +24,15 @@
             Diagnoze = diagnoze;
         }
         public int CompareTo(Record? other)
-        {
-            var comDiahnoze = this.Diagnoze.CompareTo(other.Diagnoze);
+        {            
             var comStart = this.Start.CompareTo(other.Start);
-            if(comDiahnoze != 0)
-            {
-                return comDiahnoze;
-            } else
+            var comEnd = this.End.CompareTo(other.End);
+            if (comStart != 0)
             {
                 return comStart;
+            } else
+            {
+                return comEnd;
             }
         }
     }

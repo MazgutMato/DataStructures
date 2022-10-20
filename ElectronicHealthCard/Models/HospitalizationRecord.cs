@@ -11,11 +11,13 @@ namespace ElectronicHealthCard.Models
         {
             Patient = null;
             Hospital = null;
+            Records = new BSTree<Record>();
         }
         public HospitalizationRecord(Patient patient, Hospital hospital)
         {
             Patient = patient;
             Hospital = hospital;
+            Records = new BSTree<Record>();
         }
         public int CompareTo(HospitalizationRecord? other)
         {
@@ -28,6 +30,10 @@ namespace ElectronicHealthCard.Models
             {
                 return comPacient;
             }
+        }
+        public bool AddRecord(Record record)
+        {
+            return this.Records.Add(record);
         }
     }
 }
