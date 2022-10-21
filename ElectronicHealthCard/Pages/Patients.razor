@@ -1,5 +1,6 @@
 ﻿@page "/patients"
 @inject PatientsController patientsController
+@inject HospitalsController hospitalsController
 @inject NavigationManager navigatorManager
 
 <PageTitle>Patients</PageTitle>
@@ -8,6 +9,29 @@
     <h3>Patients</h3>
     <button class="btn btn-primary" @onclick="@(()=>navigatorManager.NavigateTo("/patientForm"))">Add new</button>
 </div>
+
+<EditForm Model="@Hospital" OnValidSubmit="@FormSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="name">
+            Hospital name
+        </label>
+        <div>
+            <InputText id="name" class="form-control" placeholder="Name"
+                       @bind-Value="Hospital.Name" />
+            <ValidationMessage For="@(() => Hospital.Name)" />
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+    </div>
+    @if (Message != null)
+    {
+        <p>@Message</p>
+    }
+</EditForm>
 
 <table class="table">
     <thead>
@@ -20,7 +44,7 @@
         </tr>
     </thead>
     <tbody>
-        @if (patientsController.GetCount() > 0)
+        @if (this.PatientsIterator != null)
         {
             @while (this.PatientsIterator.HasNext())
             {
@@ -43,14 +67,16 @@
 
 @code {
     private Iterator<Patient> PatientsIterator;
+    private Hospital Hospital = new Hospital();
+    private string Message;
 
-    #region Overrides of ComponentBase
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        this.PatientsIterator = this.patientsController.GetPatients();
-    } 
-
-    #endregion
+    private void FormSubmit(){
+        var findHospital = hospitalsController.FindHospital(Hospital);
+        if(findHospital != null){
+            this.PatientsIterator = findHospital.Patients.createIterator();
+            Message = "Hospital found!";
+        } else{
+            Message = "Hospital not found!";
+        }
+    }
 }
