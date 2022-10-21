@@ -1,0 +1,67 @@
+﻿@page "/dataGenerator"
+@inject HospitalizationRecordsController hospitalizationRecordsController
+@inject HospitalsController hospitalController
+@inject PatientsController patientController
+
+<EditForm Model="@GeneratorModel" OnValidSubmit="@GeneratorSubmit">
+    <DataAnnotationsValidator />
+    <h3>Generate data</h3>
+    <hr />
+    <div class="form-group mb-2">
+        <label for="hospitals">
+            Number of hospitals
+        </label>
+        <div>
+            <InputNumber id="hospitals" class="form-control" placeholder="Number of hospitals"
+                       @bind-Value="GeneratorModel.HospitalNumber" />
+            <ValidationMessage For="@(() => GeneratorModel.HospitalNumber)" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="patientNumber">
+            The Average number of patients in hospital
+        </label>
+        <div>
+            <InputNumber id="patientNumber" class="form-control" 
+                placeholder="The Average number of patients in hospital"
+                       @bind-Value="GeneratorModel.PatientNumber" />
+            <ValidationMessage For="@(() => GeneratorModel.PatientNumber)" />
+        </div>
+    </div>
+    <div class="form-group row mb-2">
+        <label for="recordNumber">
+            The Average number of patient records
+        </label>
+        <div>
+            <InputText id="recordNumber" class="form-control" 
+                placeholder="The Average number of patient records"
+                       @bind-Value="GeneratorModel.RecordNumber" />
+            <ValidationMessage For="@(() => GeneratorModel.RecordNumber)" />
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+    @if (Message != null)
+    {
+        <p>@Message</p>
+    }
+</EditForm>
+
+@code {
+    public Generator GeneratorModel;
+    public string Message { get; set; } = null;
+
+    public void GeneratorSubmit()
+    {
+
+        if (patientController.AddPatient(this.Patient))
+        {
+            Message = "Successfuly added!";
+        }
+        else
+        {
+            Message = "Patient already exists!";
+        }
+    }
+}
