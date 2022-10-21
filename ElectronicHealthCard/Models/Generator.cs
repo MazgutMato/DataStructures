@@ -4,14 +4,11 @@ namespace ElectronicHealthCard.Models
 {
     public class Generator
     {
-        [Required]
-        [Range(1,10000)]
+        [Range(1,10000, ErrorMessage = "Type number between 1-10000")]
         public int HospitalNumber;
-        [Required]
-        [Range(1, 50000)]
+        [Range(1, 50000, ErrorMessage = "Type number between 1-50000")]
         public int PatientNumber;
-        [Required]
-        [Range(1, 50000)]
+        [Range(1, 50000, ErrorMessage = "Type number between 1-10000")]
         public int RecordNumber;
         public Generator()
         {

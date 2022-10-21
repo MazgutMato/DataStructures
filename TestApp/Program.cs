@@ -3,10 +3,14 @@ using DataStructures.Tree.BSTree;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-var itrik = new BSTIterator<int>(null);
-
 var BStree = new BSTree<int>();
 var ControlArray = new List<int>();
+
+for(int i = 1; i < 12; i++)
+{
+    ControlArray.Add(i);    
+}
+BStree.FillWithMedian(ControlArray);
 
 Console.Write("Zadaj celkovy pocet opercii: ");
 var pocetOperacii = Convert.ToInt32(Console.ReadLine());

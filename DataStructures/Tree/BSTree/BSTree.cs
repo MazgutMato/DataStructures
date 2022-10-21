@@ -504,5 +504,26 @@ namespace DataStructures.Tree.BSTree
 
             return node == null ? null : ((BSTNode<T>)node.Parent);
         }
+        public bool FillWithMedian(List<T> structure)
+        {
+            if(this.Count > 0)
+            {
+                return false;
+            }
+            structure.Sort();
+            return this.FindMedian(0, structure.Count - 1, structure);
+        }
+        private bool FindMedian(int min, int max, List<T> structure)
+        {
+            if (min <= max)
+            {
+                var median = (min + max) / 2;
+                this.Add(structure[median]);
+                FindMedian(min, median - 1, structure);
+                FindMedian( median + 1, max,structure);
+                return true;
+            }
+            return false;
+        }
     }
 }

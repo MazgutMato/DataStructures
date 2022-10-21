@@ -3,7 +3,7 @@
 @inject HospitalsController hospitalController
 @inject PatientsController patientController
 
-<EditForm Model="@GeneratorModel" OnValidSubmit="@GeneratorSubmit">
+<EditForm Model="@GeneratorModel" OnValidSubmit="GeneratorSubmit">
     <DataAnnotationsValidator />
     <h3>Generate data</h3>
     <hr />
@@ -54,6 +54,12 @@
 
     public void GeneratorSubmit()
     {
+        //Validation
+        if(GeneratorModel.HospitalNumber < 0){
+            Message = "Number of hospitals must be between 1-10000";
+            return;
+        }        
+        
 
     }
 }
