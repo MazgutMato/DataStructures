@@ -385,55 +385,6 @@ namespace DataStructures.Tree.BSTree
             }
             return false;
         }
-        private void SetNodesHeight()
-        {
-            BSTNode<T> current = this.Root;
-            Stack<BSTNode<T>> stack = new Stack<BSTNode<T>>();
-            //tree is empty
-            if (current == null)
-            {
-                return;
-            }
-            //iterete tree and set height
-            while (current != null || stack.Count > 0)
-            {
-                //go to left
-                while (current != null)
-                {
-                    stack.Push(current);
-                    current.LeftHeight = 0;
-                    current.RightHeight = 0;
-                    current = current.LeftNode;
-                }
-                //take right if left is null
-                current = stack.Peek();
-                current = current.RightNode;
-                if(current != null)
-                {
-                    current.LeftHeight = 0;
-                    current.RightHeight = 0;
-
-                }
-                //update height when delete node from stack
-                var deleteNode = stack.Pop();
-                while(this.GetParent(deleteNode) != null)
-                {
-                    var compResult = deleteNode.Data.CompareTo(this.GetParent(deleteNode).Data);
-                    if (compResult == -1)
-                    {
-                        this.GetParent(deleteNode).LeftHeight =
-                            Math.Max(deleteNode.LeftHeight, deleteNode.RightHeight) + 1;
-                    }
-                    else if (compResult == 1)
-                    {
-                        this.GetParent(deleteNode).RightHeight =
-                            Math.Max(deleteNode.LeftHeight, deleteNode.RightHeight) + 1;
-                    }
-                    //change delete node to parent
-                    deleteNode = this.GetParent(deleteNode);
-                }            
-            }
-        }
         public int GetNodeHeight(T data)
         {
             var node = this.FindNode(data);
@@ -441,8 +392,6 @@ namespace DataStructures.Tree.BSTree
         }
         public void BalanceTree()
         {
-            //Set heihgts
-            this.SetNodesHeight();
             //Make levelorder traversal
             var queue = new Queue<BSTNode<T>>();
             var levelOrder = new Stack<BSTNode<T>>();   
@@ -474,6 +423,23 @@ namespace DataStructures.Tree.BSTree
             while (levelOrder.Count > 0)
             {
                 current = levelOrder.Pop();
+                //HightSet
+                if(current.LeftNode != null)
+                {
+                    current.LeftHeight = Math.Max(current.LeftNode.LeftHeight, current.LeftNode.RightHeight) + 1;
+                } else
+                {
+                    current.LeftHeight = 0;
+                }
+                if (current.RightNode != null)
+                {
+                    current.RightHeight = Math.Max(current.RightNode.LeftHeight, current.RightNode.RightHeight) + 1;
+                }
+                else
+                {
+                    current.RightHeight = 0;
+                }
+                //HightCheck
                 while (Math.Abs(current.GetHeight()) > 1)
                 {
                     if (current.GetHeight() > 1)
