@@ -33,7 +33,25 @@ namespace ElectronicHealthCard.Models
         }
         public bool AddRecord(Record record)
         {
-            return this.Records.Add(record);
+            if (this.Records.Add(record))
+            {
+                this.Patient.ActualRecord = record;
+                this.Hospital.Patients.Add(this.Patient);
+                return true;
+            }
+            return false;
+        }
+        public bool EndRecord(Record record)
+        {
+            var findRecord = this.Records.Find(record);
+            if (findRecord != null)
+            {
+                this.Patient.ActualRecord = null;
+                this.Hospital.Patients.Delete(this.Patient);
+                findRecord.End = record.End;
+                return true;
+            }
+            return false;
         }
     }
 }

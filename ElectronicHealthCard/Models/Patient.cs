@@ -12,6 +12,7 @@ namespace ElectronicHealthCard.Models
         [Required]
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
+        public Record ActualRecord { get; set; }
         public Patient() { }
         public Patient(string patientId, string firstName, string lastName, DateTime birthDate)
         {
@@ -19,6 +20,7 @@ namespace ElectronicHealthCard.Models
             FirstName = firstName;
             LastName = lastName;
             BirthDate = birthDate;
+            ActualRecord = null;
         }
         public int CompareTo(Patient? other)
         {

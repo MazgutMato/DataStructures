@@ -13,7 +13,12 @@ namespace ElectronicHealthCard.Models
         [Required]
         [Range(1, 50000)]
         public int RecordNumber;
-
+        public Generator()
+        {
+            HospitalNumber = 0;
+            PatientNumber = 0;
+            RecordNumber = 0;
+        }
         public Generator(int hospitalNumber, int patientNumber, int recordNumber)
         {
             HospitalNumber = hospitalNumber;

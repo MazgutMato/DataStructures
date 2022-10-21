@@ -2,7 +2,6 @@
 @inject HospitalizationRecordsController hospitalizationRecordsController
 @inject HospitalsController hospitalController
 @inject PatientsController patientController
-@inject NavigationManager navigatorManager
 
 <EditForm Model="@Hospital">
     <DataAnnotationsValidator />
@@ -37,11 +36,11 @@
 <EditForm Model="@Record">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label for="diagnoze">
+        <label for="date">
             Date of hospitalization
         </label>
         <div>
-            <InputDate id="diagnoze" class="form-control" placeholder="Diagnoze"
+            <InputDate id="date" class="form-control" placeholder="Date"
                        @bind-Value="Record.Start" />
             <ValidationMessage For="@(() => Record.Start)" />
         </div>
@@ -73,9 +72,9 @@
     private Hospital Hospital { get; set; } = new Hospital();
     private Patient Patient = new Patient();
     private Record Record = new Record();
-    public string Message { get; set; } = null;
+    private string Message { get; set; } = null;
 
-    public void SubmitForm()
+    private void SubmitForm()
     {
         if(Hospital.Name == null){
             Message = "Hospital name cannot be empty!";
@@ -87,6 +86,7 @@
             Message = "Hospital not found!";
             return;
         }
+
         if (Patient.PatientId == null)
         {
             Message = "Patient Id name cannot be empty!";
@@ -98,11 +98,18 @@
             Message = "Patient not found!";
             return;
         }
+        if (FindPatient.ActualRecord != null)
+        {
+            Message = "Patient is curently hospitalized!";
+            return;
+        }
+
         if(Record.Diagnoze == null){
             Message = "Diagnoze cannot be empty!";
             return;
         }
-        if(hospitalizationRecordsController.AddRecord(FindHospital, FindPatient, Record)){
+
+        if(hospitalizationRecordsController.AddRecord(FindHospital, FindPatient, Record)){        
             Message = "Record was inserted!";
         } else {
             Message = "Record with same hospitalization date exists!";

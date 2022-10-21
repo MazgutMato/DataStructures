@@ -33,7 +33,7 @@
             The Average number of patient records
         </label>
         <div>
-            <InputText id="recordNumber" class="form-control" 
+            <InputNumber id="recordNumber" class="form-control" 
                 placeholder="The Average number of patient records"
                        @bind-Value="GeneratorModel.RecordNumber" />
             <ValidationMessage For="@(() => GeneratorModel.RecordNumber)" />
@@ -49,19 +49,11 @@
 </EditForm>
 
 @code {
-    public Generator GeneratorModel;
-    public string Message { get; set; } = null;
+    private Generator GeneratorModel = new Generator();
+    private string Message { get; set; } = null;
 
     public void GeneratorSubmit()
     {
 
-        if (patientController.AddPatient(this.Patient))
-        {
-            Message = "Successfuly added!";
-        }
-        else
-        {
-            Message = "Patient already exists!";
-        }
     }
 }
