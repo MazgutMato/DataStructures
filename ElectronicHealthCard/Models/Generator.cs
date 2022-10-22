@@ -1,26 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ElectronicHealthCard.Controllers;
+using System.ComponentModel.DataAnnotations;
 
 namespace ElectronicHealthCard.Models
 {
     public class Generator
     {
-        [Range(1,10000, ErrorMessage = "Type number between 1-10000")]
-        public int HospitalNumber;
-        [Range(1, 50000, ErrorMessage = "Type number between 1-50000")]
-        public int PatientNumber;
-        [Range(1, 50000, ErrorMessage = "Type number between 1-10000")]
-        public int RecordNumber;
+        [Required]
+        public int Hospital;
+        [Required]
+        public int Patient;
+        [Required]
+        public int MinActivePatient;
+        [Required]
+        public int MaxActivePatient;
+        [Required]
+        public int MinEndedRecord;
+        [Required]
+        public int MaxEndedRecord;
         public Generator()
         {
-            HospitalNumber = 0;
-            PatientNumber = 0;
-            RecordNumber = 0;
-        }
-        public Generator(int hospitalNumber, int patientNumber, int recordNumber)
-        {
-            HospitalNumber = hospitalNumber;
-            PatientNumber = patientNumber;
-            RecordNumber = recordNumber;
+            Hospital = 1;
+            Patient = 1;
+            MinActivePatient = 1;
+            MaxActivePatient = 1;
+            MinEndedRecord = 1;
+            MaxEndedRecord = 1;
         }
     }
 }

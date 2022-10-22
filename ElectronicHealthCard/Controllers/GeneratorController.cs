@@ -7,7 +7,12 @@ namespace ElectronicHealthCard.Controllers
 {
     public class GeneratorController
     {
-        private readonly Random random = new Random();
+        private Random random = new Random();
+        private Generator generator;
+        public GeneratorController(Generator generator)
+        {
+            this.generator = generator;
+        }
         private string RandomString(int size)
         {
             var builder = new StringBuilder(size);
@@ -23,16 +28,19 @@ namespace ElectronicHealthCard.Controllers
 
             return builder.ToString();
         }
-        public BSTree<Hospital> GenerateHospitals(int number)
+        public bool GenerateData(HospitalizationRecordsController hospRecordCon,
+            PatientsController patCon, HospitalsController hospCon)
         {
-            var hospitals = new BSTree<Hospital>();
-            for (var i = 0; i < number; i++)
+            var count = generator.Hospital;
+            while(count > 0)
             {
-                var nameSize = random.Next(3, 20);
-                var hospital = new Hospital(RandomString(nameSize));
-                hospitals.Add(hospital);
+                var size = random.Next(20) + 3;
+                if(hospCon.AddHospital(new Hospital(RandomString(size))))
+                {
+                    count--;
+                };
             }
-            return hospitals;
+            return true;
         }
     }
 }

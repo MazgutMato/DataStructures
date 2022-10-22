@@ -19,7 +19,7 @@ namespace ElectronicHealthCard.Controllers
         {
             return this.Hospitals.Count;
         }
-        public Iterator<Hospital> GetPatients()
+        public Iterator<Hospital> GetHospitals()
         {
             return Hospitals.createIterator();
         }

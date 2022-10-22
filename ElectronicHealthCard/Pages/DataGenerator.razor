@@ -5,6 +5,7 @@
 
 <EditForm Model="@GeneratorModel" OnValidSubmit="GeneratorSubmit">
     <DataAnnotationsValidator />
+    <ValidationSummary />
     <h3>Generate data</h3>
     <hr />
     <div class="form-group mb-2">
@@ -13,19 +14,17 @@
         </label>
         <div>
             <InputNumber id="hospitals" class="form-control" placeholder="Number of hospitals"
-                       @bind-Value="GeneratorModel.HospitalNumber" />
-            <ValidationMessage For="@(() => GeneratorModel.HospitalNumber)" />
+                       @bind-Value="GeneratorModel.Hospital" />
         </div>
     </div>
     <div class="form-group row">
         <label for="patientNumber">
-            The Average number of patients in hospital
+            Number of patients
         </label>
         <div>
-            <InputNumber id="patientNumber" class="form-control" 
-                placeholder="The Average number of patients in hospital"
-                       @bind-Value="GeneratorModel.PatientNumber" />
-            <ValidationMessage For="@(() => GeneratorModel.PatientNumber)" />
+            <InputNumber id="patientNumber" class="form-control"
+                         placeholder="Number of patients"
+                       @bind-Value="GeneratorModel.Patient" />
         </div>
     </div>
     <div class="form-group row mb-2">
@@ -35,8 +34,17 @@
         <div>
             <InputNumber id="recordNumber" class="form-control" 
                 placeholder="The Average number of patient records"
-                       @bind-Value="GeneratorModel.RecordNumber" />
-            <ValidationMessage For="@(() => GeneratorModel.RecordNumber)" />
+                       @bind-Value="GeneratorModel.MinActivePatient" />
+        </div>
+    </div>
+    <div class="form-group row mb-2">
+        <label for="recordNumber">
+            The Average number of patient records
+        </label>
+        <div>
+            <InputNumber id="recordNumber" class="form-control"
+                         placeholder="The Average number of patient records"
+                         @bind-Value="GeneratorModel.MinActivePatient" />
         </div>
     </div>
     <div>
@@ -55,11 +63,38 @@
     public void GeneratorSubmit()
     {
         //Validation
-        if(GeneratorModel.HospitalNumber < 0){
-            Message = "Number of hospitals must be between 1-10000";
+        if (GeneratorModel.Hospital < 1){
+            Message = "Number of hospitals must be greather then 0!";
             return;
-        }        
-        
+        }
+        if (GeneratorModel.Patient < 1)
+        {
+            Message = "Number of patients must be greather then 0!";
+            return;
+        }
+        if (GeneratorModel.MinActivePatient < 1)
+        {
+            Message = "Minimal number of active patients must be greather then 0!";
+            return;
+        }
+        if (GeneratorModel.MaxActivePatient < 1 || GeneratorModel.MinActivePatient > GeneratorModel.MaxActivePatient 
+            && GeneratorModel.Patient < GeneratorModel.MaxActivePatient)
+        {
+            Message = "Maximal number of active patients must be greather then 0, minimal number and less then number of patients!";
+            return;
+        }
+        if (GeneratorModel.MinEndedRecord < 1)
+        {
+            Message = "Minimal number of ended records must be greather then 0!";
+            return;
+        }
+        if (GeneratorModel.MaxEndedRecord < 1 || GeneratorModel.MinEndedRecord > GeneratorModel.MaxEndedRecord)
+        {
+            Message = "Maximal number of ended records must be greather then 0 and minimal number!";
+            return;
+        }
 
+        var genController = new GeneratorController(GeneratorModel);
+        genController.GenerateData(hospitalizationRecordsController, patientController, hospitalController);
     }
 }
