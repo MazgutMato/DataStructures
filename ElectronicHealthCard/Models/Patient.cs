@@ -14,6 +14,14 @@ namespace ElectronicHealthCard.Models
         public DateTime BirthDate { get; set; }
         public Record ActualRecord { get; set; }
         public Patient() { }
+        public Patient(string patientId, string firstName, string lastName)
+        {
+            PatientId = patientId;
+            FirstName = firstName;
+            LastName = lastName;
+            BirthDate = default;
+            ActualRecord = null;
+        }
         public Patient(string patientId, string firstName, string lastName, DateTime birthDate)
         {
             PatientId = patientId;

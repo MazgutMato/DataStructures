@@ -53,5 +53,13 @@ namespace ElectronicHealthCard.Models
             }
             return false;
         }
+        public bool AddEndedRecord(Record record)
+        {
+            if (this.Records.Add(record))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

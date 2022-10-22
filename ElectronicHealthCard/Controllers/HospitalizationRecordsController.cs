@@ -33,5 +33,19 @@ namespace ElectronicHealthCard.Controllers
             }
             return false;
         }
+        public bool AddEndedRecord(Hospital hospital, Patient patient, Record record)
+        {
+            var HospRecord = new HospitalizationRecord(patient, hospital);
+            var FindHospRecord = this.HospitalizationRecords.Find(HospRecord);
+            if (FindHospRecord != null)
+            {
+                return FindHospRecord.AddEndedRecord(record);
+            }
+            else
+            {
+                HospitalizationRecords.Add(HospRecord);
+                return HospRecord.AddEndedRecord(record);
+            }
+        }
     }
 }
