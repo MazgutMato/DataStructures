@@ -10,6 +10,10 @@ namespace ElectronicHealthCard.Controllers
         {
             HospitalizationRecords = new BSTree<HospitalizationRecord>();
         }
+        public int GetCount()
+        {
+            return HospitalizationRecords.Count;
+        }
         public bool AddRecord(Hospital hospital, Patient patient, Record record)
         {
             var HospRecord = new HospitalizationRecord(patient, hospital);
@@ -22,7 +26,7 @@ namespace ElectronicHealthCard.Controllers
                 HospitalizationRecords.Add(HospRecord);
                 return HospRecord.AddRecord(record);
             }
-        }
+        }        
         public bool EndRecord(Hospital hospital, Patient patient, Record record)
         {
             var HospRecord = new HospitalizationRecord(patient, hospital);
@@ -46,6 +50,10 @@ namespace ElectronicHealthCard.Controllers
                 HospitalizationRecords.Add(HospRecord);
                 return HospRecord.AddEndedRecord(record);
             }
+        }
+        public bool AddEndedRecords(List<HospitalizationRecord> records)
+        {
+            return this.HospitalizationRecords.FillWithMedian(records);
         }
     }
 }

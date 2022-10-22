@@ -12,7 +12,7 @@
 
 <EditForm Model="@Hospital" OnValidSubmit="@FormSubmit">
     <DataAnnotationsValidator />
-    <div class="form-group">
+    <div class="form-group mb-2">
         <label for="name">
             Hospital name
         </label>
@@ -40,7 +40,7 @@
             <th>Last Name</th>
             <th>Patient ID</th>
             <th>Birth Date</th>
-            <th>Operation</th>
+            <th>Hospital Date</th>
         </tr>
     </thead>
     <tbody>
@@ -53,8 +53,8 @@
                     <td>@patient.FirstName</td>
                     <td>@patient.LastName</td>
                     <td>@patient.PatientId</td>
-                    <td>@patient.BirthDate</td>
-                    <td><button class="btn btn-primary">Add</button></td>
+                    <td>@patient.BirthDate</td>                    
+                    <td>@patient.ActualRecord.Start</td>
                 </tr>
             }
         } else {

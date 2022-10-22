@@ -3,6 +3,7 @@ using ElectronicHealthCard.Models;
 using System.Text;
 using System;
 using System.Collections;
+using ElectronicHealthCard.Pages;
 
 namespace ElectronicHealthCard.Controllers
 {
@@ -50,16 +51,14 @@ namespace ElectronicHealthCard.Controllers
             //Hospitals generate
             var count = generator.Hospital;
             var hospitals = new List<Hospital>();
-            while(count > 0)
+            while (count > 0)
             {
                 var size = random.Next(20) + 3;
                 var hospital = new Hospital(RandomString(size));
-                if (hospCon.AddHospital(hospital))
-                {
-                    hospitals.Add(hospital);
-                    count--;
-                };
+                hospitals.Add(hospital);
+                count--;
             }
+            hospCon.AddHospitals(hospitals);
             //Patients generate
             count = generator.Patient;
             var patients = new List<Patient>();
@@ -67,26 +66,30 @@ namespace ElectronicHealthCard.Controllers
             {
                 var patient = new Patient(RandomString('0', 9, 10),
                     RandomString(5), RandomString(8), DateTime.Now.AddDays(random.Next(1000)));
-                if (patCon.AddPatient(patient))
+                patients.Add(patient);
+                count--;
+            };
+            patCon.AddPatients(patients);
+            //Old records generate
+            var hospRecords = new List<HospitalizationRecord>();
+            foreach (var patient in patients)
+            {
+                var countRecord = random.Next(generator.MinEndedRecord, generator.MaxEndedRecord);
+                var hospRecord = new HospitalizationRecord(patient, hospitals[random.Next(hospitals.Count)]);                
+                while (countRecord > 0)
                 {
-                    patients.Add(patient);
-                    var countRecord = random.Next(generator.MinEndedRecord, generator.MaxEndedRecord);
-                    while(countRecord > 0)
-                    {
-                        var record = new Record(DateTime.Now,DateTime.Now.AddDays(random.Next(30)), RandomString(50));
-                        if (hospRecordCon.AddEndedRecord(hospitals[random.Next(hospitals.Count)], patient, record))
-                        {
-                            countRecord--;
-                        }                           
-                    }
-                    count--;
-                };
+                    var record = new Record(DateTime.Now, DateTime.Now.AddDays(random.Next(30)), RandomString(50));
+                    hospRecord.AddEndedRecord(record);
+                    countRecord--;
+                }
+                hospRecords.Add(hospRecord);
             }
+            hospRecordCon.AddEndedRecords(hospRecords);
             //Actual patients generate
-            foreach(var hospital in hospitals)
+            foreach (var hospital in hospitals)
             {
                 count = random.Next(generator.MinActivePatient, generator.MaxActivePatient);
-                while(count > 0)
+                while (count > 0)
                 {
                     var record = new Record(DateTime.Now, RandomString(50));
                     if (hospRecordCon.AddRecord(hospital, patients[random.Next(patients.Count)], record))

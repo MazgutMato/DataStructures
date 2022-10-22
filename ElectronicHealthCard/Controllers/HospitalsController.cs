@@ -15,6 +15,10 @@ namespace ElectronicHealthCard.Controllers
         {
             return Hospitals.Add(hospital);
         }
+        public bool AddHospitals(List<Hospital> hospitals)
+        {
+            return Hospitals.FillWithMedian(hospitals);
+        }
         public int GetCount()
         {
             return this.Hospitals.Count;
