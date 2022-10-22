@@ -59,7 +59,7 @@
 
 <div class="mt-2">
     <button class="btn btn-primary" @onclick="SubmitForm">
-        Add
+        Quit
     </button>
 </div>
 
@@ -105,7 +105,7 @@
             return;
         }
 
-        if (Record.Start < Record.End)
+        if (Record.Start > Record.End)
         {
             Message = "The start date must be earlier then the end date!";
             return;

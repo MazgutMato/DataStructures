@@ -44,7 +44,7 @@ namespace ElectronicHealthCard.Models
         public bool EndRecord(Record record)
         {
             var findRecord = this.Records.Find(record);
-            if (findRecord != null)
+            if (findRecord != null && findRecord.CompareTo(this.Patient.ActualRecord) == 0)
             {
                 this.Patient.ActualRecord = null;
                 this.Hospital.Patients.Delete(this.Patient);
