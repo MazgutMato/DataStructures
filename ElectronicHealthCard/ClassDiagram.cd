@@ -3,35 +3,35 @@
   <Class Name="ElectronicHealthCard.Controllers.GeneratorController">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAQAAAAAAEA=</HashCode>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAMA=</HashCode>
       <FileName>Controllers\GeneratorController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ElectronicHealthCard.Controllers.HospitalizationRecordsController">
     <Position X="2.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAIAAAAAAAAIAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAQAAIAAAAAAAAIAAACAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
       <FileName>Controllers\HospitalizationRecordsController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ElectronicHealthCard.Controllers.HospitalsController">
-    <Position X="0.5" Y="2.75" Width="1.5" />
+    <Position X="0.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>gAQAAAAAgAAAAAAAAAAQAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>gAQAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAIAAAAAAA=</HashCode>
       <FileName>Controllers\HospitalsController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ElectronicHealthCard.Controllers.PatientsController">
-    <Position X="2.25" Y="2.75" Width="1.5" />
+    <Position X="2.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAAAAAAAAAAAAAAAAAQAAEAEAAAABAAAAAAAAAA=</HashCode>
+      <HashCode>AASAAAAAAAAAAAAAAAAAAAQAAEAEAAAABAAAAAAAAAA=</HashCode>
       <FileName>Controllers\PatientsController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ElectronicHealthCard.Models.Generator" Collapsed="true">
-    <Position X="10" Y="1" Width="1.5" />
+  <Class Name="ElectronicHealthCard.Models.Generator">
+    <Position X="12" Y="1.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAABAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <HashCode>gAAAAAAAEAAAAAAAAAQAAAAAAAAQAABAAAAAAAAACAA=</HashCode>
       <FileName>Models\Generator.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -44,9 +44,9 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="ElectronicHealthCard.Models.HospitalizationRecord" BaseTypeListCollapsed="true">
-    <Position X="6" Y="3.5" Width="1.5" />
+    <Position X="8.75" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>oAAAAIAAAAAAAAQAAACAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <HashCode>oAAAAIAAAAAAAAQAAACAAAAAAAAAAAAAAAACAAAACAA=</HashCode>
       <FileName>Models\HospitalizationRecord.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -60,7 +60,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="ElectronicHealthCard.Models.Record" BaseTypeListCollapsed="true">
-    <Position X="8.25" Y="3.75" Width="1.5" />
+    <Position X="6.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAgAAAACAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Record.cs</FileName>
