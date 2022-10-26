@@ -76,29 +76,56 @@ namespace DataStructures.Tree.BSTree
         }
         private bool FindNodeRange(BSTNode<T> node,T min, T max, ICollection<T> structure)
         {
+            BSTNode<T> current = this.Root;
+            Stack<BSTNode<T>> stack = new Stack<BSTNode<T>>();
 
-            if (node == null)
+            if (current == null)
             {
                 return false;
-            }                
-
-            int cmpLow = min.CompareTo(node.Data);
-            int cmpHigh = max.CompareTo(node.Data);
-
-            if (cmpLow < 0)
-            {
-                FindNodeRange(node.LeftNode, min, max, structure);
             }
-            if (cmpLow <= 0 && cmpHigh >= 0)
+
+            while (current != null || stack.Count > 0)
             {
-                structure.Add(node.Data);
-            }
-            if (cmpHigh > 0)
-            {
-                FindNodeRange(node.RightNode, min, max, structure);
+                while (current != null)
+                {                    
+                    if(current.Data.CompareTo(min) >= 0)
+                    {
+                        stack.Push(current);
+                        current = current.LeftNode;
+                    } else
+                    {
+                        current = null;
+                    }
+                }                
+                while(current == null && stack.Count > 0){
+                    current = stack.Pop();
+                    if(current.Data.CompareTo(max) <= 0)
+                    {
+                        structure.Add(current.Data);
+                    }                    
+                    current = current.RightNode;
+                }
             }
 
             return true;
+
+            //int cmpLow = min.CompareTo(node.Data);
+            //int cmpHigh = max.CompareTo(node.Data);
+
+            //if (cmpLow < 0)
+            //{
+            //    FindNodeRange(node.LeftNode, min, max, structure);
+            //}
+            //if (cmpLow <= 0 && cmpHigh >= 0)
+            //{
+            //    structure.Add(node.Data);
+            //}
+            //if (cmpHigh > 0)
+            //{
+            //    FindNodeRange(node.RightNode, min, max, structure);
+            //}
+
+            //return true;
         }
         private bool RotateRight(BSTNode<T> node)
         {
