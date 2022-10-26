@@ -82,8 +82,10 @@ namespace DataStructures.Tree.BSTree
             if (current == null)
             {
                 return false;
-            }
+            }            
 
+            stack.Push(current);
+            current = current.LeftNode;
             while (current != null || stack.Count > 0)
             {
                 while (current != null)
@@ -92,14 +94,19 @@ namespace DataStructures.Tree.BSTree
                     {
                         stack.Push(current);
                         current = current.LeftNode;
-                    } else
+                    }
+                    else
                     {
+                        if(current.RightNode != null)
+                        {
+                            stack.Push(current.RightNode);
+                        }
                         current = null;
                     }
                 }                
                 while(current == null && stack.Count > 0){
                     current = stack.Pop();
-                    if(current.Data.CompareTo(max) <= 0)
+                    if(current.Data.CompareTo(max) <= 0 && current.Data.CompareTo(min) >= 0)
                     {
                         structure.Add(current.Data);
                     }                    
@@ -108,24 +115,6 @@ namespace DataStructures.Tree.BSTree
             }
 
             return true;
-
-            //int cmpLow = min.CompareTo(node.Data);
-            //int cmpHigh = max.CompareTo(node.Data);
-
-            //if (cmpLow < 0)
-            //{
-            //    FindNodeRange(node.LeftNode, min, max, structure);
-            //}
-            //if (cmpLow <= 0 && cmpHigh >= 0)
-            //{
-            //    structure.Add(node.Data);
-            //}
-            //if (cmpHigh > 0)
-            //{
-            //    FindNodeRange(node.RightNode, min, max, structure);
-            //}
-
-            //return true;
         }
         private bool RotateRight(BSTNode<T> node)
         {

@@ -1,27 +1,12 @@
 ﻿using DataStructures.Iterator;
 using DataStructures.Tree.BSTree;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 var BStree = new BSTree<int>();
 var ControlArray = new List<int>();
 
-BStree.Add(4);
-BStree.Add(2);
-BStree.Add(6);
-BStree.Add(1);
-BStree.Add(3);
-BStree.Add(5);
-BStree.Add(7);
-
-BStree.FindRange(6, 10, ControlArray);
-
-foreach(var control in ControlArray)
-{
-    Console.WriteLine(control);
-}
-
-/*
 Console.Write("Zadaj celkovy pocet opercii: ");
 var pocetOperacii = Convert.ToInt32(Console.ReadLine());
 
@@ -166,4 +151,3 @@ foreach (var data in ControlArray)
 {
     Console.Write("{0} ", data);
 }
-*/
