@@ -54,7 +54,7 @@ for (int i = 0; i < pocetOperacii; i++)
         if(BStree.Find(vkladaneCislo) != vkladaneCislo)
         {
             throw new InvalidOperationException("Cannot find inserted data!");
-        }
+        }       
     }
     else if (rand < pocetVloz + pocetNajdi) 
     {
@@ -126,7 +126,7 @@ Console.WriteLine("Prebieha konrola prvkov struktury, prosim cakajte!");
 if (ControlArray.Count == BStree.Count)
 {
     Console.WriteLine("\nPocet prvkov struktury je spravny!" +
-        "\n\tBST:{0}\n\tPole:{1}",BStree.Count,ControlArray.Count);
+        "\n\tBST:{0}\n\tPole:{1}", BStree.Count,ControlArray.Count);
 }
 else
 {

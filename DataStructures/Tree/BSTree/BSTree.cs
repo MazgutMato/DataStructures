@@ -12,7 +12,6 @@ namespace DataStructures.Tree.BSTree
     {
         public BSTNode<T> Root { get; set; }
         public int Count { get; set; }
-        public int MaxDepth { get; set; }
         public Iterator<T> createIterator()
         {
             return new BSTIterator<T>(this);
@@ -21,7 +20,7 @@ namespace DataStructures.Tree.BSTree
         {
             BSTNode<T> Parent = null;
             var Child = Root;
-            this.MaxDepth = 0;
+            var Depth = 0;
 
             while (Child != null)
             {
@@ -30,12 +29,12 @@ namespace DataStructures.Tree.BSTree
 
                 if (compResult == 1)
                 {
-                    this.MaxDepth++;
+                    Depth++;
                     Child = Parent.RightNode;
                 }
                 else if (compResult == -1)
                 {
-                    this.MaxDepth++;
+                    Depth++;
                     Child = Parent.LeftNode;
                 }
                 else
@@ -45,12 +44,14 @@ namespace DataStructures.Tree.BSTree
                 }
             }
 
+            var newNode = new BSTNode<T>(data);
             if (Parent == null)
             {
-                Root = new BSTNode<T>(data);
+                Root = newNode;
             }
             else
             {
+                newNode.Parent = Parent;
                 var newPosition = data.CompareTo(Parent.Data);
                 if (newPosition == 1)
                 {
@@ -63,8 +64,38 @@ namespace DataStructures.Tree.BSTree
             }
             Count++;
 
-            //Balance
-
+            //Random rotate if not balance
+            if(Depth > Math.Log2(this.Count))
+            {
+                Parent = (BSTNode<T>)Parent.Parent;
+                while(Parent!= null)
+                {
+                    if(Parent.LeftNode != null && Parent.RightNode != null)
+                    {
+                        Random random = new Random();
+                        if(random.Next(0,1) == 0)
+                        {
+                            this.RotateLeft(Parent);
+                        } else
+                        {
+                            this.RotateRight(Parent);
+                        }
+                        Parent = (BSTNode<T>)((Parent.Parent).Parent);
+                    } else if(Parent.LeftNode == null)
+                    {
+                        this.RotateLeft(Parent);
+                        Parent = (BSTNode<T>)((Parent.Parent).Parent);
+                    } else if(Parent.RightNode == null)
+                    {
+                        this.RotateRight(Parent);
+                        Parent = (BSTNode<T>)((Parent.Parent).Parent);
+                    }
+                    else
+                    {
+                        Parent = ((BSTNode<T>)Parent.Parent);
+                    }                    
+                }
+            }
 
             return true;
         }
