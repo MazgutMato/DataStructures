@@ -94,6 +94,10 @@ for (int i = 0; i < pocetOperacii; i++)
     {
         celkovoBalancuj++;
         BStree.BalanceTree();
+        if(BStree.CheckHeights() != null)
+        {
+            throw new InvalidOperationException("Tree is not balance!");
+        }
         Console.WriteLine("Balancuje");
         Console.Write("\tBST:");
         var iterator = new BSTIterator<int>(BStree);

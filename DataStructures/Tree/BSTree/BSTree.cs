@@ -172,20 +172,7 @@ namespace DataStructures.Tree.BSTree
                 {
                     node.LeftHeight = 0;
                 }
-                                               
-                var heightChange = node;
-                while(heightChange.Parent != null)
-                {                    
-                    if (heightChange.Data.CompareTo(heightChange.Parent.Data) < 0)
-                    {
-                        ((BSTNode<T>)heightChange.Parent).LeftHeight = Math.Max(heightChange.LeftHeight, heightChange.RightHeight) + 1;
-                    }
-                    else
-                    {
-                        ((BSTNode<T>)heightChange.Parent).RightHeight = Math.Max(heightChange.LeftHeight, heightChange.RightHeight) + 1;
-                    }
-                    heightChange = ((BSTNode<T>)heightChange.Parent);
-                }               
+                leftNode.RightHeight = Math.Max(node.LeftHeight, node.RightHeight) + 1;
 
                 return true;
             }
@@ -241,21 +228,7 @@ namespace DataStructures.Tree.BSTree
                 {
                     node.RightHeight = 0;
                 }
-
-                //ToDo spravit private method rovnaka v RoteteRight
-                var heightChange = node;
-                while (heightChange.Parent != null)
-                {
-                    if (heightChange.Data.CompareTo(heightChange.Parent.Data) < 0)
-                    {
-                        this.GetParent(heightChange).LeftHeight = Math.Max(heightChange.LeftHeight, heightChange.RightHeight) + 1;
-                    }
-                    else
-                    {
-                        this.GetParent(heightChange).RightHeight = Math.Max(heightChange.LeftHeight, heightChange.RightHeight) + 1;
-                    }
-                    heightChange = this.GetParent(heightChange);
-                }
+                rightNode.LeftHeight = Math.Max(node.LeftHeight, node.RightHeight) + 1;
 
                 return true;
             }
@@ -470,28 +443,73 @@ namespace DataStructures.Tree.BSTree
                         while(current.RightNode.GetHeight() < 0)
                         {
                             this.RotateRight(current.RightNode);
-                            Console.WriteLine("Rotuje {0} doprava",current.RightNode.Data);
                         }
                         this.RotateLeft(current);
-                        Console.WriteLine("Rotuje {0} doprava", current.Data);
                     }
                     if (current.GetHeight() < -1)
                     {
                         while (current.LeftNode.GetHeight() > 0)
                         {
                             this.RotateLeft(current.LeftNode);
-                            Console.WriteLine("Rotuje {0} dolava", current.LeftNode.Data);
                         }
                         this.RotateRight(current);
-                        Console.WriteLine("Rotuje {0} doprava", current.Data);
                     }
                 }                
             }            
         }
-        private BSTNode<T>? GetParent(BSTNode<T> node)
+        public BSTNode<T> CheckHeights()
         {
+            var queue = new Queue<BSTNode<T>>();
+            var levelOrder = new Stack<BSTNode<T>>();
+            if (this.Root == null)
+            {
+                return null;
+            }
+            queue.Enqueue(this.Root);
+            while (queue.Count > 0)
+            {
+                var topNode = queue.Dequeue();
 
-            return node == null ? null : ((BSTNode<T>)node.Parent);
+                levelOrder.Push(topNode);
+
+                if (topNode.LeftNode != null)
+                {
+                    queue.Enqueue(topNode.LeftNode);
+                }
+
+                if (topNode.RightNode != null)
+                {
+                    queue.Enqueue(topNode.RightNode);
+                }
+            }
+            BSTNode<T> current;
+            while (levelOrder.Count > 0)
+            {
+                current = levelOrder.Pop();
+                //HightSet
+                if (current.LeftNode != null)
+                {
+                    current.LeftHeight = Math.Max(current.LeftNode.LeftHeight, current.LeftNode.RightHeight) + 1;
+                }
+                else
+                {
+                    current.LeftHeight = 0;
+                }
+                if (current.RightNode != null)
+                {
+                    current.RightHeight = Math.Max(current.RightNode.LeftHeight, current.RightNode.RightHeight) + 1;
+                }
+                else
+                {
+                    current.RightHeight = 0;
+                }
+                //HightCheck
+                if (Math.Abs(current.GetHeight()) > 1)
+                {
+                    return current;
+                }
+            }
+            return null;
         }
         public bool FillWithMedian(List<T> structure)
         {
