@@ -12,6 +12,7 @@ namespace DataStructures.Tree.BSTree
     {
         public BSTNode<T> Root { get; set; }
         public int Count { get; set; }
+        public int MaxDepth { get; set; }
         public Iterator<T> createIterator()
         {
             return new BSTIterator<T>(this);
@@ -20,6 +21,7 @@ namespace DataStructures.Tree.BSTree
         {
             BSTNode<T> Parent = null;
             var Child = Root;
+            this.MaxDepth = 0;
 
             while (Child != null)
             {
@@ -28,10 +30,12 @@ namespace DataStructures.Tree.BSTree
 
                 if (compResult == 1)
                 {
+                    this.MaxDepth++;
                     Child = Parent.RightNode;
                 }
                 else if (compResult == -1)
                 {
+                    this.MaxDepth++;
                     Child = Parent.LeftNode;
                 }
                 else
@@ -57,8 +61,11 @@ namespace DataStructures.Tree.BSTree
                     Parent.LeftNode = new BSTNode<T>(data, Parent);
                 }
             }
-
             Count++;
+
+            //Balance
+
+
             return true;
         }
         public T? Find(T data)
