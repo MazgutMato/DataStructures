@@ -492,20 +492,34 @@ namespace DataStructures.Tree.BSTree
             {
                 return false;
             }
-            structure.Sort();
-            return this.FindMedian(0, structure.Count - 1, structure);
-        }
-        private bool FindMedian(int min, int max, List<T> structure)
-        {
-            if (min <= max)
+            var stack = new Stack<List<T>>();
+            stack.Push(structure);
+            while(stack.Count > 0)
             {
-                var median = (min + max) / 2;
-                this.Add(structure[median]);
-                FindMedian(min, median - 1, structure);
-                FindMedian( median + 1, max,structure);
-                return true;
+                var current = stack.Pop();
+                current.Sort();
+                if(current.Count  == 1)
+                {
+                    this.Add(current[current.Count - 1]);
+                }
+                else
+                {
+                    var medianPosition = (current.Count) / 2;                    
+                    if(current.Count == 2)
+                    {
+                        this.Add(current[0]);
+                        this.Add(current[1]);
+                    }
+                    else
+                    {
+                        this.Add(current[medianPosition]);
+                        stack.Push(current.GetRange(0, medianPosition));
+                        stack.Push(current.GetRange(medianPosition + 1, (current.Count-1) - (medianPosition) ));
+                    }                    
+                }                
+
             }
-            return false;
+            return true;
         }
     }
 }
