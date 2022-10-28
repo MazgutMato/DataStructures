@@ -55,5 +55,9 @@ namespace ElectronicHealthCard.Controllers
         {
             return this.HospitalizationRecords.FillWithMedian(records);
         }
+        public HospitalizationRecord FindHospitalizationRecord(Patient patient, Hospital hospital)
+        {
+            return this.HospitalizationRecords.Find(new HospitalizationRecord(patient, hospital));
+        }
     }
 }

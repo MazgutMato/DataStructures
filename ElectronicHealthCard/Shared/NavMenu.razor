@@ -9,37 +9,73 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+        <div class="nav-item px-1">
+			<NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
+            </NavLink>       
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="patients">
+        <div class="nav-item px-1">
+            <a class="nav-link">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Patients
-            </NavLink>
+            </a>
+            <ul class="mt-1">
+                <li>
+                    <NavLink class="nav-link" href="patientForm">
+                        <span class="oi oi-plus"></span> Add
+                    </NavLink>
+				</li>
+				<li>
+                    <NavLink class="nav-link" href="patients">
+                        <span class="oi oi-magnifying-glass"></span> Search
+                    </NavLink>
+                </li>
+            </ul>  
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="hospitals">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Hospitals
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="recordForm">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Add record
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="recordEnd">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Quit record
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="dataGenerator">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Generate data
-            </NavLink>
-        </div>       
-    </nav>
+		<div class="nav-item px-1">
+			<a class="nav-link">
+				<span class="oi oi-list-rich" aria-hidden="true"></span> Hospitals
+			</a>
+			<ul class="mt-1">
+				<li>
+					<NavLink class="nav-link" href="hospitalForm">
+						<span class="oi oi-plus" aria-hidden="true"></span> Add
+					</NavLink>
+				</li>
+				<li>
+					<NavLink class="nav-link" href="hospitals">
+						<span class="oi oi-list-rich" aria-hidden="true"></span> List of hospitals
+					</NavLink>
+				</li>
+			</ul>
+		</div>
+		<div class="nav-item px-1">
+			<a class="nav-link">
+				<span class="oi oi-list-rich" aria-hidden="true"></span> Records
+			</a>
+			<ul class="mt-1">
+				<li>
+					<NavLink class="nav-link" href="recordForm">
+						<span class="oi oi-plus" aria-hidden="true"></span> Add
+					</NavLink>
+				</li>
+				<li>
+					<NavLink class="nav-link" href="records">
+						<span class="oi oi-list-rich" aria-hidden="true"></span> Search
+					</NavLink>
+				</li>
+				<li>
+					<NavLink class="nav-link" href="recordEnd">
+						<span class="oi oi-x" aria-hidden="true"></span> Quit
+					</NavLink>
+				</li>				
+			</ul>
+		</div>
+		<div class="nav-item px-1">
+			<NavLink class="nav-link" href="dataGenerator">
+				<span class="oi oi-list-rich" aria-hidden="true"></span> Generate data
+			</NavLink>
+		</div>
+	</nav>
 </div>
 
 @code {

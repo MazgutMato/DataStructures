@@ -2,6 +2,8 @@
 @inject PatientsController patientController
 @inject NavigationManager navigatorManager
 
+<PageTitle>AddPatient</PageTitle>
+
 <EditForm Model="@Patient" OnValidSubmit="@PatientFormSubmit">
     <DataAnnotationsValidator />
     <h3>Add Patient</h3>
