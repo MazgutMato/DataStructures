@@ -4,16 +4,13 @@
 
 <PageTitle>Hospitals</PageTitle>
 
-<div>
-    <h3>Hospitals</h3>
-    <button class="btn btn-primary" @onclick="@(()=>navigatorManager.NavigateTo("/hospitalForm"))">Add new</button>
-</div>
+<h3>Hospitals</h3>
+<hr />
 
 <table class="table">
     <thead>
         <tr>
             <th>Name</th>
-            <th>Operation</th>
         </tr>
     </thead>
     <tbody>
@@ -23,8 +20,7 @@
             {
                 var hospital = this.HospitalIterator.MoveNext();
                         <tr>
-                            <td>@hospital.Name</td>
-                            <td><button class="btn btn-primary">Records</button></td>
+                            <td>@hospital.Name</td>                         
                         </tr>
             }
         }
@@ -45,7 +41,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        this.HospitalIterator = this.hospitalsController.GetHospitals();
+        this.HospitalIterator = this.hospitalsController.GetHospitals();        
     }
 
     #endregion

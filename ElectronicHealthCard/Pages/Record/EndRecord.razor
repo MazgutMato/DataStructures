@@ -1,11 +1,13 @@
-﻿@page "/recordForm"
+﻿@page "/recordEnd"
 @inject HospitalizationRecordsController hospitalizationRecordsController
 @inject HospitalsController hospitalController
 @inject PatientsController patientController
 
+<PageTitle>QuitRecord</PageTitle>
+
 <EditForm Model="@Hospital">
     <DataAnnotationsValidator />
-    <h3>Add Record</h3>
+    <h3>Quit Record</h3>
     <hr />
     <div class="form-group">
         <label for="name">
@@ -13,7 +15,7 @@
         </label>
         <div>
             <InputText id="name" class="form-control" placeholder="Hospital name"
-                @bind-Value="Hospital.Name"/>
+                       @bind-Value="Hospital.Name" />
             <ValidationMessage For="@(() => Hospital.Name)" />
         </div>
     </div>
@@ -46,27 +48,27 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="diagnoze">
-            Diagnoze
+        <label for="date">
+            Date of ending hospitalization
         </label>
         <div>
-            <InputText id="diagnoze" class="form-control" placeholder="Diagnoze"
-                       @bind-Value="Record.Diagnoze" />
-            <ValidationMessage For="@(() => Record.Diagnoze)" />
+            <InputDate id="date" class="form-control" placeholder="Date"
+                       @bind-Value="Record.End" />
+            <ValidationMessage For="@(() => Record.End)" />
         </div>
     </div>
-</EditForm>   
+</EditForm>
 
 <div class="mt-2">
     <button class="btn btn-primary" @onclick="SubmitForm">
-        Add
+        Quit
     </button>
 </div>
 
 @if (Message != null)
-    {
-        <p>@Message</p>
-    }
+{
+    <p>@Message</p>
+}
 
 @code {
     private Hospital Hospital { get; set; } = new Hospital();
@@ -76,12 +78,13 @@
 
     private void SubmitForm()
     {
-        if(Hospital.Name == null){
+        if (Hospital.Name == null)
+        {
             Message = "Hospital name cannot be empty!";
             return;
         }
         var FindHospital = hospitalController.FindHospital(Hospital);
-        if(FindHospital == null)
+        if (FindHospital == null)
         {
             Message = "Hospital not found!";
             return;
@@ -93,26 +96,30 @@
             return;
         }
         var FindPatient = patientController.FindPatient(Patient);
-        if(FindPatient == null)
+        if (FindPatient == null)
         {
             Message = "Patient not found!";
             return;
         }
-        if (FindPatient.ActualRecord != null)
+        if (FindPatient.ActualRecord == null)
         {
-            Message = "Patient is curently hospitalized!";
+            Message = "Patient is not curently hospitalized!";
             return;
         }
 
-        if(Record.Diagnoze == null){
-            Message = "Diagnoze cannot be empty!";
+        if (Record.Start > Record.End)
+        {
+            Message = "The start date must be earlier then the end date!";
             return;
         }
 
-        if(hospitalizationRecordsController.AddRecord(FindHospital, FindPatient, Record)){        
-            Message = "Record was inserted!";
-        } else {
-            Message = "Record with same hospitalization date exists!";
+        if (hospitalizationRecordsController.EndRecord(FindHospital, FindPatient, Record))
+        {           
+            Message = "Record was quit!";
+        }
+        else
+        {
+            Message = "Record with the hospitalization date not exists!";
         }
     }
 }

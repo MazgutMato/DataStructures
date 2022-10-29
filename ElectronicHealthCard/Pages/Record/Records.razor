@@ -1,0 +1,99 @@
+﻿@page "/records"
+@inject NavigationManager navigatorManager
+@inject HospitalizationRecordsController hospRecCon
+
+<PageTitle>Records</PageTitle>
+
+<h3>Search records</h3>
+<hr />
+
+<EditForm Model="@Patient">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-2">
+        <div class="row">
+				<label for="patientId">
+					Patient ID
+				</label>
+			<div class="col">
+				<InputText id="patientId" class="form-control" placeholder="PatientId"
+						   @bind-Value="Patient.PatientId" />
+				<ValidationMessage For="@(() => Patient.PatientId)" />
+			</div>
+        </div>
+    </div>
+</EditForm>
+
+<EditForm Model="@Hospital" OnValidSubmit="@FormSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-2">
+        <div class="row">
+				<label for="firstName">
+					Hospital name
+				</label>
+			<div class="col">
+				<InputText id="name" class="form-control" placeholder="Name"
+						   @bind-Value="Hospital.Name" />
+				<ValidationMessage For="@(() => Hospital.Name)" />
+			</div>
+			<div class="col">
+				<button type="submit" class="btn btn-primary">
+					Search
+				</button>
+            </div>
+        </div>
+    </div>    
+    @if (Message != null)
+    {
+        <p>@Message</p>
+    }
+</EditForm>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Diagnoze</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (this.RecordIterator != null)
+        {
+            @while (this.RecordIterator.HasNext())
+            {
+                var record = this.RecordIterator.MoveNext();
+                <tr>
+                    <td>@record.Start</td>
+                    @if(record.End == DateTime.MinValue){
+                        <td>Curently hospitalized</td>
+                    } else {
+                        <td>@record.End</td>
+                    }                    
+                    <td>@record.Diagnoze</td>                    
+                </tr>
+            }
+        } else {
+            <tr>
+                No such data!
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Iterator<Record> RecordIterator;
+    private Patient Patient = new Patient();
+    private Hospital Hospital = new Hospital();
+    private string Message;
+
+    private void FormSubmit(){
+        var findRecord = hospRecCon.FindHospitalizationRecord(Patient, Hospital);
+        if(findRecord != null){
+            this.RecordIterator = findRecord.Records.createIterator();
+            Message = "Records found!";
+        } else{
+            Message = "Records not found!";
+        }
+    }
+}
+
