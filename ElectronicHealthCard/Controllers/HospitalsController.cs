@@ -31,6 +31,6 @@ namespace ElectronicHealthCard.Controllers
         public Hospital FindHospital(Hospital hospital)
         {
             return Hospitals.Find(hospital);
-        }
+        }        
     }
 }

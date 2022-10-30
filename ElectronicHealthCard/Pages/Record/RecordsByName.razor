@@ -17,7 +17,7 @@
                 <InputText id="firstName" class="form-control" placeholder="FirstName"
                            @bind-Value="Patient.FirstName" />
                 <ValidationMessage For="@(() => Patient.FirstName)" />
-            </div>            
+            </div>
             <div class="col">
                 <label for="lastName">
                     Patient Last Name
@@ -116,12 +116,15 @@
         if (findHosp != null)
         {
             var findPatients = findHosp.NameList.Find(Patient);
-            if(findPatients != null){
+            if (findPatients != null)
+            {
                 HospRecords = findPatients.HospitalizationRecords;
                 Message = "Records found!";
-            }else{
+            }
+            else
+            {
                 Message = "Records not found!";
-            }            
+            }
         }
         else
         {
@@ -129,4 +132,3 @@
         }
     }
 }
-

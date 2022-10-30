@@ -1,0 +1,119 @@
+﻿@page "/recordsByRange"
+@inject HospitalsController hospCon
+
+<PageTitle>Records</PageTitle>
+
+<h3>Search records</h3>
+<hr />
+
+<EditForm Model="@Hospital" OnValidSubmit="@FormSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-2">
+        <div class="row">
+            <div class="col">
+                <label for="start">
+                    Minimal date
+                </label>
+                <InputDate id="start" class="form-control" placeholder="Minimal date"
+                           @bind-Value="Start" />
+            </div>
+            <div class="col">
+                <label for="end">
+                    Maximal date
+                </label>
+                <InputDate id="end" class="form-control" placeholder="Maximal date"
+                           @bind-Value="End" />
+            </div>
+        </div>
+        <div class="row">
+            <label for="name">
+                Hospital name
+            </label>
+            <div class="col">
+                <InputText id="name" class="form-control" placeholder="Name"
+                           @bind-Value="Hospital.Name" />
+                <ValidationMessage For="@(() => Hospital.Name)" />
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+    @if (Message != null)
+    {
+        <p>@Message</p>
+    }
+</EditForm>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Patien id</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Diagnoze</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (this.Records != null)
+        {
+            @foreach(var record in Records){
+                <tr>
+                    <td>@record.HospitalizationRecord.Patient.PatientId</td>
+                    <td>@record.HospitalizationRecord.Patient.FirstName</td>
+                    <td>@record.HospitalizationRecord.Patient.LastName</td>
+                    <td>@record.Start</td>
+                    @if(record.End == DateTime.MinValue){
+                        <td>Curently hospitalized</td>
+                    } else {
+                        <td>@record.End</td>
+                    }  
+                    <td>@record.Diagnoze</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                No such data!
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Hospital Hospital = new Hospital();
+    private DateTime Start;
+    private DateTime End;
+    private List<Record> Records;
+    private string Message;
+
+    private void FormSubmit()
+    {
+        Records = null;
+        if(Start == DateTime.MinValue){
+            Message = "Set minimal date!";
+            return;
+        }
+        if (End == DateTime.MinValue)
+        {
+            Message = "Set maximal date!";
+            return;
+        }
+        if (Start > End)
+        {
+            Message = "Maximal date must be greather then minimal!";
+            return;
+        }
+        var hospital = hospCon.FindHospital(Hospital);
+        if(hospital == null){
+            Message = "Cannot find hospital!";
+            return;
+        }
+        Records = hospital.FindPatients(Start, End);
+    }
+}

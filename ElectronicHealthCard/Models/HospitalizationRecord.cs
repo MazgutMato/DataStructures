@@ -1,4 +1,5 @@
 ﻿using DataStructures.Tree.BSTree;
+using ElectronicHealthCard.Pages.Hospital;
 
 namespace ElectronicHealthCard.Models
 {
@@ -36,7 +37,8 @@ namespace ElectronicHealthCard.Models
             if (this.Records.Add(record))
             {
                 record.HospitalizationRecord = this;
-                return this.Hospital.AddActualPatient(this.Patient, record);
+                return (this.Hospital.AddActualPatient(this.Patient, record) &&
+                    this.Hospital.AddRecord(record) && this.Hospital.AddPatientName(this));
             }
             return false;
         }
@@ -56,7 +58,9 @@ namespace ElectronicHealthCard.Models
         {
             if (this.Records.Add(record))
             {
-                record.HospitalizationRecord = this;
+                record.HospitalizationRecord = this;                
+                this.Hospital.AddRecord(record);
+                this.Hospital.AddPatientName(this);
                 return true;
             }
             return false;

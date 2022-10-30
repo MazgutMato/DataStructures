@@ -11,13 +11,11 @@ namespace ElectronicHealthCard.Models
         public BSTree<Patient> Patients { get; set; }
         public BSTree<PatientNameList> NameList { get; set; }
         public BSTree<RecordDate> StartRecords { get; set; }
-        public BSTree<RecordDate> EndRecords { get; set; }
         public Hospital() {
             this.Name = null;
             this.Patients = new BSTree<Patient>();
             this.NameList = new BSTree<PatientNameList>();
             this.StartRecords = new BSTree<RecordDate>();
-            this.EndRecords = new BSTree<RecordDate>();
         }
         public Hospital(string Name)
         {
@@ -25,7 +23,6 @@ namespace ElectronicHealthCard.Models
             this.Patients = new BSTree<Patient>();
             this.NameList = new BSTree<PatientNameList>();
             this.StartRecords = new BSTree<RecordDate>();
-            this.EndRecords = new BSTree<RecordDate>();
         }
 
         public int CompareTo(Hospital? other)
@@ -41,7 +38,7 @@ namespace ElectronicHealthCard.Models
             }
             return false;
         }
-        public bool AddPatient(HospitalizationRecord hospRecord)
+        public bool AddPatientName(HospitalizationRecord hospRecord)
         {
             var patientName = new PatientNameList(hospRecord.Patient.FirstName, hospRecord.Patient.LastName);
             var findPatient = this.NameList.Find(patientName);
@@ -58,15 +55,50 @@ namespace ElectronicHealthCard.Models
         }
         public bool AddRecord(Record record)
         {
-            return true;
-        }
-        public bool EndRecord(Record record)
-        {
-            return true;
+            var recordDate = new RecordDate(record.Start);
+            var findRecord = this.StartRecords.Find(recordDate);
+            if(findRecord != null)
+            {
+                findRecord.Records.AddLast(record);
+                return true;
+            }
+            else
+            {
+                recordDate.Records.AddLast(record);
+                return this.StartRecords.Add(recordDate);
+            }            
         }
         public bool AddEndedRecord(Record record)
         {
-            return true;
+            return this.AddRecord(record);
+        }
+        public List<Record> FindPatients(DateTime start, DateTime end)
+        {
+            var result = new List<Record>();
+            var recordDates = new List<RecordDate>();
+            //Dates in range
+            this.StartRecords.FindRange(new RecordDate(start), new RecordDate(end), recordDates);
+            foreach (var recordDate in recordDates)
+            {
+                foreach (var record in recordDate.Records)
+                {
+                    result.Add(record);
+                }
+            }
+            //Dates before range
+            recordDates.Clear();
+            this.StartRecords.FindRange(new RecordDate(DateTime.MinValue), new RecordDate(start), recordDates);
+            foreach(var recordDate in recordDates)
+            {
+                foreach(var record in recordDate.Records)
+                {
+                    if(record.End == DateTime.MinValue || record.End >= start)
+                    {
+                        result.Add(record);
+                    }
+                }
+            }
+            return result.Distinct().ToList();
         }
     }
 }

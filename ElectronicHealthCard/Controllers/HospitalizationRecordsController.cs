@@ -25,7 +25,6 @@ namespace ElectronicHealthCard.Controllers
             {
                 if(HospitalizationRecords.Add(HospRecord))
                 {
-                    hospital.AddPatient(HospRecord);
                     return HospRecord.AddRecord(record);
                 }
                 else
@@ -50,15 +49,12 @@ namespace ElectronicHealthCard.Controllers
             var FindHospRecord = this.HospitalizationRecords.Find(HospRecord);
             if (FindHospRecord != null)
             {
-                record.HospitalizationRecord = FindHospRecord;
                 return FindHospRecord.AddEndedRecord(record);
             }
             else
             {
                 if (HospitalizationRecords.Add(HospRecord))
-                {
-                    record.HospitalizationRecord = HospRecord;
-                    hospital.AddPatient(HospRecord);
+                {                    
                     return HospRecord.AddEndedRecord(record);
                 }
                 else
@@ -75,7 +71,7 @@ namespace ElectronicHealthCard.Controllers
                 while (iterator.HasNext())
                 {
                     var actual =  iterator.MoveNext();
-                    actual.Hospital.AddPatient(actual);
+                    actual.Hospital.AddPatientName(actual);
                 }
                 return true;
             } else
