@@ -9,6 +9,7 @@ namespace ElectronicHealthCard.Models
         public DateTime End { get; set; }
         [Required]
         public string Diagnoze { get; set; }
+        public HospitalizationRecord HospitalizationRecord { get; set; }
         public Record()
         {
             Start = DateTime.MinValue;

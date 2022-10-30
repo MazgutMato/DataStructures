@@ -23,8 +23,15 @@ namespace ElectronicHealthCard.Controllers
                 return FindHospRecord.AddRecord(record);
             } else
             {
-                HospitalizationRecords.Add(HospRecord);
-                return HospRecord.AddRecord(record);
+                if(HospitalizationRecords.Add(HospRecord))
+                {
+                    hospital.AddPatient(HospRecord);
+                    return HospRecord.AddRecord(record);
+                }
+                else
+                {
+                    return false;
+                }             
             }
         }        
         public bool EndRecord(Hospital hospital, Patient patient, Record record)
@@ -43,17 +50,38 @@ namespace ElectronicHealthCard.Controllers
             var FindHospRecord = this.HospitalizationRecords.Find(HospRecord);
             if (FindHospRecord != null)
             {
+                record.HospitalizationRecord = FindHospRecord;
                 return FindHospRecord.AddEndedRecord(record);
             }
             else
             {
-                HospitalizationRecords.Add(HospRecord);
-                return HospRecord.AddEndedRecord(record);
+                if (HospitalizationRecords.Add(HospRecord))
+                {
+                    record.HospitalizationRecord = HospRecord;
+                    hospital.AddPatient(HospRecord);
+                    return HospRecord.AddEndedRecord(record);
+                }
+                else
+                {
+                    return false;
+                }              
             }
         }
         public bool AddEndedRecords(List<HospitalizationRecord> records)
         {
-            return this.HospitalizationRecords.FillWithMedian(records);
+            if (this.HospitalizationRecords.FillWithMedian(records))
+            {
+                var iterator = this.HospitalizationRecords.createIterator();
+                while (iterator.HasNext())
+                {
+                    var actual =  iterator.MoveNext();
+                    actual.Hospital.AddPatient(actual);
+                }
+                return true;
+            } else
+            {
+                return false;
+            }
         }
         public HospitalizationRecord FindHospitalizationRecord(Patient patient, Hospital hospital)
         {

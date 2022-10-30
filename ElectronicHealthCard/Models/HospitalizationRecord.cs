@@ -35,9 +35,8 @@ namespace ElectronicHealthCard.Models
         {
             if (this.Records.Add(record))
             {
-                this.Patient.ActualRecord = record;
-                this.Hospital.Patients.Add(this.Patient);
-                return true;
+                record.HospitalizationRecord = this;
+                return this.Hospital.AddActualPatient(this.Patient, record);
             }
             return false;
         }
@@ -57,6 +56,7 @@ namespace ElectronicHealthCard.Models
         {
             if (this.Records.Add(record))
             {
+                record.HospitalizationRecord = this;
                 return true;
             }
             return false;

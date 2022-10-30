@@ -1,0 +1,132 @@
+﻿@page "/recordsByName"
+@inject HospitalsController hospCon
+
+<PageTitle>Records</PageTitle>
+
+<h3>Search records</h3>
+<hr />
+
+<EditForm Model="@Patient">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-2">
+        <div class="row">
+            <div class="col">
+                <label for="firstName">
+                    Patient First Name
+                </label>
+                <InputText id="firstName" class="form-control" placeholder="FirstName"
+                           @bind-Value="Patient.FirstName" />
+                <ValidationMessage For="@(() => Patient.FirstName)" />
+            </div>            
+            <div class="col">
+                <label for="lastName">
+                    Patient Last Name
+                </label>
+                <InputText id="lastName" class="form-control" placeholder="LastName"
+                           @bind-Value="Patient.LastName" />
+                <ValidationMessage For="@(() => Patient.LastName)" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<EditForm Model="@Hospital" OnValidSubmit="@FormSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-2">
+        <div class="row">
+            <label for="name">
+                Hospital name
+            </label>
+            <div class="col">
+                <InputText id="name" class="form-control" placeholder="Name"
+                           @bind-Value="Hospital.Name" />
+                <ValidationMessage For="@(() => Hospital.Name)" />
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+    @if (Message != null)
+    {
+        <p>@Message</p>
+    }
+</EditForm>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Patien id</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Diagnoze</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (this.HospRecords != null)
+        {
+            @foreach (var hospRecord in HospRecords)
+            {
+                <tr>
+                    <td>@hospRecord.Patient.PatientId</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                var iterator = hospRecord.Records.createIterator();
+                @while (iterator.HasNext())
+                {
+                    var record = iterator.MoveNext();
+                    <tr>
+                        <td></td>
+                        <td>@record.Start</td>
+                        @if (record.End == DateTime.MinValue)
+                        {
+                            <td>Curently hospitalized</td>
+                        }
+                        else
+                        {
+                            <td>@record.End</td>
+                        }
+                        <td>@record.Diagnoze</td>
+                    </tr>
+                }
+            }
+        }
+        else
+        {
+            <tr>
+                No such data!
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private LinkedList<HospitalizationRecord> HospRecords;
+    private PatientNameList Patient = new PatientNameList();
+    private Hospital Hospital = new Hospital();
+    private string Message;
+
+    private void FormSubmit()
+    {
+        var findHosp = hospCon.FindHospital(Hospital);
+        if (findHosp != null)
+        {
+            var findPatients = findHosp.NameList.Find(Patient);
+            if(findPatients != null){
+                HospRecords = findPatients.HospitalizationRecords;
+                Message = "Records found!";
+            }else{
+                Message = "Records not found!";
+            }            
+        }
+        else
+        {
+            Message = "Records not found!";
+        }
+    }
+}
+

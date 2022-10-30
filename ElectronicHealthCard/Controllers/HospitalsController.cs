@@ -1,6 +1,7 @@
 ﻿using DataStructures.Iterator;
 using DataStructures.Tree.BSTree;
 using ElectronicHealthCard.Models;
+using ElectronicHealthCard.Pages.Record;
 
 namespace ElectronicHealthCard.Controllers
 {
