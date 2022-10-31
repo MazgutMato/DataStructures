@@ -1,0 +1,59 @@
+﻿@page "/companyForm"
+@inject InsuranceController insCont
+
+<PageTitle>AddInsurance</PageTitle>
+
+<EditForm Model="@Company" OnValidSubmit="@FormSubmit">
+    <DataAnnotationsValidator />
+    <h3>Add Company</h3>
+    <hr />
+    <div class="form-group row">
+        <div class="col">
+            <label for="name">
+                Name
+            </label>
+            <div>
+                <InputText id="name" class="form-control" placeholder="Name"
+                           @bind-Value="Company.Name" />
+                <ValidationMessage For="@(() => Company.Name)" />
+            </div>
+        </div>
+        <div class="col">
+            <label for="code">
+                Name
+            </label>
+            <div>
+                <InputText id="code" class="form-control" placeholder="Code"
+                           @bind-Value="Company.Code" />
+                <ValidationMessage For="@(() => Company.Code)" />
+            </div>
+        </div>
+    </div>
+    <div class="mt-2">
+        <button type="submit" class="btn btn-primary">
+            Add
+        </button>
+    </div>
+    @if (Message != null)
+    {
+        <p>@Message</p>
+    }
+</EditForm>
+
+@code {
+    public InsuranceCompany Company { get; set; } = new InsuranceCompany();
+    public string Message { get; set; } = null;
+
+    public void FormSubmit()
+    {
+        var newComp = new InsuranceCompany(Company.Name, Company.Code);
+        if (insCont.AddCompanie(newComp))
+        {
+            Message = "Successfuly added!";
+        }
+        else
+        {
+            Message = "Company already exists!";
+        }
+    }
+}

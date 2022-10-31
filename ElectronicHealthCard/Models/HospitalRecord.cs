@@ -1,16 +1,16 @@
 ﻿namespace ElectronicHealthCard.Models
 {
-    public class RecordDate : IComparable<RecordDate>
+    public class HospitalRecord : IComparable<HospitalRecord>
     {
         public DateTime Date { get; set; }
         public LinkedList<Record> Records { get; set; }
-        public RecordDate(DateTime date)
+        public HospitalRecord(DateTime date)
         {
             Date = date;
             Records = new LinkedList<Record>();
         }
 
-        public int CompareTo(RecordDate? other)
+        public int CompareTo(HospitalRecord? other)
         {
             return Date.CompareTo(other.Date); 
         }

@@ -3,12 +3,12 @@ using DataStructures.Tree.BSTree;
 
 namespace ElectronicHealthCard.Controllers
 {
-    public class HospitalizationRecordsController
+    public class HospitalizationController
     {
-        private BSTree<HospitalizationRecord> HospitalizationRecords;
-        public HospitalizationRecordsController()
+        private BSTree<Hospitalization> HospitalizationRecords;
+        public HospitalizationController()
         {
-            HospitalizationRecords = new BSTree<HospitalizationRecord>();
+            HospitalizationRecords = new BSTree<Hospitalization>();
         }
         public int GetCount()
         {
@@ -16,7 +16,7 @@ namespace ElectronicHealthCard.Controllers
         }
         public bool AddRecord(Hospital hospital, Patient patient, Record record)
         {
-            var HospRecord = new HospitalizationRecord(patient, hospital);
+            var HospRecord = new Hospitalization(patient, hospital);
             var FindHospRecord = this.HospitalizationRecords.Find(HospRecord);
             if(FindHospRecord != null)
             {
@@ -35,7 +35,7 @@ namespace ElectronicHealthCard.Controllers
         }        
         public bool EndRecord(Hospital hospital, Patient patient, Record record)
         {
-            var HospRecord = new HospitalizationRecord(patient, hospital);
+            var HospRecord = new Hospitalization(patient, hospital);
             var FindHospRecord = this.HospitalizationRecords.Find(HospRecord);
             if(FindHospRecord != null)
             {                
@@ -45,7 +45,7 @@ namespace ElectronicHealthCard.Controllers
         }
         public bool AddEndedRecord(Hospital hospital, Patient patient, Record record)
         {
-            var HospRecord = new HospitalizationRecord(patient, hospital);
+            var HospRecord = new Hospitalization(patient, hospital);
             var FindHospRecord = this.HospitalizationRecords.Find(HospRecord);
             if (FindHospRecord != null)
             {
@@ -63,7 +63,7 @@ namespace ElectronicHealthCard.Controllers
                 }              
             }
         }
-        public bool AddEndedRecords(List<HospitalizationRecord> records)
+        public bool AddEndedRecords(List<Hospitalization> records)
         {
             if (this.HospitalizationRecords.FillWithMedian(records))
             {
@@ -79,9 +79,9 @@ namespace ElectronicHealthCard.Controllers
                 return false;
             }
         }
-        public HospitalizationRecord FindHospitalizationRecord(Patient patient, Hospital hospital)
+        public Hospitalization FindHospitalizationRecord(Patient patient, Hospital hospital)
         {
-            return this.HospitalizationRecords.Find(new HospitalizationRecord(patient, hospital));
+            return this.HospitalizationRecords.Find(new Hospitalization(patient, hospital));
         }
     }
 }

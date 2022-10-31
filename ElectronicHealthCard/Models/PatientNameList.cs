@@ -7,7 +7,7 @@ namespace ElectronicHealthCard.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public BSTree<HospitalizationRecord> HospitalizationRecords { get; set; }
+        public BSTree<Hospitalization> HospitalizationRecords { get; set; }
         public PatientNameList()
         {
             FirstName = null;
@@ -17,9 +17,9 @@ namespace ElectronicHealthCard.Models
         {
             FirstName = firstName;
             LastName = lastName;
-            HospitalizationRecords = new BSTree<HospitalizationRecord>();
+            HospitalizationRecords = new BSTree<Hospitalization>();
         }
-        public void AddHospRecord(HospitalizationRecord hospRec)
+        public void AddHospRecord(Hospitalization hospRec)
         {
             HospitalizationRecords.Add(hospRec);
         }

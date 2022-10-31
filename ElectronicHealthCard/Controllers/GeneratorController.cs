@@ -45,7 +45,7 @@ namespace ElectronicHealthCard.Controllers
 
             return builder.ToString();
         }
-        public bool GenerateData(HospitalizationRecordsController hospRecordCon,
+        public bool GenerateData(HospitalizationController hospRecordCon,
             PatientsController patCon, HospitalsController hospCon)
         {
             //Hospitals generate
@@ -75,11 +75,11 @@ namespace ElectronicHealthCard.Controllers
             };
             patCon.AddPatients(patients);
             //Old records generate
-            var hospRecords = new List<HospitalizationRecord>();
+            var hospRecords = new List<Hospitalization>();
             foreach (var patient in patients)
             {
                 var countRecord = random.Next(generator.MinEndedRecord, generator.MaxEndedRecord);
-                var hospRecord = new HospitalizationRecord(patient, hospitals[random.Next(hospitals.Count)]);                
+                var hospRecord = new Hospitalization(patient, hospitals[random.Next(hospitals.Count)]);                
                 while (countRecord > 0)
                 {
                     var subb = generator.MaxDate.Subtract(generator.MinDate).Days;

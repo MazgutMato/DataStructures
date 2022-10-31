@@ -10,19 +10,19 @@ namespace ElectronicHealthCard.Models
         public string Name { get; set; }
         public BSTree<Patient> Patients { get; set; }
         public BSTree<PatientNameList> NameList { get; set; }
-        public BSTree<RecordDate> StartRecords { get; set; }
+        public BSTree<HospitalRecord> StartRecords { get; set; }
         public Hospital() {
             this.Name = null;
             this.Patients = new BSTree<Patient>();
             this.NameList = new BSTree<PatientNameList>();
-            this.StartRecords = new BSTree<RecordDate>();
+            this.StartRecords = new BSTree<HospitalRecord>();
         }
         public Hospital(string Name)
         {
             this.Name = Name;
             this.Patients = new BSTree<Patient>();
             this.NameList = new BSTree<PatientNameList>();
-            this.StartRecords = new BSTree<RecordDate>();
+            this.StartRecords = new BSTree<HospitalRecord>();
         }
 
         public int CompareTo(Hospital? other)
@@ -38,7 +38,7 @@ namespace ElectronicHealthCard.Models
             }
             return false;
         }
-        public bool AddPatientName(HospitalizationRecord hospRecord)
+        public bool AddPatientName(Hospitalization hospRecord)
         {
             var patientName = new PatientNameList(hospRecord.Patient.FirstName, hospRecord.Patient.LastName);
             var findPatient = this.NameList.Find(patientName);
@@ -54,7 +54,7 @@ namespace ElectronicHealthCard.Models
         }
         public bool AddRecord(Record record)
         {
-            var recordDate = new RecordDate(record.Start);
+            var recordDate = new HospitalRecord(record.Start);
             var findRecord = this.StartRecords.Find(recordDate);
             if(findRecord != null)
             {               
@@ -74,9 +74,9 @@ namespace ElectronicHealthCard.Models
         public List<Record> FindPatients(DateTime start, DateTime end)
         {
             var result = new List<Record>();
-            var recordDates = new List<RecordDate>();
+            var recordDates = new List<HospitalRecord>();
             //Dates in range
-            this.StartRecords.FindRange(new RecordDate(start), new RecordDate(end), recordDates);
+            this.StartRecords.FindRange(new HospitalRecord(start), new HospitalRecord(end), recordDates);
             foreach (var recordDate in recordDates)
             {
                 foreach (var record in recordDate.Records)
@@ -86,7 +86,7 @@ namespace ElectronicHealthCard.Models
             }
             //Dates before range
             recordDates.Clear();
-            this.StartRecords.FindRange(new RecordDate(DateTime.MinValue), new RecordDate(
+            this.StartRecords.FindRange(new HospitalRecord(DateTime.MinValue), new HospitalRecord(
                 new DateTime(start.Year, start.Month,start.Day - 1)), recordDates);  
             foreach(var recordDate in recordDates)
             {
