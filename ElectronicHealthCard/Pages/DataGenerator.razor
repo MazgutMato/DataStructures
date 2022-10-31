@@ -10,68 +10,96 @@
     <ValidationSummary />
     <h3>Generate data</h3>
     <hr />
-    <div class="form-group mb-2">
-        <label for="hospitals">
-            Number of hospitals
-        </label>
-        <div>
-            <InputNumber id="hospitals" class="form-control" placeholder="Number of hospitals"
-                       @bind-Value="GeneratorModel.Hospital" />
+    <div class="row">
+        <div class="form-group col">
+            <label for="hospitals">
+                Number of hospitals
+            </label>
+            <div>
+                <InputNumber id="hospitals" class="form-control" placeholder="Number of hospitals"
+                             @bind-Value="GeneratorModel.Hospital" />
+            </div>
+        </div>
+        <div class="form-group col">
+            <label for="patientNumber">
+                Number of patients
+            </label>
+            <div>
+                <InputNumber id="patientNumber" class="form-control"
+                             placeholder="Number of patients"
+                             @bind-Value="GeneratorModel.Patient" />
+            </div>
         </div>
     </div>
-    <div class="form-group row">
-        <label for="patientNumber">
-            Number of patients
-        </label>
-        <div>
-            <InputNumber id="patientNumber" class="form-control"
-                         placeholder="Number of patients"
-                       @bind-Value="GeneratorModel.Patient" />
+    <div class="row">
+        <div class="form-group col">
+            <label for="minPatient">
+                Minimal number of active patients in hospital
+            </label>
+            <div>
+                <InputNumber id="minPatient" class="form-control"
+                             placeholder="Minimal number of active patients in hospital"
+                             @bind-Value="GeneratorModel.MinActivePatient" />
+            </div>
+        </div>
+        <div class="form-group col">
+            <label for="maxPatient">
+                Maximal number of active patients in hospital
+            </label>
+            <div>
+                <InputNumber id="maxPatient" class="form-control"
+                             placeholder="Maximal number of active patients in hospital"
+                             @bind-Value="GeneratorModel.MaxActivePatient" />
+            </div>
         </div>
     </div>
-    <div class="form-group row mb-2">
-        <label for="minPatient">
-            Minimal number of active patients in hospital
-        </label>
-        <div>
-            <InputNumber id="minPatient" class="form-control"
-                         placeholder="Minimal number of active patients in hospital"
-                       @bind-Value="GeneratorModel.MinActivePatient" />
+    <div class="row">
+        <div class="form-group col">
+            <label for="minRecord">
+                Minimal number of patient records
+            </label>
+            <div>
+                <InputNumber id="minRecord" class="form-control"
+                             placeholder="Minimal number of patient records"
+                             @bind-Value="GeneratorModel.MinEndedRecord" />
+            </div>
+        </div>
+        <div class="form-group col">
+            <label for="maxRecord">
+                Maximal number of patient records
+            </label>
+            <div>
+                <InputNumber id="maxRecord" class="form-control"
+                             placeholder="Maximal number of patient records"
+                             @bind-Value="GeneratorModel.MaxEndedRecord" />
+            </div>
         </div>
     </div>
-    <div class="form-group row mb-2">
-        <label for="maxPatient">
-            Maximal number of active patients in hospital
-        </label>
-        <div>
-            <InputNumber id="maxPatient" class="form-control"
-                         placeholder="Maximal number of active patients in hospital"
-                         @bind-Value="GeneratorModel.MaxActivePatient" />
+    <div class="row">
+        <div class="form-group col">
+            <label for="minDate">
+                Minimal number of patient records
+            </label>
+            <div>
+                <InputDate id="minDate" class="form-control"
+                           placeholder="Minimal date of patient records"
+                           @bind-Value="GeneratorModel.MinDate" />
+            </div>
         </div>
-    </div>
-    <div class="form-group row mb-2">
-        <label for="minRecord">
-            Minimal number of patient records
-        </label>
-        <div>
-            <InputNumber id="minRecord" class="form-control"
-                         placeholder="Minimal number of patient records"
-                         @bind-Value="GeneratorModel.MinEndedRecord" />
+        <div class="form-group col">
+            <label for="maxDate">
+                Maximal number of patient records
+            </label>
+            <div>
+                <InputDate id="maxDate" class="form-control"
+                           placeholder="Maximal date of patient records"
+                           @bind-Value="GeneratorModel.MaxDate" />
+            </div>
         </div>
-    </div>
-    <div class="form-group row mb-2">
-        <label for="maxRecord">
-            Maximal number of patient records
-        </label>
-        <div>
-            <InputNumber id="maxRecord" class="form-control"
-                         placeholder="Maximal number of patient records"
-                         @bind-Value="GeneratorModel.MaxEndedRecord" />
+        <div class="mt-2">
+            <button type="submit" class="btn btn-primary">Generate data</button>
         </div>
-    </div>
-    <div>
-        <button type="submit" class="btn btn-primary">Add</button>
-    </div>
+    </div>    
     @if (Message != null)
     {
         <p>@Message</p>

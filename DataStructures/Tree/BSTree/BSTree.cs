@@ -12,11 +12,12 @@ namespace DataStructures.Tree.BSTree
     {
         public BSTNode<T> Root { get; set; }
         public int Count { get; set; }
+        public int MaxDepth { get; set; }
         public Iterator<T> createIterator()
         {
             return new BSTIterator<T>(this);
         }
-        public bool Add(T data)
+        private BSTNode<T> AddData(T data)
         {
             BSTNode<T> Parent = null;
             var Child = Root;
@@ -40,7 +41,7 @@ namespace DataStructures.Tree.BSTree
                 else
                 {
                     //Found same Node
-                    return false;
+                    return null;
                 }
             }
 
@@ -63,9 +64,22 @@ namespace DataStructures.Tree.BSTree
                 }
             }
             Count++;
-
+            if(Depth > MaxDepth)
+            {
+                this.MaxDepth = Depth;
+            }
+            return newNode;
+        }
+        public bool Add(T data)
+        {
+            var newNode = this.AddData(data);
+            if(newNode == null)
+            {
+                return false;
+            }
+            var Parent = (BSTNode<T>)newNode.Parent;
             //Random rotate if not balance
-            if(Depth > Math.Log2(this.Count))
+            if(MaxDepth > Math.Log2(this.Count) && Parent!= null)
             {
                 Parent = (BSTNode<T>)Parent.Parent;
                 while(Parent!= null)
@@ -556,19 +570,19 @@ namespace DataStructures.Tree.BSTree
                 current.Sort();
                 if(current.Count  == 1)
                 {
-                    this.Add(current[current.Count - 1]);
+                    this.AddData(current[current.Count - 1]);
                 }
                 else
                 {
                     var medianPosition = (current.Count) / 2;                    
                     if(current.Count == 2)
                     {
-                        this.Add(current[0]);
-                        this.Add(current[1]);
+                        this.AddData(current[0]);
+                        this.AddData(current[1]);
                     }
                     else
                     {
-                        this.Add(current[medianPosition]);
+                        this.AddData(current[medianPosition]);
                         stack.Push(current.GetRange(0, medianPosition));
                         stack.Push(current.GetRange(medianPosition + 1, (current.Count-1) - (medianPosition) ));
                     }                    

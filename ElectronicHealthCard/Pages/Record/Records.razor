@@ -1,0 +1,107 @@
+﻿@page "/recordsAll"
+@inject PatientsController patientsController
+
+<PageTitle>Records</PageTitle>
+
+<h3>Search patient records</h3>
+<hr />
+
+<EditForm Model="@Patient" OnSubmit="@FormSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-2">
+        <div class="row">
+            <label for="patientId">
+                PatientID
+            </label>
+            <div class="col">
+                <InputText id="patientId" class="form-control" placeholder="PatientID"
+                           @bind-Value="Patient.PatientId" />
+                <ValidationMessage For="@(() => Patient.PatientId)" />
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+    @if (Message != null)
+    {
+        <p>@Message</p>
+    }
+</EditForm>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Patient ID</th>
+            <th>Birth Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Patient.FirstName</td>
+            <td>@Patient.LastName</td>
+            <td>@Patient.PatientId</td>
+            <td>@Patient.BirthDate</td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th style="width:40px"></th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Diagnoze</th>
+            <th>Hospital</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (this.AllRecords != null)
+        {
+            var number = 1;
+            @foreach (var record in AllRecords)
+            {                
+                <tr>
+                    <th>@number</th>
+                    <td>@record.Start</td>
+                    @if (record.End == DateTime.MinValue)
+                    {
+                        <td>Curently hospitalized</td>
+                    }
+                    else
+                    {
+                        <td>@record.End</td>
+                    }
+                    <td>@record.Diagnoze</td>
+                    <td>@record.HospitalizationRecord.Hospital.Name</td>
+                </tr>
+                number++;
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    private Patient Patient = new Patient();
+    private LinkedList<Record> AllRecords;
+    private string Message;
+
+    private void FormSubmit()
+    {
+        var findPatien = patientsController.FindPatient(Patient);
+        Patient = new Patient(findPatien.PatientId, findPatien.FirstName, findPatien.LastName, findPatien.BirthDate);
+        if(findPatien != null){
+            var findRecords = patientsController.FindPatient(Patient);
+            AllRecords = findPatien.AllRecords;
+            Message = "Found " + AllRecords.Count + " records!";
+        }else {
+            Message = "Records not found!";
+        }       
+    }
+}
+

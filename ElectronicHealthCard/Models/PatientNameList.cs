@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using DataStructures.Tree.BSTree;
+using System.Runtime.InteropServices;
 
 namespace ElectronicHealthCard.Models
 {
@@ -6,7 +7,7 @@ namespace ElectronicHealthCard.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public LinkedList<HospitalizationRecord> HospitalizationRecords { get; set; }
+        public BSTree<HospitalizationRecord> HospitalizationRecords { get; set; }
         public PatientNameList()
         {
             FirstName = null;
@@ -16,11 +17,11 @@ namespace ElectronicHealthCard.Models
         {
             FirstName = firstName;
             LastName = lastName;
-            HospitalizationRecords = new LinkedList<HospitalizationRecord>();
+            HospitalizationRecords = new BSTree<HospitalizationRecord>();
         }
         public void AddHospRecord(HospitalizationRecord hospRec)
         {
-            HospitalizationRecords.AddLast(hospRec);
+            HospitalizationRecords.Add(hospRec);
         }
         public int CompareTo(PatientNameList? other)
         {

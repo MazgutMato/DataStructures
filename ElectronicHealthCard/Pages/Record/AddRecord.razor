@@ -115,7 +115,9 @@
             return;
         }
 
-        if(hospitalizationRecordsController.AddRecord(FindHospital, FindPatient, Record)){        
+        if (hospitalizationRecordsController.AddRecord(FindHospital, FindPatient, 
+            new Record(this.Record.Start, this.Record.End, this.Record.Diagnoze)))
+        {
             Message = "Record was inserted!";
         } else {
             Message = "Record with same hospitalization date exists!";

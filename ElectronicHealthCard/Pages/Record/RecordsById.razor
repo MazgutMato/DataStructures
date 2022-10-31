@@ -1,4 +1,4 @@
-﻿@page "/records"
+﻿@page "/recordsById"
 @inject NavigationManager navigatorManager
 @inject HospitalizationRecordsController hospRecCon
 
@@ -51,6 +51,9 @@
 <table class="table">
     <thead>
         <tr>
+            <th style="width:40px"></th>
+            <th>First name</th>
+            <th>Last name</th>
             <th>Start date</th>
             <th>End date</th>
             <th>Diagnoze</th>
@@ -59,10 +62,14 @@
     <tbody>
         @if (this.RecordIterator != null)
         {
+            var number = 1;
             @while (this.RecordIterator.HasNext())
             {
                 var record = this.RecordIterator.MoveNext();
                 <tr>
+                    <th>@number</th>
+                    <td>@record.HospitalizationRecord.Patient.FirstName</td>
+                    <td>@record.HospitalizationRecord.Patient.LastName</td>
                     <td>@record.Start</td>
                     @if(record.End == DateTime.MinValue){
                         <td>Curently hospitalized</td>
@@ -71,11 +78,8 @@
                     }                    
                     <td>@record.Diagnoze</td>                    
                 </tr>
+                number++;
             }
-        } else {
-            <tr>
-                No such data!
-            </tr>
         }
     </tbody>
 </table>
@@ -90,7 +94,7 @@
         var findRecord = hospRecCon.FindHospitalizationRecord(Patient, Hospital);
         if(findRecord != null){
             this.RecordIterator = findRecord.Records.createIterator();
-            Message = "Records found!";
+            Message = "Found " + findRecord.Records.Count + " records!";
         } else{
             Message = "Records not found!";
         }

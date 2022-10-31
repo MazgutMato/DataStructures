@@ -65,7 +65,11 @@ namespace ElectronicHealthCard.Controllers
             while (count > 0)
             {
                 var patient = new Patient(RandomString('0', 9, 10),
-                    RandomString(5), RandomString(8), DateTime.Now.AddDays(random.Next(1000)));
+                    RandomString(5), RandomString(8), 
+                    new DateTime(random.Next(1920, DateTime.Now.Year),
+                    random.Next(1, 12),
+                    random.Next(1, 28)
+                    ));
                 patients.Add(patient);
                 count--;
             };
@@ -78,7 +82,9 @@ namespace ElectronicHealthCard.Controllers
                 var hospRecord = new HospitalizationRecord(patient, hospitals[random.Next(hospitals.Count)]);                
                 while (countRecord > 0)
                 {
-                    var record = new Record(DateTime.Now, DateTime.Now.AddDays(random.Next(30)), RandomString(50));
+                    var subb = generator.MaxDate.Subtract(generator.MinDate).Days;
+                    var startDate = generator.MinDate.AddDays(random.Next(subb));
+                    var record = new Record( startDate, startDate.AddDays(random.Next(subb)), RandomString(50) );
                     hospRecord.AddEndedRecord(record);
                     countRecord--;
                 }
@@ -91,7 +97,9 @@ namespace ElectronicHealthCard.Controllers
                 count = random.Next(generator.MinActivePatient, generator.MaxActivePatient);
                 while (count > 0)
                 {
-                    var record = new Record(DateTime.Now, RandomString(50));
+                    var subb = generator.MaxDate.Subtract(generator.MinDate).Days;
+                    var startDate = generator.MinDate.AddDays(random.Next(subb));
+                    var record = new Record(startDate, RandomString(50));
                     if (hospRecordCon.AddRecord(hospital, patients[random.Next(patients.Count)], record))
                     {
                         count--;

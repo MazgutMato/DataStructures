@@ -34,7 +34,7 @@
     public string Message { get; set; } = null;
 
     public void FormSubmit(){
-        if (hospitalController.AddHospital(this.Hospital))
+        if (hospitalController.AddHospital(new Hospital(this.Hospital.Name)))
         {
             Message = "Successfuly added!";
         }

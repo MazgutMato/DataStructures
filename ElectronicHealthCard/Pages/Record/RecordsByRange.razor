@@ -50,6 +50,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th style="width:40px"></th>
             <th>Patien id</th>
             <th>First name</th>
             <th>Last name</th>
@@ -61,8 +62,10 @@
     <tbody>
         @if (this.Records != null)
         {
+            var number = 1;
             @foreach(var record in Records){
                 <tr>
+                    <th>@number</th>
                     <td>@record.HospitalizationRecord.Patient.PatientId</td>
                     <td>@record.HospitalizationRecord.Patient.FirstName</td>
                     <td>@record.HospitalizationRecord.Patient.LastName</td>
@@ -74,13 +77,8 @@
                     }  
                     <td>@record.Diagnoze</td>
                 </tr>
+                number++;
             }
-        }
-        else
-        {
-            <tr>
-                No such data!
-            </tr>
         }
     </tbody>
 </table>
@@ -115,5 +113,6 @@
             return;
         }
         Records = hospital.FindPatients(Start, End);
+        Message = "Found " + Records.Count + " records!";
     }
 }

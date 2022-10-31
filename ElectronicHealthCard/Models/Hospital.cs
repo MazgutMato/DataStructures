@@ -44,12 +44,11 @@ namespace ElectronicHealthCard.Models
             var findPatient = this.NameList.Find(patientName);
             if(findPatient != null)
             {
-                findPatient.HospitalizationRecords.AddLast(hospRecord);
+                findPatient.HospitalizationRecords.Add(hospRecord);
             }
-            else
             {
                 this.NameList.Add(patientName);
-                patientName.HospitalizationRecords.AddLast(hospRecord);
+                patientName.HospitalizationRecords.Add(hospRecord);
             }
             return true;
         }
@@ -58,7 +57,7 @@ namespace ElectronicHealthCard.Models
             var recordDate = new RecordDate(record.Start);
             var findRecord = this.StartRecords.Find(recordDate);
             if(findRecord != null)
-            {
+            {               
                 findRecord.Records.AddLast(record);
                 return true;
             }
@@ -87,7 +86,8 @@ namespace ElectronicHealthCard.Models
             }
             //Dates before range
             recordDates.Clear();
-            this.StartRecords.FindRange(new RecordDate(DateTime.MinValue), new RecordDate(start), recordDates);
+            this.StartRecords.FindRange(new RecordDate(DateTime.MinValue), new RecordDate(
+                new DateTime(start.Year, start.Month,start.Day - 1)), recordDates);  
             foreach(var recordDate in recordDates)
             {
                 foreach(var record in recordDate.Records)
@@ -98,7 +98,7 @@ namespace ElectronicHealthCard.Models
                     }
                 }
             }
-            return result.Distinct().ToList();
+            return result;
         }
     }
 }

@@ -15,9 +15,9 @@
             </NavLink>       
         </div>
         <div class="nav-item px-1">
-            <a class="nav-link">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Patients
-            </a>
+                <NavLink class="nav-link" href="patients">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Patients
+                </NavLink>
             <ul class="mt-1">
                 <li>
                     <NavLink class="nav-link" href="patientForm">
@@ -25,33 +25,28 @@
                     </NavLink>
 				</li>
 				<li>
-                    <NavLink class="nav-link" href="patients">
-                        <span class="oi oi-magnifying-glass"></span> Search
+                    <NavLink class="nav-link" href="hospitalPatients">
+                        <span class="oi oi-magnifying-glass"></span> Search hospitalized
                     </NavLink>
                 </li>
             </ul>  
         </div>
 		<div class="nav-item px-1">
-			<a class="nav-link">
-				<span class="oi oi-list-rich" aria-hidden="true"></span> Hospitals
-			</a>
+            <NavLink class="nav-link" href="hospitals">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Hospitals
+            </NavLink>
 			<ul class="mt-1">
 				<li>
 					<NavLink class="nav-link" href="hospitalForm">
 						<span class="oi oi-plus" aria-hidden="true"></span> Add
 					</NavLink>
 				</li>
-				<li>
-					<NavLink class="nav-link" href="hospitals">
-						<span class="oi oi-list-rich" aria-hidden="true"></span> List of hospitals
-					</NavLink>
-				</li>
 			</ul>
 		</div>
 		<div class="nav-item px-1">
-			<a class="nav-link">
-				<span class="oi oi-list-rich" aria-hidden="true"></span> Records
-			</a>
+            <NavLink class="nav-link" href="recordsAll">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Records
+            </NavLink>
 			<ul class="mt-1">
 				<li>
 					<NavLink class="nav-link" href="recordForm">
@@ -59,7 +54,7 @@
 					</NavLink>
 				</li>
 				<li>
-					<NavLink class="nav-link" href="records">
+					<NavLink class="nav-link" href="recordsById">
 						<span class="oi oi-list-rich" aria-hidden="true"></span> Search by ID
 					</NavLink>
 				</li>

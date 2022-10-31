@@ -58,6 +58,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th style="width:40px"></th>
             <th>Patien id</th>
             <th>Start date</th>
             <th>End date</th>
@@ -67,20 +68,25 @@
     <tbody>
         @if (this.HospRecords != null)
         {
-            @foreach (var hospRecord in HospRecords)
+            var pNumber = 1;
+            @while (HospRecords.HasNext())
             {
+                var hospRecord = HospRecords.MoveNext();
                 <tr>
+                    <th>@pNumber</th>
                     <td>@hospRecord.Patient.PatientId</td>
                     <td></td>
                     <td></td>
                     <td></td>
-                </tr>
+                </tr>                
                 var iterator = hospRecord.Records.createIterator();
+                var rNumber = 1;
                 @while (iterator.HasNext())
-                {
+                {               
                     var record = iterator.MoveNext();
                     <tr>
                         <td></td>
+                        <th style ="text-align:right">@rNumber</th>
                         <td>@record.Start</td>
                         @if (record.End == DateTime.MinValue)
                         {
@@ -92,20 +98,16 @@
                         }
                         <td>@record.Diagnoze</td>
                     </tr>
+                    rNumber++;
                 }
+                pNumber++;
             }
-        }
-        else
-        {
-            <tr>
-                No such data!
-            </tr>
         }
     </tbody>
 </table>
 
 @code {
-    private LinkedList<HospitalizationRecord> HospRecords;
+    private Iterator<HospitalizationRecord> HospRecords;
     private PatientNameList Patient = new PatientNameList();
     private Hospital Hospital = new Hospital();
     private string Message;
@@ -118,8 +120,8 @@
             var findPatients = findHosp.NameList.Find(Patient);
             if (findPatients != null)
             {
-                HospRecords = findPatients.HospitalizationRecords;
-                Message = "Records found!";
+                HospRecords = findPatients.HospitalizationRecords.createIterator();
+                Message = "Found " + findPatients.HospitalizationRecords.Count + " patients!";
             }
             else
             {

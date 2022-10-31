@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ElectronicHealthCard.Pages.Patient;
+using ElectronicHealthCard.Pages.Record;
+using System.ComponentModel.DataAnnotations;
 
 namespace ElectronicHealthCard.Models
 {
@@ -13,7 +15,15 @@ namespace ElectronicHealthCard.Models
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
         public Record ActualRecord { get; set; }
-        public Patient() { }
+        public LinkedList<Record> AllRecords { get; set; }
+        public Patient() {
+            PatientId = default;
+            FirstName = default;
+            LastName = default;
+            BirthDate = default;
+            ActualRecord = null;
+            AllRecords = new LinkedList<Record>();
+        }
         public Patient(string patientId, string firstName, string lastName)
         {
             PatientId = patientId;
@@ -21,6 +31,7 @@ namespace ElectronicHealthCard.Models
             LastName = lastName;
             BirthDate = default;
             ActualRecord = null;
+            AllRecords = new LinkedList<Record>();
         }
         public Patient(string patientId, string firstName, string lastName, DateTime birthDate)
         {
@@ -29,10 +40,15 @@ namespace ElectronicHealthCard.Models
             LastName = lastName;
             BirthDate = birthDate;
             ActualRecord = null;
+            AllRecords = new LinkedList<Record>();
         }
         public int CompareTo(Patient? other)
         {
             return this.PatientId.CompareTo(other.PatientId); ;
+        }
+        public void AddRecord(Record record)
+        {
+            this.AllRecords.AddLast(record);
         }
     }
 }

@@ -10,25 +10,23 @@
 <table class="table">
     <thead>
         <tr>
+            <th style="width:40px"></th>
             <th>Name</th>
         </tr>
     </thead>
     <tbody>
         @if (hospitalsController.GetCount() > 0)
         {
+            var number = 1;
             @while (this.HospitalIterator.HasNext())
             {
-                var hospital = this.HospitalIterator.MoveNext();
-                        <tr>
-                            <td>@hospital.Name</td>                         
-                        </tr>
-            }
-        }
-        else
-        {
+                var hospital = this.HospitalIterator.MoveNext();               
                 <tr>
-                    No such data!
+                    <th>@number</th>
+                    <td>@hospital.Name</td>
                 </tr>
+                number++;
+            }
         }
     </tbody>
 </table>

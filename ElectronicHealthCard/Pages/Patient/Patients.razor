@@ -5,78 +5,52 @@
 
 <PageTitle>Patients</PageTitle>
 
-<h3>Search hospital patients</h3>
+<h3>All patients</h3>
 <hr />
-
-<EditForm Model="@Hospital" OnValidSubmit="@FormSubmit">
-    <DataAnnotationsValidator />
-    <div class="form-group mb-2">
-        <div class="row">
-				<label for="firstName">
-					Hospital name
-				</label>
-			<div class="col">
-				<InputText id="name" class="form-control" placeholder="Name"
-						   @bind-Value="Hospital.Name" />
-				<ValidationMessage For="@(() => Hospital.Name)" />
-			</div>
-			<div class="col">
-				<button type="submit" class="btn btn-primary">
-					Search
-				</button>
-            </div>
-        </div>
-    </div>    
-    @if (Message != null)
-    {
-        <p>@Message</p>
-    }
-</EditForm>
 
 <table class="table">
     <thead>
         <tr>
+            <th style="width:40px"></th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Patient ID</th>
             <th>Birth Date</th>
-            <th>Hospital Date</th>
+            <th>Hospitalized in</th>
         </tr>
     </thead>
     <tbody>
         @if (this.PatientsIterator != null)
         {
+            var number = 1;
             @while (this.PatientsIterator.HasNext())
             {
                 var patient = this.PatientsIterator.MoveNext();
                 <tr>
+                    <th>@number</th>
                     <td>@patient.FirstName</td>
                     <td>@patient.LastName</td>
                     <td>@patient.PatientId</td>
-                    <td>@patient.BirthDate</td>                    
-                    <td>@patient.ActualRecord.Start</td>
+                    <td>@patient.BirthDate</td>
+                    @if(patient.ActualRecord != null){
+                        <td>@patient.ActualRecord.HospitalizationRecord.Hospital.Name</td>
+                    } else {
+                        <td>Nowhere</td>
+                    }
                 </tr>
+                number++;
             }
-        } else {
-            <tr>
-                No such data!
-            </tr>
-        }
+        }     
     </tbody>
 </table>
 
 @code {
     private Iterator<Patient> PatientsIterator;
-    private Hospital Hospital = new Hospital();
     private string Message;
 
-    private void FormSubmit(){
-        var findHospital = hospitalsController.FindHospital(Hospital);
-        if(findHospital != null){
-            this.PatientsIterator = findHospital.Patients.createIterator();
-            Message = "Hospital found!";
-        } else{
-            Message = "Hospital not found!";
-        }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.PatientsIterator = patientsController.GetPatients();
     }
 }

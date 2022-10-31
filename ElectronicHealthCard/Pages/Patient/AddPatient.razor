@@ -61,7 +61,7 @@
 
     public void PatientFormSubmit(){
        
-        if (patientController.AddPatient(this.Patient))
+        if (patientController.AddPatient(new Patient(this.Patient.PatientId, this.Patient.FirstName, this.Patient.LastName) ))
         {
             Message = "Successfuly added!";
         }
