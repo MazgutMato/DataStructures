@@ -23,6 +23,10 @@ namespace ElectronicHealthCard.Controllers
         {
             return this.Comanies.createIterator();
         }
+        public int GetCount()
+        {
+            return this.Comanies.Count;
+        }
         public bool AddCompanies(List<InsuranceCompany> companies)
         {
             return this.Comanies.FillWithMedian(companies);

@@ -1,5 +1,6 @@
 ﻿using ElectronicHealthCard.Models;
 using DataStructures.Tree.BSTree;
+using DataStructures.Iterator;
 
 namespace ElectronicHealthCard.Controllers
 {
@@ -9,6 +10,10 @@ namespace ElectronicHealthCard.Controllers
         public HospitalizationController()
         {
             HospitalizationRecords = new BSTree<Hospitalization>();
+        }
+        public Iterator<Hospitalization> GetHospitalizations()
+        {
+            return this.HospitalizationRecords.createIterator();
         }
         public int GetCount()
         {

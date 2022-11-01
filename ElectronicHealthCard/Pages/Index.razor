@@ -1,13 +1,17 @@
 ﻿@page "/"
-@using System.Text
+@inject HospitalsController hospitals
+@inject InsuranceController companies
+@inject PatientsController patients
+@inject HospitalizationController hospitalizations
 
 <PageTitle>ElectronicHelathCard</PageTitle>
 <h3>Data save</h3>
 <hr />
+
 <label for="name">
     File name
 </label>
-<div class="form-group row">    
+<div class="form-group row">
     <div class="col">
         <input type="text" id="name" class="form-control" placeholder="File name" @bind-value="@FileName" />
     </div>
@@ -18,14 +22,294 @@
     </div>
 </div>
 
+<label for="name">
+    File name
+</label>
+<div class="form-group row">
+    <div class="col">
+        <InputFile OnChange="Load" />
+    </div>
+</div>
+@if (Message != null)
+{
+    <p>@Message</p>
+}
+
 
 @code
 {
     [Inject] IBlazorDownloadFileService BlazorDownloadFileService { get; set; }
     private string FileName = "";
-    async Task Save(){
-        string save = "Ahoj;ako";
-        var bytes = Encoding.ASCII.GetBytes(save);
-		var task = await BlazorDownloadFileService.DownloadFile(FileName + ".csv", bytes, CancellationToken.None, "application/octet-stream");
+    private string Message;
+    async Task Save()
+    {
+        StringBuilder output = new StringBuilder();
+
+        //hospitals
+        output.AppendLine("Hospitals:;");
+        var iteratorHospital = hospitals.GetHospitals();
+        while (iteratorHospital.HasNext())
+        {
+            var hospital = iteratorHospital.MoveNext();
+            output.AppendLine(";" + hospital.Name + ";");
+        }
+
+        //insurance companies
+        output.AppendLine("Insurance:;");
+        var iteratorCompanies = companies.GetCompanies();
+        while (iteratorCompanies.HasNext())
+        {
+            var company = iteratorCompanies.MoveNext();
+            output.AppendLine(";" + company.Name + ";" + company.Code + ";");
+        }
+
+        //patients
+        output.AppendLine("Patients:;");
+        var iteratorPatients = patients.GetPatients();
+        while (iteratorPatients.HasNext())
+        {
+            var patient = iteratorPatients.MoveNext();
+            output.AppendLine(";" + patient.FirstName + ";" + patient.LastName + ";" + patient.PatientId + ";"
+                + patient.BirthDate.ToString() + ";" + patient.Insurance.Code + ";");
+        }
+
+        //hospitalizations
+        output.AppendLine("Hospitalizations:;");
+        var iteratorHospitalizations = hospitalizations.GetHospitalizations();
+        while (iteratorHospitalizations.HasNext())
+        {
+            var hospitalization = iteratorHospitalizations.MoveNext();
+            output.AppendLine(";" + hospitalization.Patient.PatientId + ";" + hospitalization.Hospital.Name + ";");
+            //records
+            var iteratorRecords = hospitalization.GetRecords();
+            while (iteratorRecords.HasNext())
+            {
+                var record = iteratorRecords.MoveNext();
+                output.AppendLine(";;" + record.Start.ToString() + ";" + record.End.ToString() + ";" + record.Diagnoze + ";");
+            }
+        }
+
+        var bytes = Encoding.ASCII.GetBytes(output.ToString());
+        var task = await BlazorDownloadFileService.DownloadFile(FileName + ".csv", bytes, CancellationToken.None, "application/octet-stream");
+    }
+
+    async Task Load(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var reader = new StreamReader(e.File.OpenReadStream());
+            var line = await reader.ReadLineAsync();
+            string[]? values;
+            //Load line
+            if (line == null)
+            {
+                Message = "Load complete!";
+                return;
+            }
+            else
+            {
+                values = line.Split(';');
+            }
+
+            //Structure control
+            if (this.hospitalizations.GetCount() > 0 || this.companies.GetCount() > 0)
+            {
+                Message = "To load data restart application!";
+                return;
+            }
+
+            //Hospitals
+            if (values[0] != "Hospitals:")
+            {
+                Message = "Not supported file!";
+                return;
+            }
+            var ListHospitals = new List<Models.Hospital>();
+
+            //Load line
+            line = await reader.ReadLineAsync();
+            if (line == null)
+            {
+                Message = "Load complete!";
+                return;
+            }
+            else
+            {
+                values = line.Split(';');
+            }
+            while (values[0] == "")
+            {
+                var hospital = new Models.Hospital(values[1]);
+                ListHospitals.Add(hospital);
+                //Load line
+                line = await reader.ReadLineAsync();
+                if (line == null)
+                {
+                    Message = "Load complete!";
+                    return;
+                }
+                else
+                {
+                    values = line.Split(';');
+                }
+            }
+            hospitals.AddHospitals(ListHospitals);
+
+            //Insurance company
+            if (values[0] != "Insurance:")
+            {
+                Message = "Not supported file!";
+                return;
+            }
+            var ListCompanies = new List<InsuranceCompany>();
+
+            //Load line
+            line = await reader.ReadLineAsync();
+            if (line == null)
+            {
+                Message = "Load complete!";
+                return;
+            }
+            else
+            {
+                values = line.Split(';');
+            }
+            while (values[0] == "")
+            {
+                var company = new InsuranceCompany(values[1], values[2]);
+                ListCompanies.Add(company);
+                //Load line
+                line = await reader.ReadLineAsync();
+                if (line == null)
+                {
+                    Message = "Load complete!";
+                    return;
+                }
+                else
+                {
+                    values = line.Split(';');
+                }
+            }
+            companies.AddCompanies(ListCompanies);
+
+            //Patients
+            if (values[0] != "Patients:")
+            {
+                Message = "Not supported file!";
+                return;
+            }
+            var ListPatients = new List<Models.Patient>();
+
+            //Load line
+            line = await reader.ReadLineAsync();
+            if (line == null)
+            {
+                Message = "Load complete!";
+                return;
+            }
+            else
+            {
+                values = line.Split(';');
+            }
+            while (values[0] == "")
+            {
+                var findCompany = companies.FindCompany(new InsuranceCompany("", values[5]));
+                if (findCompany == null)
+                {
+                    Message = "Insurance company not found!";
+                    return;
+                }
+                var patient = new Models.Patient(values[3],
+                    values[1],
+                    values[2],
+                    DateTime.Parse(values[4]),
+                    findCompany);
+                ListPatients.Add(patient);
+                //Load line
+                line = await reader.ReadLineAsync();
+                if (line == null)
+                {
+                    Message = "Load complete!";
+                    return;
+                }
+                else
+                {
+                    values = line.Split(';');
+                }
+            };
+            patients.AddPatients(ListPatients);
+
+            //Records
+            if (values[0] != "Hospitalizations:")
+            {
+                Message = "Not supported file!";
+                return;
+            }
+
+            //Load line
+            line = await reader.ReadLineAsync();
+            if (line == null)
+            {
+                Message = "Load complete!";
+                return;
+            }
+            else
+            {
+                values = line.Split(';');
+            }
+            while (values[0] == "" && values[1] != "")
+            {
+                var findPatient = patients.FindPatient(new Models.Patient(values[1], "", ""));
+                if (findPatient == null)
+                {
+                    Message = "Patient not found!";
+                    return;
+                }
+                var findHospital = hospitals.FindHospital(new Models.Hospital(values[2]));
+                if (findPatient == null)
+                {
+                    Message = "Hospital not found!";
+                    return;
+                }
+                //Load line
+                line = await reader.ReadLineAsync();
+                if (line == null)
+                {
+                    Message = "Load complete!";
+                    return;
+                }
+                else
+                {
+                    values = line.Split(';');
+                }
+                while (values[0] == "" && values[1] == "" && values[2] != "")
+                {
+                    var record = new Models.Record(DateTime.Parse(values[2]), DateTime.Parse(values[3]), values[4]);
+                    if (record.End == DateTime.MinValue)
+                    {
+                        hospitalizations.AddRecord(findHospital, findPatient, record);
+                    }
+                    else
+                    {
+                        hospitalizations.AddEndedRecord(findHospital, findPatient, record);
+                    }
+                    //Load line
+                    line = await reader.ReadLineAsync();
+                    if (line == null)
+                    {
+                        Message = "Load complete!";
+                        return;
+                    }
+                    else
+                    {
+                        values = line.Split(';');
+                    }
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DataStructures.Tree.BSTree;
+﻿using DataStructures.Iterator;
+using DataStructures.Tree.BSTree;
 using ElectronicHealthCard.Pages.Hospital;
 
 namespace ElectronicHealthCard.Models
@@ -19,6 +20,10 @@ namespace ElectronicHealthCard.Models
             Patient = patient;
             Hospital = hospital;
             Records = new BSTree<Record>();
+        }
+        public Iterator<Record> GetRecords()
+        {
+            return this.Records.createIterator();
         }
         public int CompareTo(Hospitalization? other)
         {
