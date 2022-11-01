@@ -8,97 +8,131 @@ namespace ElectronicHealthCard.Models
         [Required]
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Name cannot have less than 3 characters and more than 50 characters in length")]
         public string Name { get; set; }
-        public BSTree<Patient> Patients { get; set; }
+        public BSTree<HospitalCompany> Companies { get; set; }
         public BSTree<PatientNameList> NameList { get; set; }
-        public BSTree<HospitalRecord> StartRecords { get; set; }
-        public Hospital() {
-            this.Name = null;
-            this.Patients = new BSTree<Patient>();
-            this.NameList = new BSTree<PatientNameList>();
-            this.StartRecords = new BSTree<HospitalRecord>();
+        public BSTree<ListRecords> StartRecords { get; set; }
+        public override string ToString()
+        {
+            return "Name:;" + this.Name + ";";
+        }
+        public Hospital()
+        {
+            Name = null;
+            Companies = new BSTree<HospitalCompany>();
+            NameList = new BSTree<PatientNameList>();
+            StartRecords = new BSTree<ListRecords>();
         }
         public Hospital(string Name)
         {
             this.Name = Name;
-            this.Patients = new BSTree<Patient>();
-            this.NameList = new BSTree<PatientNameList>();
-            this.StartRecords = new BSTree<HospitalRecord>();
+            Companies = new BSTree<HospitalCompany>();
+            NameList = new BSTree<PatientNameList>();
+            StartRecords = new BSTree<ListRecords>();
         }
 
         public int CompareTo(Hospital? other)
         {
-            return this.Name.CompareTo(other.Name);
+            return Name.CompareTo(other.Name);
         }
         public bool AddActualPatient(Patient patient, Record record)
         {
-            if (this.Patients.Add(patient))
+            var patientCompany = new HospitalCompany(patient.Insurance);
+            var findCompany = Companies.Find(patientCompany);
+            if (findCompany != null)
             {
-                patient.ActualRecord = record;
+                if (findCompany.AddActualPatient(patient))
+                {
+                    patient.ActualRecord = record;
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                if (Companies.Add(patientCompany) && patientCompany.AddActualPatient(patient))
+                {
+                    patient.ActualRecord = record;
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+        public bool DeleteActualPatients(Patient patient)
+        {
+            var patientCompany = new HospitalCompany(patient.Insurance);
+            var findCompany = Companies.Find(patientCompany);
+            if (findCompany != null)
+            {
+                findCompany.ActualPatients.Delete(patient);
+                patient.ActualRecord = null;
                 return true;
             }
             return false;
+
         }
         public bool AddPatientName(Hospitalization hospRecord)
         {
             var patientName = new PatientNameList(hospRecord.Patient.FirstName, hospRecord.Patient.LastName);
-            var findPatient = this.NameList.Find(patientName);
-            if(findPatient != null)
+            var findPatient = NameList.Find(patientName);
+            if (findPatient != null)
             {
                 findPatient.HospitalizationRecords.Add(hospRecord);
             }
             {
-                this.NameList.Add(patientName);
+                NameList.Add(patientName);
                 patientName.HospitalizationRecords.Add(hospRecord);
             }
             return true;
         }
         public bool AddRecord(Record record)
         {
-            var recordDate = new HospitalRecord(record.Start);
-            var findRecord = this.StartRecords.Find(recordDate);
-            if(findRecord != null)
-            {               
-                findRecord.Records.AddLast(record);
+            var recordDate = new ListRecords(record.Start);
+            var findRecord = StartRecords.Find(recordDate);
+            if (findRecord != null)
+            {
+                findRecord.Records.Add(record);
                 return true;
             }
             else
             {
-                recordDate.Records.AddLast(record);
-                return this.StartRecords.Add(recordDate);
-            }            
+                recordDate.Records.Add(record);
+                return StartRecords.Add(recordDate);
+            }
         }
         public bool AddEndedRecord(Record record)
         {
-            return this.AddRecord(record);
+            return AddRecord(record);
         }
         public List<Record> FindPatients(DateTime start, DateTime end)
         {
             var result = new List<Record>();
-            var recordDates = new List<HospitalRecord>();
+            var recordDates = new List<ListRecords>();
             //Dates in range
-            this.StartRecords.FindRange(new HospitalRecord(start), new HospitalRecord(end), recordDates);
+            StartRecords.FindRange(new ListRecords(start), new ListRecords(end), recordDates);
+            foreach (var recordDate in recordDates)
+            {
+                result.AddRange(recordDate.Records);
+            }
+            //Dates before range
+            recordDates.Clear();
+            StartRecords.FindRange(new ListRecords(DateTime.MinValue), new ListRecords(
+                start.AddDays(-1)), recordDates);
             foreach (var recordDate in recordDates)
             {
                 foreach (var record in recordDate.Records)
                 {
-                    result.Add(record);
-                }
-            }
-            //Dates before range
-            recordDates.Clear();
-            this.StartRecords.FindRange(new HospitalRecord(DateTime.MinValue), new HospitalRecord(
-                new DateTime(start.Year, start.Month,start.Day - 1)), recordDates);  
-            foreach(var recordDate in recordDates)
-            {
-                foreach(var record in recordDate.Records)
-                {
-                    if(record.End == DateTime.MinValue || record.End >= start)
+                    if (record.End == DateTime.MinValue || record.End >= start)
                     {
                         result.Add(record);
                     }
                 }
             }
             return result;
+        }
+        public HospitalCompany FindCompany(HospitalCompany company)
+        {
+            return Companies.Find(company);
         }
     }
 }

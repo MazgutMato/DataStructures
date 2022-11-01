@@ -1,0 +1,47 @@
+﻿@page "/companies"
+@inject InsuranceController insCont
+
+<PageTitle>Insurance copmanies</PageTitle>
+
+<h3>Companies</h3>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th style="width:40px"></th>
+            <th>Name</th>
+            <th>Code</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (CompanyIterator.HasNext())
+        {
+            var number = 1;
+            @while (this.CompanyIterator.HasNext())
+            {
+                var company = this.CompanyIterator.MoveNext();
+                <tr>
+                    <th>@number</th>
+                    <td>@company.Name</td>
+                    <td>@company.Code</td>
+                </tr>
+                number++;
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    private Iterator<InsuranceCompany> CompanyIterator;
+
+    #region Overrides of ComponentBase
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.CompanyIterator = this.insCont.GetCompanies();
+    }
+
+    #endregion
+}

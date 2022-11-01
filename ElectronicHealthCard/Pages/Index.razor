@@ -1,4 +1,31 @@
 ﻿@page "/"
+@using System.Text
 
 <PageTitle>ElectronicHelathCard</PageTitle>
+<h3>Data save</h3>
+<hr />
+<label for="name">
+    File name
+</label>
+<div class="form-group row">    
+    <div class="col">
+        <input type="text" id="name" class="form-control" placeholder="File name" @bind-value="@FileName" />
+    </div>
+    <div class="col">
+        <button type="submit" class="btn btn-primary" @onclick="Save">
+            Save
+        </button>
+    </div>
+</div>
 
+
+@code
+{
+    [Inject] IBlazorDownloadFileService BlazorDownloadFileService { get; set; }
+    private string FileName = "";
+    async Task Save(){
+        string save = "Ahoj;ako";
+        var bytes = Encoding.ASCII.GetBytes(save);
+		var task = await BlazorDownloadFileService.DownloadFile(FileName + ".csv", bytes, CancellationToken.None, "application/octet-stream");
+    }
+}

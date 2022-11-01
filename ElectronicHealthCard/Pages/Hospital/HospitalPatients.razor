@@ -42,15 +42,19 @@
             <th>Patient ID</th>
             <th>Birth Date</th>
             <th>Hospital Date</th>
+            <th>Insurance</th>
         </tr>
     </thead>
     <tbody>
-        @if (this.PatientsIterator != null)
+        @if (this.CompaniesIterator != null)
         {
             var number = 1;
-            @while (this.PatientsIterator.HasNext())
+            @while (this.CompaniesIterator.HasNext())
             {
-                var patient = this.PatientsIterator.MoveNext();
+                var company = this.CompaniesIterator.MoveNext();
+                var patientIterator = company.ActualPatients.createIterator();
+                @while(patientIterator.HasNext()){
+                    var patient = patientIterator.MoveNext();
                 <tr>
                     <th>@number</th>
                     <td>@patient.FirstName</td>
@@ -58,23 +62,24 @@
                     <td>@patient.PatientId</td>
                     <td>@patient.BirthDate</td>                    
                     <td>@patient.ActualRecord.Start</td>
+                    <td>@patient.Insurance.Code</td>
                 </tr>
                 number++;
+                }                
             }
         }
     </tbody>
 </table>
 
 @code {
-    private Iterator<Patient> PatientsIterator;
+    private Iterator<HospitalCompany> CompaniesIterator;
     private Hospital Hospital = new Hospital();
     private string Message;
 
     private void FormSubmit(){
         var findHospital = hospitalsController.FindHospital(Hospital);
         if(findHospital != null){
-            this.PatientsIterator = findHospital.Patients.createIterator();
-            Message = "Found " + findHospital.Patients.Count + " patients";
+            this.CompaniesIterator = findHospital.Companies.createIterator();
         } else{
             Message = "Hospital not found!";
         }

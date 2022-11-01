@@ -39,9 +39,15 @@ namespace ElectronicHealthCard.Models
                 if (this.Records.Add(record))
                 {
                     record.HospitalizationRecord = this;
+                    //Add to patient tree
                     this.Patient.AddRecord(record);
-                    return (this.Hospital.AddActualPatient(this.Patient, record) &&
-                        this.Hospital.AddRecord(record) && this.Hospital.AddPatientName(this));
+                    //Add to hospital tree
+                    this.Hospital.AddActualPatient(this.Patient, record);
+                    this.Hospital.AddRecord(record);
+                    this.Hospital.AddPatientName(this);
+                    //Add to insurance tree
+                    this.Patient.Insurance.AddRecord(record);
+                    return true;
                 }
             }
             return false;
@@ -51,10 +57,12 @@ namespace ElectronicHealthCard.Models
             var findRecord = this.Records.Find(record);
             if (findRecord != null && findRecord.CompareTo(this.Patient.ActualRecord) == 0)
             {
-                this.Patient.ActualRecord = null;
-                this.Hospital.Patients.Delete(this.Patient);
-                findRecord.End = record.End;
-                return true;
+                if (this.Hospital.DeleteActualPatients(this.Patient))
+                {
+                    findRecord.End = record.End;
+                    return true;
+                }                
+                return false;
             }
             return false;
         }
@@ -62,10 +70,15 @@ namespace ElectronicHealthCard.Models
         {
             if (this.Records.Add(record))
             {
-                record.HospitalizationRecord = this;                
+                record.HospitalizationRecord = this;
+
+                //Add to patient tree
+                this.Patient.AddRecord(record);
+                //Add to hospital tree
                 this.Hospital.AddRecord(record);
                 this.Hospital.AddPatientName(this);
-                this.Patient.AddRecord(record);
+                //Add to insurance tree
+                this.Patient.Insurance.AddRecord(record);
                 return true;
             }
             return false;

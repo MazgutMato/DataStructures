@@ -15,13 +15,16 @@ namespace ElectronicHealthCard.Models
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
         public Record ActualRecord { get; set; }
+        public InsuranceCompany Insurance { get; set; }
         public LinkedList<Record> AllRecords { get; set; }
-        public Patient() {
+        public Patient()
+        {
             PatientId = default;
             FirstName = default;
             LastName = default;
             BirthDate = default;
             ActualRecord = null;
+            Insurance = new InsuranceCompany();
             AllRecords = new LinkedList<Record>();
         }
         public Patient(string patientId, string firstName, string lastName)
@@ -31,24 +34,31 @@ namespace ElectronicHealthCard.Models
             LastName = lastName;
             BirthDate = default;
             ActualRecord = null;
+            Insurance = new InsuranceCompany();
             AllRecords = new LinkedList<Record>();
         }
-        public Patient(string patientId, string firstName, string lastName, DateTime birthDate)
+        public Patient(string patientId, string firstName, string lastName, DateTime birthDate, InsuranceCompany company)
         {
             PatientId = patientId;
             FirstName = firstName;
             LastName = lastName;
             BirthDate = birthDate;
             ActualRecord = null;
+            Insurance = company;
             AllRecords = new LinkedList<Record>();
         }
         public int CompareTo(Patient? other)
         {
-            return this.PatientId.CompareTo(other.PatientId); ;
+            return PatientId.CompareTo(other.PatientId); ;
         }
         public void AddRecord(Record record)
         {
-            this.AllRecords.AddLast(record);
+            AllRecords.AddLast(record);
+        }
+        public string ToString()
+        {
+            String[] information = { this.PatientId, this.FirstName, this.LastName, this.BirthDate.ToString() };
+            return string.Join(',',information);
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿@page "/patients"
 @inject PatientsController patientsController
-@inject HospitalsController hospitalsController
-@inject NavigationManager navigatorManager
 
 <PageTitle>Patients</PageTitle>
 
@@ -45,9 +43,7 @@
 </table>
 
 @code {
-    private Iterator<Patient> PatientsIterator;
-    private string Message;
-
+    private Iterator<Patient>? PatientsIterator;
     protected override void OnInitialized()
     {
         base.OnInitialized();

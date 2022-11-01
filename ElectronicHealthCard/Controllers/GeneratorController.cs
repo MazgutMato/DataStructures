@@ -46,7 +46,7 @@ namespace ElectronicHealthCard.Controllers
             return builder.ToString();
         }
         public bool GenerateData(HospitalizationController hospRecordCon,
-            PatientsController patCon, HospitalsController hospCon)
+            PatientsController patCon, HospitalsController hospCon, InsuranceController insCon)
         {
             //Hospitals generate
             var count = generator.Hospital;
@@ -59,6 +59,18 @@ namespace ElectronicHealthCard.Controllers
                 count--;
             }
             hospCon.AddHospitals(hospitals);
+            //Insurance company generate
+            count = generator.InsuranceCompany;
+            var companies = new List<InsuranceCompany>();
+            while (count > 0)
+            {
+                var name = random.Next(10) + 3;
+                var code = 4;
+                var company = new InsuranceCompany(RandomString(name), RandomString(code));
+                companies.Add(company);
+                count--;
+            }
+            insCon.AddCompanies(companies);
             //Patients generate
             count = generator.Patient;
             var patients = new List<Patient>();
@@ -68,8 +80,9 @@ namespace ElectronicHealthCard.Controllers
                     RandomString(5), RandomString(8), 
                     new DateTime(random.Next(1920, DateTime.Now.Year),
                     random.Next(1, 12),
-                    random.Next(1, 28)
-                    ));
+                    random.Next(1, 28)),
+                    companies[random.Next(companies.Count)]
+                    );
                 patients.Add(patient);
                 count--;
             };

@@ -1,0 +1,110 @@
+﻿@page "/hospitalPatientsByInsurance"
+@inject PatientsController patientsController
+@inject HospitalsController hospitalsController
+@inject NavigationManager navigatorManager
+
+<PageTitle>Patients</PageTitle>
+
+<h3>Search hospitalized patients</h3>
+<hr />
+
+<EditForm Model="@Company">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-2">
+        <div class="row">
+            <label for="code">
+                Insurance code
+            </label>
+            <div class="col">
+                <InputText id="code" class="form-control" placeholder="Insurance code"
+                           @bind-Value="Company.InsuranceCompany.Code" />
+                <ValidationMessage For="@(() => Company.InsuranceCompany.Code)" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<EditForm Model="@Hospital" OnValidSubmit="@FormSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-2">
+        <div class="row">
+            <label for="name">
+                Hospital name
+            </label>
+            <div class="col">
+                <InputText id="name" class="form-control" placeholder="Name"
+                           @bind-Value="Hospital.Name" />
+                <ValidationMessage For="@(() => Hospital.Name)" />
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+    @if (Message != null)
+    {
+        <p>@Message</p>
+    }
+</EditForm>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th style="width:40px"></th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Patient ID</th>
+            <th>Birth Date</th>
+            <th>Hospital Date</th>
+            <th>Insurance</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (this.PatientsIterator != null)
+        {
+            var number = 1;
+            @while (PatientsIterator.HasNext())
+            {
+                var patient = PatientsIterator.MoveNext();
+                <tr>
+                    <th>@number</th>
+                    <td>@patient.FirstName</td>
+                    <td>@patient.LastName</td>
+                    <td>@patient.PatientId</td>
+                    <td>@patient.BirthDate</td>
+                    <td>@patient.ActualRecord.Start</td>
+                    <td>@patient.Insurance.Code</td>
+                </tr>
+                number++;
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    private Iterator<Patient> PatientsIterator;
+    private Hospital Hospital = new Hospital();
+    private HospitalCompany Company = new HospitalCompany();
+    private string Message;
+
+    private void FormSubmit()
+    {
+        var findHospital = hospitalsController.FindHospital(Hospital);
+        if (findHospital != null)
+        {
+            var findCompany = findHospital.FindCompany(Company);
+            if(findCompany != null){
+                this.PatientsIterator = findCompany.ActualPatients.createIterator();
+            }
+            else{
+                Message = "Insurance company not found in hospital!";
+            }
+        }
+        else
+        {
+            Message = "Hospital not found!";
+        }
+    }
+}

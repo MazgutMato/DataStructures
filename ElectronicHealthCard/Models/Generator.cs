@@ -21,6 +21,8 @@ namespace ElectronicHealthCard.Models
         public DateTime MinDate;
         [Required]
         public DateTime MaxDate;
+        [Required]
+        public int InsuranceCompany;
         public Generator()
         {
             Hospital = 1;
@@ -31,6 +33,7 @@ namespace ElectronicHealthCard.Models
             MaxEndedRecord = 1;
             MinDate = DateTime.MinValue;
             MaxDate = DateTime.MinValue;
+            InsuranceCompany = 1;
         }
     }
 }

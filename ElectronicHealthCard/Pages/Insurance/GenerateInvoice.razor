@@ -1,0 +1,91 @@
+﻿@page "/generateInvoice"
+@inject InsuranceController insCont
+
+<PageTitle>Invoices</PageTitle>
+
+<h3>Invoices</h3>
+<hr />
+
+<div class="form-group row">
+    <label for="Month">
+        Month
+    </label>
+    <div class="col">
+        <div>
+            <input id="Month" class="form-control" type="month" @bind-value="@date" />
+        </div>
+    </div>
+    <div class="col">
+        <button type="submit" class="btn btn-primary" @onclick="@Submit">
+            Generate
+        </button>
+    </div>
+</div>
+@if (Message != null)
+{
+    <p>@Message</p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th style="width:40px"></th>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Days</th>
+            <th>Date</th>
+            <th>PatientId</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Diagnoze</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Invoices != null)
+        {
+            var number = 1;
+            @foreach (var invoice in Invoices)
+            {
+                <tr>
+                    <th>@number</th>
+                    <td>@invoice.Company.Name</td>
+                    <td>@invoice.Company.Code</td>
+                    <td>@invoice.Days</td>
+                    <td>@invoice.Date</td>
+                </tr>
+                var numberPatient = 1;
+                @foreach (var recordDay in invoice.Records)
+                {
+                    @foreach (var record in recordDay.Records)
+                    {
+                        <tr>
+                            <th></th>
+                            <td></td>
+                            <td></td>
+                            <td>@numberPatient</td>
+                            <td>@recordDay.Date</td>
+                            <td>@record.HospitalizationRecord.Patient.PatientId</td>
+                            <td>@record.HospitalizationRecord.Patient.FirstName</td>
+                            <td>@record.HospitalizationRecord.Patient.LastName</td>
+                            <td>@record.Diagnoze</td>
+                        </tr>
+                        numberPatient++;
+                    }
+                }
+                number++;
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<InsuranceInvoice> Invoices;
+    private string Message;
+    private DateTime date;
+
+
+    private void Submit()
+    {
+        Invoices = insCont.GenerateInvoices(date);
+    }
+}

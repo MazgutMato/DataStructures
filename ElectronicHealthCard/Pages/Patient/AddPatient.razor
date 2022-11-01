@@ -1,6 +1,6 @@
 ﻿@page "/patientForm"
 @inject PatientsController patientController
-@inject NavigationManager navigatorManager
+@inject InsuranceController insuranceController
 
 <PageTitle>AddPatient</PageTitle>
 
@@ -46,7 +46,16 @@
             <InputDate id="birthDate" class="form-control" placeholder="Birth Date"
                        @bind-Value="Patient.BirthDate" />
         </div>
-    </div>    
+    </div>
+    <div class="form-group row mb-2">
+        <label for="insurance">
+            Insurance code
+        </label>
+        <div>
+            <InputText id="insurance" class="form-control" placeholder="Insurance code"
+                       @bind-Value="Patient.Insurance.Code" />
+        </div>
+    </div>
     <div>
         <button type="submit" class="btn btn-primary">Add</button>
     </div>
@@ -57,11 +66,17 @@
 
 @code {
     public Patient Patient { get; set; } = new Patient();
-    public string Message { get; set; } = null;
+    public string? Message { get; set; }
 
-    public void PatientFormSubmit(){
-       
-        if (patientController.AddPatient(new Patient(this.Patient.PatientId, this.Patient.FirstName, this.Patient.LastName) ))
+    public void PatientFormSubmit()
+    {
+        var findInsurance = insuranceController.FindCompany(this.Patient.Insurance);
+        if(findInsurance == null){
+            Message = "Insurance company doesnt exists!";
+            return;
+        }
+        if (patientController.AddPatient(new Patient(this.Patient.PatientId, this.Patient.FirstName, 
+            this.Patient.LastName, this.Patient.BirthDate, findInsurance)))
         {
             Message = "Successfuly added!";
         }

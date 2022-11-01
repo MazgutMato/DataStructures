@@ -94,7 +94,7 @@
     private void FormSubmit()
     {
         var findPatien = patientsController.FindPatient(Patient);
-        Patient = new Patient(findPatien.PatientId, findPatien.FirstName, findPatien.LastName, findPatien.BirthDate);
+        Patient = new Patient(findPatien.PatientId, findPatien.FirstName, findPatien.LastName, findPatien.BirthDate, findPatien.Insurance);
         if(findPatien != null){
             var findRecords = patientsController.FindPatient(Patient);
             AllRecords = findPatien.AllRecords;

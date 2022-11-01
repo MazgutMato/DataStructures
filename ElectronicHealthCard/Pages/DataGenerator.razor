@@ -2,6 +2,7 @@
 @inject HospitalizationController hospitalizationRecordsController
 @inject HospitalsController hospitalController
 @inject PatientsController patientController
+@inject InsuranceController insuranceController
 
 <PageTitle>DataGenerator</PageTitle>
 
@@ -96,10 +97,22 @@
                            @bind-Value="GeneratorModel.MaxDate" />
             </div>
         </div>
-        <div class="mt-2">
+    </div>
+    <div class="row">
+        <label for="insurance">
+            Number of insurance companies
+        </label>
+        <div class="form-group col">           
+            <div>
+                <InputNumber id="insurance" class="form-control"
+                           placeholder="Number of insurance companies"
+                           @bind-Value="GeneratorModel.InsuranceCompany" />
+            </div>
+        </div>
+        <div class="col">
             <button type="submit" class="btn btn-primary">Generate data</button>
         </div>
-    </div>    
+    </div>
     @if (Message != null)
     {
         <p>@Message</p>
@@ -149,9 +162,13 @@
             Message = "Maximal number of ended records must be greather then 0 and minimal number!";
             return;
         }
+        if(GeneratorModel.InsuranceCompany < 1){
+            Message = "Number of insurance companies must be greather then 0!";
+            return;
+        }
         Message = "Data generating! Wait!";
         var genController = new GeneratorController(GeneratorModel);
-        genController.GenerateData(hospitalizationRecordsController, patientController, hospitalController);
+        genController.GenerateData(hospitalizationRecordsController, patientController, hospitalController, insuranceController);
         Message = "Data was generated!";
     }
 }

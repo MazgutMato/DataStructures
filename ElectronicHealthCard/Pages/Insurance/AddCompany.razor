@@ -20,7 +20,7 @@
         </div>
         <div class="col">
             <label for="code">
-                Name
+                Code
             </label>
             <div>
                 <InputText id="code" class="form-control" placeholder="Code"
@@ -42,7 +42,7 @@
 
 @code {
     public InsuranceCompany Company { get; set; } = new InsuranceCompany();
-    public string Message { get; set; } = null;
+    public string? Message { get; set; }
 
     public void FormSubmit()
     {

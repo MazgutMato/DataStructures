@@ -1,5 +1,6 @@
 using ElectronicHealthCard;
 using ElectronicHealthCard.Controllers;
+using BlazorDownloadFile;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -12,5 +13,7 @@ builder.Services.AddSingleton<PatientsController>();
 builder.Services.AddSingleton<HospitalsController>();
 builder.Services.AddSingleton<HospitalizationController>();
 builder.Services.AddSingleton<InsuranceController>();
+
+builder.Services.AddBlazorDownloadFile();
 
 await builder.Build().RunAsync();

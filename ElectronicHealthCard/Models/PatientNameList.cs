@@ -25,15 +25,16 @@ namespace ElectronicHealthCard.Models
         }
         public int CompareTo(PatientNameList? other)
         {
-            var compFirstName = this.FirstName.CompareTo(other.FirstName);
-            var compLastname = this.LastName.CompareTo(other.LastName);
-            if(compFirstName != 0)
+            var compFirstName = FirstName.CompareTo(other.FirstName);
+            var compLastname = LastName.CompareTo(other.LastName);
+            if (compFirstName != 0)
             {
                 return compFirstName;
-            } else
+            }
+            else
             {
                 return compLastname;
-            }            
+            }
         }
     }
 }
