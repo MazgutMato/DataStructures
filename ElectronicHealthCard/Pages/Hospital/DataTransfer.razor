@@ -1,10 +1,11 @@
 ﻿@page "/dataTransfer"
-@inject HospitalsController hospitalController
+@inject HospitalizationController hospitalizations
+@inject HospitalsController hospitals
 @inject NavigationManager navigatorManager
 
 <PageTitle>DataTransfer</PageTitle>
 
-<EditForm Model="@HospitalFrom">
+<EditForm Model="@HospitalOld">
     <DataAnnotationsValidator />
     <h3>From hospital</h3>
     <hr />
@@ -14,13 +15,13 @@
         </label>
         <div>
             <InputText id="name" class="form-control" placeholder="Name"
-                       @bind-Value="HospitalFrom.Name" />
-            <ValidationMessage For="@(() => HospitalFrom.Name)" />
+                       @bind-Value="HospitalOld.Name" />
+            <ValidationMessage For="@(() => HospitalOld.Name)" />
         </div>
     </div>   
 </EditForm>
 
-<EditForm Model="@HospitalTo" OnValidSubmit="@Transfer">
+<EditForm Model="@HospitalNew" OnValidSubmit="@Transfer">
     <DataAnnotationsValidator />
     <h3 class="mt-2">To hospital</h3>
     <hr />
@@ -30,8 +31,8 @@
         </label>
         <div>
             <InputText id="name" class="form-control" placeholder="Name"
-                       @bind-Value="HospitalTo.Name" />
-            <ValidationMessage For="@(() => HospitalTo.Name)" />
+                       @bind-Value="HospitalNew.Name" />
+            <ValidationMessage For="@(() => HospitalNew.Name)" />
         </div>
     </div>
     <div class="mt-2">
@@ -47,10 +48,27 @@
 }
 
 @code{
-    private Hospital HospitalFrom = new Hospital();
-    private Hospital HospitalTo = new Hospital();
+    private Hospital HospitalOld = new Hospital();
+    private Hospital HospitalNew = new Hospital();
     private string Message;
     private void Transfer(){
+        if(HospitalOld.Name == HospitalNew.Name){
+            Message = "Hospitals cannot be same!";
+            return;
+        }
+        var findNewHospital = hospitals.FindHospital(HospitalNew);
+        if(findNewHospital == null){
+            Message = "Hospital from not found!";
+            return;
+        }
+        var findOldHospital = hospitals.FindHospital(HospitalOld);
+        if (findNewHospital == null)
+        {
+            Message = "Hospital to not found!";
+            return;
+        }
+        hospitalizations.ChangeHospital(findOldHospital, findNewHospital);
+        hospitals.DeleteHospital(findOldHospital);
         Message = "Transfer complete!";
     }
 }

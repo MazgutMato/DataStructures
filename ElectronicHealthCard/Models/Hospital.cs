@@ -11,10 +11,6 @@ namespace ElectronicHealthCard.Models
         public BSTree<HospitalCompany> Companies { get; set; }
         public BSTree<PatientNameList> NameList { get; set; }
         public BSTree<ListRecords> StartRecords { get; set; }
-        public override string ToString()
-        {
-            return "Name:;" + this.Name + ";";
-        }
         public Hospital()
         {
             Name = null;
@@ -79,7 +75,7 @@ namespace ElectronicHealthCard.Models
             if (findPatient != null)
             {
                 findPatient.HospitalizationRecords.Add(hospRecord);
-            }
+            }else
             {
                 NameList.Add(patientName);
                 patientName.HospitalizationRecords.Add(hospRecord);
@@ -178,6 +174,6 @@ namespace ElectronicHealthCard.Models
                 company.ActualPatients.BalanceTree();
             }
             this.Companies.BalanceTree();
-        }
+        }        
     }
 }

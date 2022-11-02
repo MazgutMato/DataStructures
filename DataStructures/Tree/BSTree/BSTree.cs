@@ -559,6 +559,11 @@ namespace DataStructures.Tree.BSTree
             }
             return null;
         }
+        public void Clear()
+        {
+            this.Root = null;
+            this.Count = 0;
+        }
         public bool FillWithMedian(List<T> structure)
         {
             if(this.Count > 0)

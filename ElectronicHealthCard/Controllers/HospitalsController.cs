@@ -42,5 +42,9 @@ namespace ElectronicHealthCard.Controllers
             }
             this.Hospitals.BalanceTree();
         }
+        public bool DeleteHospital(Hospital hospital)
+        {
+            return this.Hospitals.Delete(hospital);
+        }
     }
 }

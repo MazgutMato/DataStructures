@@ -64,8 +64,9 @@
         @if (this.AllRecords != null)
         {
             var number = 1;
-            @foreach (var record in AllRecords)
-            {                
+            @while (AllRecords.HasNext())
+            {
+                var record = AllRecords.MoveNext();
                 <tr>
                     <th>@number</th>
                     <td>@record.Start</td>
@@ -88,7 +89,7 @@
 
 @code {
     private Patient Patient = new Patient();
-    private List<Record> AllRecords;
+    private Iterator<Record> AllRecords;
     private string Message;
 
     private void FormSubmit()
@@ -97,8 +98,8 @@
         Patient = new Patient(findPatien.PatientId, findPatien.FirstName, findPatien.LastName, findPatien.BirthDate, findPatien.Insurance);
         if(findPatien != null){
             var findRecords = patientsController.FindPatient(Patient);
-            AllRecords = findPatien.AllRecords;
-            Message = "Found " + AllRecords.Count + " records!";
+            AllRecords = findPatien.AllRecords.createIterator();
+            Message = "Found " + findPatien.AllRecords.Count + " records!";
         }else {
             Message = "Records not found!";
         }       

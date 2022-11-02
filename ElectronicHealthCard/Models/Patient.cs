@@ -1,4 +1,5 @@
-﻿using ElectronicHealthCard.Pages.Patient;
+﻿using DataStructures.Tree.BSTree;
+using ElectronicHealthCard.Pages.Patient;
 using ElectronicHealthCard.Pages.Record;
 using System.ComponentModel.DataAnnotations;
 
@@ -16,7 +17,7 @@ namespace ElectronicHealthCard.Models
         public DateTime BirthDate { get; set; }
         public Record ActualRecord { get; set; }
         public InsuranceCompany Insurance { get; set; }
-        public List<Record> AllRecords { get; set; }
+        public BSTree<Record> AllRecords { get; set; }
         public Patient()
         {
             PatientId = default;
@@ -25,7 +26,7 @@ namespace ElectronicHealthCard.Models
             BirthDate = default;
             ActualRecord = null;
             Insurance = new InsuranceCompany();
-            AllRecords = new List<Record>();
+            AllRecords = new BSTree<Record>();
         }
         public Patient(string patientId, string firstName, string lastName)
         {
@@ -35,7 +36,7 @@ namespace ElectronicHealthCard.Models
             BirthDate = default;
             ActualRecord = null;
             Insurance = new InsuranceCompany();
-            AllRecords = new List<Record>();
+            AllRecords = new BSTree<Record>();
         }
         public Patient(string patientId, string firstName, string lastName, DateTime birthDate, InsuranceCompany company)
         {
@@ -45,7 +46,7 @@ namespace ElectronicHealthCard.Models
             BirthDate = birthDate;
             ActualRecord = null;
             Insurance = company;
-            AllRecords = new List<Record>();
+            AllRecords = new BSTree<Record>();
         }
         public int CompareTo(Patient? other)
         {

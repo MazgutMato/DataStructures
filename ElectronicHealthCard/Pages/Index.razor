@@ -111,7 +111,8 @@
     {
         try
         {
-            var reader = new StreamReader(e.File.OpenReadStream());
+            Message = "Wait data loading!";
+            var reader = new StreamReader(e.File.OpenReadStream(20000000));
             var line = await reader.ReadLineAsync();
             string[]? values;
             //Load line

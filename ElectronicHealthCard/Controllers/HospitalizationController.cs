@@ -98,5 +98,36 @@ namespace ElectronicHealthCard.Controllers
             }
             this.HospitalizationRecords.BalanceTree();
         }
+        public bool ChangeHospital(Hospital oldHospital, Hospital newHospital)
+        {
+            //Find all old hospitalizations
+            List<Hospitalization> hospitalizations = new List<Hospitalization>();
+            var minPatient = new Patient("0000000000", "", "");
+            var maxPatient = new Patient("9999999999", "", "");
+            var minHospitalization = new Hospitalization(minPatient,oldHospital);
+            var maxHospitalization = new Hospitalization(maxPatient, oldHospital);
+            this.HospitalizationRecords.FindRange(minHospitalization, maxHospitalization, hospitalizations);
+            foreach(var hospitalization in hospitalizations)
+            {
+                var iteratorRecords = hospitalization.Records.createIterator();
+                while (iteratorRecords.HasNext())
+                {
+                    var record = iteratorRecords.MoveNext();
+                    //Delete from patient
+                    record.HospitalizationRecord.Patient.AllRecords.Delete(record);
+                    //Add new hospitalization
+                    if(record.End == DateTime.MinValue)
+                    {
+                        record.HospitalizationRecord.Patient.ActualRecord = null;
+                        this.AddRecord(newHospital, record.HospitalizationRecord.Patient, new Record(record.Start, record.Diagnoze));
+                    } else
+                    {
+                        this.AddEndedRecord(newHospital, record.HospitalizationRecord.Patient, new Record(record.Start, record.End,record.Diagnoze));
+                    }
+                }
+                this.HospitalizationRecords.Delete(hospitalization);
+            }
+            return true;
+        }
     }
 }
