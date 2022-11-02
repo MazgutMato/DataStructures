@@ -40,18 +40,19 @@ namespace ElectronicHealthCard.Models
             var findCompany = Companies.Find(patientCompany);
             if (findCompany != null)
             {
-                if (findCompany.AddActualPatient(patient))
+                if (findCompany.AddActualPatient(patient) && findCompany.AddRecord(record))
                 {
-                    patient.ActualRecord = record;
+                    patient.ActualRecord = record;                    
                     return true;
                 }
                 return false;
             }
             else
             {
-                if (Companies.Add(patientCompany) && patientCompany.AddActualPatient(patient))
+                if (Companies.Add(patientCompany) && patientCompany.AddActualPatient(patient) &&
+                    patientCompany.AddRecord(record))
                 {
-                    patient.ActualRecord = record;
+                    patient.ActualRecord = record;                    
                     return true;
                 }
                 return false;
@@ -100,9 +101,21 @@ namespace ElectronicHealthCard.Models
                 return StartRecords.Add(recordDate);
             }
         }
-        public bool AddEndedRecord(Record record)
+        public bool AddInsuranceRecord(Record record)
         {
-            return AddRecord(record);
+            var insurance = record.HospitalizationRecord.Patient.Insurance;
+            var newCompany = new HospitalCompany(insurance);
+            var findCompany = this.Companies.Find(newCompany);
+            if (findCompany != null)
+            {
+                return findCompany.AddRecord(record);
+            }
+            else
+            {
+
+                return this.Companies.Add(newCompany) && newCompany.AddRecord(record);
+
+            }
         }
         public List<Record> FindPatients(DateTime start, DateTime end)
         {
@@ -133,6 +146,38 @@ namespace ElectronicHealthCard.Models
         public HospitalCompany FindCompany(HospitalCompany company)
         {
             return Companies.Find(company);
+        }
+        public List<InsuranceInvoice> GenerateInvoices(DateTime date)
+        {
+            var invoices = new List<InsuranceInvoice>();
+            var iterator = this.Companies.createIterator();
+            while (iterator.HasNext())
+            {
+                var companie = iterator.MoveNext();
+                invoices.Add(companie.GenerateInvoice(date));
+            }
+            return invoices;
+        }
+        public void Optimalize()
+        {
+            //All records
+            this.StartRecords.BalanceTree();
+            //NameList
+            var iterator = this.NameList.createIterator();
+            while (iterator.HasNext())
+            {
+                var item = iterator.MoveNext();
+                item.HospitalizationRecords.BalanceTree();
+            }
+            this.NameList.BalanceTree();
+            //Actual patients
+            var iteratorCompanies = this.Companies.createIterator();
+            while (iteratorCompanies.HasNext())
+            {
+                var company = iteratorCompanies.MoveNext();
+                company.ActualPatients.BalanceTree();
+            }
+            this.Companies.BalanceTree();
         }
     }
 }

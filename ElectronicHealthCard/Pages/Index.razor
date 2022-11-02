@@ -5,7 +5,7 @@
 @inject HospitalizationController hospitalizations
 
 <PageTitle>ElectronicHelathCard</PageTitle>
-<h3>Data save</h3>
+<h3>Save data</h3>
 <hr />
 
 <label for="name">
@@ -22,14 +22,21 @@
     </div>
 </div>
 
+<h3 class="mt-2">Load data</h3>
+<hr />
+
 <label for="name">
     File name
 </label>
 <div class="form-group row">
-    <div class="col">
-        <InputFile OnChange="Load" />
-    </div>
+    <InputFile OnChange="Load" class="form-control"/>
 </div>
+
+<h3 class="mt-2">Optimalize</h3>
+<hr />
+<button type="submit" class="btn btn-primary" @onclick="Optimalize">
+    Optimalize
+</button>
 @if (Message != null)
 {
     <p>@Message</p>
@@ -41,6 +48,13 @@
     [Inject] IBlazorDownloadFileService BlazorDownloadFileService { get; set; }
     private string FileName = "";
     private string Message;
+    private void Optimalize(){
+        this.hospitalizations.Optimalize();
+        this.hospitals.Optimalize();
+        this.companies.Optimalize();
+        this.patients.Optimalize();
+        Message = "Data are optimalized!";
+    }
     async Task Save()
     {
         StringBuilder output = new StringBuilder();

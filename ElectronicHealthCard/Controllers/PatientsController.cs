@@ -31,5 +31,9 @@ namespace ElectronicHealthCard.Controllers
         {
             return Patients.Find(patient);
         }
+        public void Optimalize()
+        {
+            this.Patients.BalanceTree();
+        }
     }
 }

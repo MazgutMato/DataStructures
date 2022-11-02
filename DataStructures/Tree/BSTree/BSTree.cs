@@ -432,74 +432,78 @@ namespace DataStructures.Tree.BSTree
         }
         public void BalanceTree()
         {
-            //Make levelorder traversal
-            var queue = new Queue<BSTNode<T>>();
-            var levelOrder = new Stack<BSTNode<T>>();   
-            
-            if(this.Root == null)
+            while (this.CheckHeights() != null)
             {
-                return;
-            }
+                //Make levelorder traversal
+                var queue = new Queue<BSTNode<T>>();
+                var levelOrder = new Stack<BSTNode<T>>();
 
-            queue.Enqueue(this.Root);
-            while (queue.Count > 0)
-            {
-                var topNode = queue.Dequeue();
-
-                levelOrder.Push(topNode);
-
-                if(topNode.LeftNode != null)
+                if (this.Root == null)
                 {
-                    queue.Enqueue(topNode.LeftNode);
+                    return;
                 }
 
-                if (topNode.RightNode != null)
+                queue.Enqueue(this.Root);
+                while (queue.Count > 0)
                 {
-                    queue.Enqueue(topNode.RightNode);
-                }
-            }
-            //Balance tree
-            BSTNode<T> current;
-            while (levelOrder.Count > 0)
-            {
-                current = levelOrder.Pop();
-                //HightSet
-                if(current.LeftNode != null)
-                {
-                    current.LeftHeight = Math.Max(current.LeftNode.LeftHeight, current.LeftNode.RightHeight) + 1;
-                } else
-                {
-                    current.LeftHeight = 0;
-                }
-                if (current.RightNode != null)
-                {
-                    current.RightHeight = Math.Max(current.RightNode.LeftHeight, current.RightNode.RightHeight) + 1;
-                }
-                else
-                {
-                    current.RightHeight = 0;
-                }
-                //HightCheck
-                while (Math.Abs(current.GetHeight()) > 1)
-                {
-                    if (current.GetHeight() > 1)
+                    var topNode = queue.Dequeue();
+
+                    levelOrder.Push(topNode);
+
+                    if (topNode.LeftNode != null)
                     {
-                        while(current.RightNode.GetHeight() < 0)
-                        {
-                            this.RotateRight(current.RightNode);
-                        }
-                        this.RotateLeft(current);
+                        queue.Enqueue(topNode.LeftNode);
                     }
-                    if (current.GetHeight() < -1)
+
+                    if (topNode.RightNode != null)
                     {
-                        while (current.LeftNode.GetHeight() > 0)
-                        {
-                            this.RotateLeft(current.LeftNode);
-                        }
-                        this.RotateRight(current);
+                        queue.Enqueue(topNode.RightNode);
                     }
-                }                
-            }            
+                }
+                //Balance tree
+                BSTNode<T> current;
+                while (levelOrder.Count > 0)
+                {
+                    current = levelOrder.Pop();
+                    //HightSet
+                    if (current.LeftNode != null)
+                    {
+                        current.LeftHeight = Math.Max(current.LeftNode.LeftHeight, current.LeftNode.RightHeight) + 1;
+                    }
+                    else
+                    {
+                        current.LeftHeight = 0;
+                    }
+                    if (current.RightNode != null)
+                    {
+                        current.RightHeight = Math.Max(current.RightNode.LeftHeight, current.RightNode.RightHeight) + 1;
+                    }
+                    else
+                    {
+                        current.RightHeight = 0;
+                    }
+                    //HightCheck
+                    while (Math.Abs(current.GetHeight()) > 1)
+                    {
+                        if (current.GetHeight() > 1)
+                        {
+                            while (current.RightNode.GetHeight() < 0)
+                            {
+                                this.RotateRight(current.RightNode);
+                            }
+                            this.RotateLeft(current);
+                        }
+                        if (current.GetHeight() < -1)
+                        {
+                            while (current.LeftNode.GetHeight() > 0)
+                            {
+                                this.RotateLeft(current.LeftNode);
+                            }
+                            this.RotateRight(current);
+                        }
+                    }
+                }
+            }
         }
         public BSTNode<T> CheckHeights()
         {

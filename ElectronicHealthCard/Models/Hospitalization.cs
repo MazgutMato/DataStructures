@@ -51,7 +51,7 @@ namespace ElectronicHealthCard.Models
                     this.Hospital.AddRecord(record);
                     this.Hospital.AddPatientName(this);
                     //Add to insurance tree
-                    this.Patient.Insurance.AddRecord(record);
+                    this.Hospital.AddInsuranceRecord(record);
                     return true;
                 }
             }
@@ -83,7 +83,7 @@ namespace ElectronicHealthCard.Models
                 this.Hospital.AddRecord(record);
                 this.Hospital.AddPatientName(this);
                 //Add to insurance tree
-                this.Patient.Insurance.AddRecord(record);
+                this.Hospital.AddInsuranceRecord(record);
                 return true;
             }
             return false;

@@ -1,0 +1,56 @@
+﻿@page "/dataTransfer"
+@inject HospitalsController hospitalController
+@inject NavigationManager navigatorManager
+
+<PageTitle>DataTransfer</PageTitle>
+
+<EditForm Model="@HospitalFrom">
+    <DataAnnotationsValidator />
+    <h3>From hospital</h3>
+    <hr />
+    <div class="form-group">
+        <label for="name">
+            Name
+        </label>
+        <div>
+            <InputText id="name" class="form-control" placeholder="Name"
+                       @bind-Value="HospitalFrom.Name" />
+            <ValidationMessage For="@(() => HospitalFrom.Name)" />
+        </div>
+    </div>   
+</EditForm>
+
+<EditForm Model="@HospitalTo" OnValidSubmit="@Transfer">
+    <DataAnnotationsValidator />
+    <h3 class="mt-2">To hospital</h3>
+    <hr />
+    <div class="form-group">
+        <label for="name">
+            Name
+        </label>
+        <div>
+            <InputText id="name" class="form-control" placeholder="Name"
+                       @bind-Value="HospitalTo.Name" />
+            <ValidationMessage For="@(() => HospitalTo.Name)" />
+        </div>
+    </div>
+    <div class="mt-2">
+        <button type="submit" class="btn btn-primary">
+            Transfer
+        </button>
+    </div>
+</EditForm>
+
+@if (Message != null)
+{
+    <p>@Message</p>
+}
+
+@code{
+    private Hospital HospitalFrom = new Hospital();
+    private Hospital HospitalTo = new Hospital();
+    private string Message;
+    private void Transfer(){
+        Message = "Transfer complete!";
+    }
+}

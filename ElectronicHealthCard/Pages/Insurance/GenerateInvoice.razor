@@ -1,10 +1,24 @@
 ﻿@page "/generateInvoice"
-@inject InsuranceController insCont
+@inject HospitalsController hospController
 
 <PageTitle>Invoices</PageTitle>
 
 <h3>Invoices</h3>
 <hr />
+
+<EditForm Model="@Hospital">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="name">
+            Hospital name
+        </label>
+        <div>
+            <InputText id="name" class="form-control" placeholder="Hospital name"
+                       @bind-Value="Hospital.Name" />
+            <ValidationMessage For="@(() => Hospital.Name)" />
+        </div>
+    </div>
+</EditForm>
 
 <div class="form-group row">
     <label for="Month">
@@ -80,12 +94,18 @@
 
 @code {
     private List<InsuranceInvoice> Invoices;
+    private Hospital Hospital = new Hospital();
     private string Message;
     private DateTime date;
 
 
     private void Submit()
     {
-        Invoices = insCont.GenerateInvoices(date);
+        var findHospital = hospController.FindHospital(Hospital);
+        if(findHospital == null){
+            Message = "Hospital not found!";
+            return;
+        }
+        Invoices = findHospital.GenerateInvoices(date);
     }
 }

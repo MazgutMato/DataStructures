@@ -31,6 +31,16 @@ namespace ElectronicHealthCard.Controllers
         public Hospital FindHospital(Hospital hospital)
         {
             return Hospitals.Find(hospital);
-        }        
+        }
+        public void Optimalize()
+        {
+            var iterator = this.Hospitals.createIterator();
+            while (iterator.HasNext())
+            {
+                var hospital = iterator.MoveNext();
+                hospital.Optimalize();
+            }
+            this.Hospitals.BalanceTree();
+        }
     }
 }

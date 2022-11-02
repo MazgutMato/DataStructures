@@ -92,13 +92,8 @@ for (int i = 0; i < pocetOperacii; i++)
         }
     }else
     {
-        celkovoBalancuj++;
-        BStree.BalanceTree();
-        if(BStree.CheckHeights() != null)
-        {
-            throw new InvalidOperationException("Tree is not balance!");
-        }
-        Console.WriteLine("Balancuje");
+        celkovoBalancuj++;               
+        Console.WriteLine("Pred");
         Console.Write("\tBST:");
         var iterator = new BSTIterator<int>(BStree);
         while (iterator.HasNext())
@@ -106,10 +101,11 @@ for (int i = 0; i < pocetOperacii; i++)
             var cislo = iterator.MoveNext();
             var height = BStree.GetNodeHeight(cislo);            
             Console.Write(" {0}({1})", cislo, height);
-            if (Math.Abs(height) > 1)
-            {
-                throw new InvalidOperationException("Tree is not balance!");
-            }
+        }
+        BStree.BalanceTree();
+        if (BStree.CheckHeights() != null)
+        {
+            throw new InvalidOperationException("Tree is not balance!");
         }
         Console.WriteLine();
     }
@@ -155,3 +151,5 @@ foreach (var data in ControlArray)
 {
     Console.Write("{0} ", data);
 }
+
+Console.WriteLine();

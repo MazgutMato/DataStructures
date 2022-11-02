@@ -88,5 +88,15 @@ namespace ElectronicHealthCard.Controllers
         {
             return this.HospitalizationRecords.Find(new Hospitalization(patient, hospital));
         }
+        public void Optimalize()
+        {
+            var iterator = this.HospitalizationRecords.createIterator();
+            while (iterator.HasNext())
+            {
+                var hospitalization = iterator.MoveNext();
+                hospitalization.Records.BalanceTree();
+            }
+            this.HospitalizationRecords.BalanceTree();
+        }
     }
 }

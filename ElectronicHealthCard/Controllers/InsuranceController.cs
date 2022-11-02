@@ -31,16 +31,9 @@ namespace ElectronicHealthCard.Controllers
         {
             return this.Comanies.FillWithMedian(companies);
         }
-        public List<InsuranceInvoice> GenerateInvoices(DateTime date)
+        public void Optimalize()
         {
-            var invoices = new List<InsuranceInvoice>();
-            var iterator = this.Comanies.createIterator();
-            while (iterator.HasNext())
-            {
-                var companie = iterator.MoveNext();
-                invoices.Add(companie.GenerateInvoice(date));
-            }
-            return invoices;
+            this.Comanies.BalanceTree();
         }
     }
 }
