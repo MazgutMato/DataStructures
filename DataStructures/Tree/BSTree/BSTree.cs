@@ -303,6 +303,7 @@ namespace DataStructures.Tree.BSTree
         public bool Delete(T data)
         {
             var removeNode = FindNode(data);
+            BSTNode<T> Parent = null;
             //Dont found removed Node
             if (removeNode == null)
             {
@@ -325,6 +326,7 @@ namespace DataStructures.Tree.BSTree
                     return true;
                 }
                 //Is right or left son of parent
+                Parent = ((BSTNode<T>)removeNode.Parent);
                 var compResult = removeNode.Data.CompareTo(removeNode.Parent.Data);
                 if (compResult == -1)
                 {
@@ -337,6 +339,7 @@ namespace DataStructures.Tree.BSTree
                     removeNode.RightNode.Parent = removeNode.Parent;
                 }
                 Count--;
+                this.ModifyParents(Parent);
                 return true;
             }
             if (removeNode.RightNode == null)
@@ -349,6 +352,7 @@ namespace DataStructures.Tree.BSTree
                     return true;
                 }
                 //Is right or left son of parent
+                Parent = (BSTNode<T>)removeNode.Parent;
                 var compResult = removeNode.Data.CompareTo(removeNode.Parent.Data);
                 if (compResult == -1)
                 {
@@ -361,6 +365,7 @@ namespace DataStructures.Tree.BSTree
                     removeNode.LeftNode.Parent = removeNode.Parent;
                 }
                 Count--;
+                this.ModifyParents(Parent);
                 return true;
             }
             //Else search inorderSuccessor
@@ -373,6 +378,7 @@ namespace DataStructures.Tree.BSTree
             }
             //Change removeNode to inorderSuccessor
             removeNode.Data = inorderSuccessor.Data;
+            Parent = (BSTNode<T>)inorderSuccessor.Parent;
             //Inorder successor is rightNode
             if (removeNode.Data.CompareTo(removeNode.RightNode.Data) == 0)
             {
@@ -380,12 +386,14 @@ namespace DataStructures.Tree.BSTree
                 {
                     removeNode.RightNode = null;
                     Count--;
+                    this.ModifyParents(Parent);
                     return true;
                 }
                 //Has right child
                 removeNode.RightNode = inorderSuccessor.RightNode;
                 removeNode.RightNode.Parent = removeNode;
                 Count--;
+                this.ModifyParents(Parent);
                 return true;
             }
             //Inorder succesor is leaf
@@ -397,6 +405,7 @@ namespace DataStructures.Tree.BSTree
             inorderSuccessor.RightNode.Parent = inorderSuccessor.Parent;
             ((BSTNode<T>)inorderSuccessor.Parent).LeftNode = inorderSuccessor.RightNode;
             Count--;
+            this.ModifyParents(Parent);
             return true;
         }
         private bool DeleteLeaf(BSTNode<T> paLeaf)
@@ -415,12 +424,14 @@ namespace DataStructures.Tree.BSTree
             {
                 Parent.LeftNode = null;
                 Count--;
+                this.ModifyParents(Parent);
                 return true;
             }
             else if (compResult == 1)
             {
                 Parent.RightNode = null;
                 Count--;
+                this.ModifyParents(Parent);
                 return true;
             }
             return false;
