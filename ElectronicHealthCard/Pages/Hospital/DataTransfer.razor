@@ -56,12 +56,12 @@
             Message = "Hospitals cannot be same!";
             return;
         }
-        var findNewHospital = hospitals.FindHospital(HospitalNew);
+        var findOldHospital = hospitals.FindHospital(HospitalOld);        
         if(findOldHospital == null){
             Message = "Hospital from not found!";
             return;
         }
-        var findOldHospital = hospitals.FindHospital(HospitalOld);
+        var findNewHospital = hospitals.FindHospital(HospitalNew);
         if (findNewHospital == null)
         {
             Message = "Hospital to not found!";
