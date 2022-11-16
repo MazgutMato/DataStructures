@@ -39,5 +39,29 @@ namespace DataStructures.File
             }
             return default(T);
         }
+        public bool Insert(T data)
+        {
+            //file.seek(adresaBloku)
+            //file.read(blok)
+            //Block<T> block = new Block<T>(BlockFactor, data.getClass());
+            return true;
+        }
+        public bool Delete(T data)
+        {
+            //Block<T> block = new Block<T>(BlockFactor, data.getClass());
+            //Presunem na koniec a znizim valid count
+            return true;
+        }
+        public long FileSize()
+        {
+            try
+            {
+                return File.Length;
+            } catch (Exception ex)
+            {
+                var message = ex.Message.ToString();
+            }
+            return -1;
+        }
     }
 }
