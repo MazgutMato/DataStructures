@@ -9,7 +9,7 @@ namespace DataStructures.File
     public interface IRecord<T>
     {
         public byte[] ToByteArray();
-        public T FromByteArray(byte[] byteArray);
+        public void FromByteArray(byte[] byteArray);
         public int GetSize();
     }
 }

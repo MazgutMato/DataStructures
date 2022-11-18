@@ -1,8 +1,20 @@
-﻿using DataStructures.Iterator;
+﻿using DataStructures.File;
+using DataStructures.Iterator;
 using DataStructures.Tree.BSTree;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
+var example = new Example();
+var staticFile = new StaticFile<Example>(2, "Data.dat");
+example.ID = 5;
+staticFile.Insert(example);
+var find = staticFile.Find(example);
+example.ID = 3;
+staticFile.Insert(example);
+staticFile.Delete(example);
+find = staticFile.Find(example);
+Console.WriteLine();
 
 var BStree = new BSTree<int>();
 var ControlArray = new List<int>();
@@ -25,7 +37,8 @@ var pocetBalancuj = Convert.ToInt32(Console.ReadLine());
 Console.Write("Zadaj pocet nahodne generovanych vkladanych cisel: ");
 var generovaneCisla = Convert.ToInt32(Console.ReadLine());
 
-if ((pocetVloz + pocetNajdi + pocetVymaz + pocetBalancuj) != 100) {
+if ((pocetVloz + pocetNajdi + pocetVymaz + pocetBalancuj) != 100)
+{
     Console.WriteLine("Sucet pomerov poctu operacii musi byt 100%!");
     return;
 }
@@ -40,7 +53,7 @@ var celkovoNajdi = 0;
 var celkovoBalancuj = 0;
 
 for (int i = 0; i < pocetOperacii; i++)
-{    
+{
     var rand = random.Next(100);
     if (rand < pocetVloz)
     {
@@ -49,16 +62,16 @@ for (int i = 0; i < pocetOperacii; i++)
         if (BStree.Add(vkladaneCislo))
         {
             ControlArray.Add(vkladaneCislo);
-            Console.WriteLine("Vklada {0}",vkladaneCislo);
+            Console.WriteLine("Vklada {0}", vkladaneCislo);
         }
-        if(BStree.Find(vkladaneCislo) != vkladaneCislo)
+        if (BStree.Find(vkladaneCislo) != vkladaneCislo)
         {
             throw new InvalidOperationException("Cannot find inserted data!");
-        }       
+        }
     }
-    else if (rand < pocetVloz + pocetNajdi) 
+    else if (rand < pocetVloz + pocetNajdi)
     {
-        celkovoNajdi++;        
+        celkovoNajdi++;
         if (ControlArray.Count > 0)
         {
             var hladaneCislo = Convert.ToInt32(ControlArray[random.Next(ControlArray.Count)]);
@@ -72,7 +85,8 @@ for (int i = 0; i < pocetOperacii; i++)
         {
             BStree.Find(0);
         }
-    } else if (rand < pocetVloz + pocetNajdi + pocetVymaz)
+    }
+    else if (rand < pocetVloz + pocetNajdi + pocetVymaz)
     {
         celkovoVymaz++;
         if (ControlArray.Count > 0)
@@ -84,22 +98,23 @@ for (int i = 0; i < pocetOperacii; i++)
             {
                 throw new InvalidOperationException("Cannot delete data!");
             }
-            ControlArray.Remove(mazaneCislo);           
+            ControlArray.Remove(mazaneCislo);
         }
         else
         {
             BStree.Delete(0);
         }
-    }else
+    }
+    else
     {
-        celkovoBalancuj++;               
+        celkovoBalancuj++;
         Console.WriteLine("Pred");
         Console.Write("\tBST:");
         var iterator = new BSTIterator<int>(BStree);
         while (iterator.HasNext())
         {
             var cislo = iterator.MoveNext();
-            var height = BStree.GetNodeHeight(cislo);            
+            var height = BStree.GetNodeHeight(cislo);
             Console.Write(" {0}({1})", cislo, height);
         }
         BStree.BalanceTree();
@@ -122,7 +137,7 @@ Console.WriteLine("Prebieha konrola prvkov struktury, prosim cakajte!");
 if (ControlArray.Count == BStree.Count)
 {
     Console.WriteLine("\nPocet prvkov struktury je spravny!" +
-        "\n\tBST:{0}\n\tPole:{1}", BStree.Count,ControlArray.Count);
+        "\n\tBST:{0}\n\tPole:{1}", BStree.Count, ControlArray.Count);
 }
 else
 {
@@ -130,11 +145,11 @@ else
         "\n\tBST:{0}\n\tPole:{1}", BStree.Count, ControlArray.Count);
 }
 
-foreach(var data in ControlArray)
+foreach (var data in ControlArray)
 {
     if (BStree.Find((int)data) == 0)
     {
-        Console.WriteLine("\t{0} sa v strukture nenasiel!",data);
+        Console.WriteLine("\t{0} sa v strukture nenasiel!", data);
     }
 }
 

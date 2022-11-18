@@ -10,7 +10,7 @@ namespace DataStructures.File
     public interface IData<T> : IRecord<T>
     {
         public BitArray GetHash();
-        public bool Equals(T data);
+        public bool Compare(T data);
         public T CreateClass();
     }
 }

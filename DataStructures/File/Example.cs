@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,45 +11,48 @@ namespace DataStructures.File
     public class Example : IData<Example>
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public int NameValidChar { get; set; }
-        public int NameMaxCHat { get; } = 15;
         public Example()
         {
-            ID = 0;
-            Name = "Example";
-            NameValidChar = Name.Length;
-        }
-        public bool Equals(Example data)
-        {
-            return data.ID == this.ID;
+            ID = 1;
         }
 
         public BitArray GetHash()
         {
-            BitArray hash1 = new BitArray(this.ID);
-            BitArray hash2 = new BitArray(new int[] {this.ID});
-            return hash1;
+            BitArray hash = new BitArray(new int[] { this.ID });
+            return hash;
         }
 
         public int GetSize()
         {
-            
+            return sizeof(int);
         }
 
         public byte[] ToByteArray()
         {
-            throw new NotImplementedException();
+            MemoryStream memoryStream = new MemoryStream();
+            BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
+
+            binaryWriter.Write(this.ID);
+
+            return memoryStream.ToArray();
         }
 
         Example IData<Example>.CreateClass()
         {
-            throw new NotImplementedException();
+            return new Example();
         }
 
-        Example IRecord<Example>.FromByteArray(byte[] byteArray)
+        public bool Compare(Example data)
         {
-            throw new NotImplementedException();
+            return data.ID == this.ID;
+        }
+
+        public void FromByteArray(byte[] byteArray)
+        {
+            MemoryStream memoryStream = new MemoryStream(byteArray);
+            BinaryReader binaryReader = new BinaryReader(memoryStream);
+
+            this.ID = binaryReader.ReadInt32();
         }
     }
 }

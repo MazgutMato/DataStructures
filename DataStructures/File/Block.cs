@@ -4,20 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace DataStructures.File
 {
     public class Block<T> : IRecord<T> where T : IData<T>
     {
         private int BlockFactor;
-        private int ValidCount;
+        public int ValidCount { get; set; }
         public List<T> Records { get; }
         private T ClassType;
 
         public Block(int blockFactor, T classType)
         {
             BlockFactor = blockFactor;            
-            ClassType = classType;
+            ClassType = classType.CreateClass();
 
             this.Records = new List<T>();
             for (int i = 0; i < BlockFactor; i++)
@@ -26,20 +27,47 @@ namespace DataStructures.File
             }
             this.ValidCount = 0;
         }
-
-        public T FromByteArray(byte[] byteArray)
+        public bool InsertData(T data)
         {
-            throw new NotImplementedException();
-        }
-
-        public int GetSize()
-        {
-            throw new NotImplementedException();
+            if(ValidCount < BlockFactor)
+            {
+                Records[ValidCount] = data;
+                ValidCount++;
+                return true;
+            }
+            return false;
         }
 
         public byte[] ToByteArray()
         {
-            throw new NotImplementedException();
+            MemoryStream memoryStream = new MemoryStream();
+            BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
+          
+            binaryWriter.Write(this.ValidCount);
+            for (int i = 0; i < ValidCount; i++)
+            {
+                binaryWriter.Write(this.Records[i].ToByteArray());
+            }
+
+            return memoryStream.ToArray();
+        }
+
+        public void FromByteArray(byte[] byteArray)
+        {
+            MemoryStream memoryStream = new MemoryStream(byteArray);
+            BinaryReader binaryReader= new BinaryReader(memoryStream);
+
+            this.ValidCount = binaryReader.ReadInt32();
+
+            for (int i = 0; i < this.ValidCount; i++)
+            {
+                this.Records[i].FromByteArray(binaryReader.ReadBytes(this.ClassType.GetSize()));
+            }
+        }
+
+        public int GetSize()
+        {
+            return ClassType.GetSize() * BlockFactor + sizeof(int);
         }
     }
 }
