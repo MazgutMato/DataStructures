@@ -47,7 +47,7 @@ namespace DataStructures.File
             }
             return default(T);
         }
-        public bool Insert(T data)
+        public bool Add(T data)
         {
             var block = new Block<T>(BlockFactor, data.CreateClass());
             var hash = data.GetHash();

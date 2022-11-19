@@ -5,20 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-var example = new Example();
-var staticFile = new StaticFile<Example>(2, "Data.dat");
-example.ID = 5;
-staticFile.Insert(example);
-var find = staticFile.Find(example);
-example.ID = 3;
-staticFile.Insert(example);
-staticFile.Delete(example);
-find = staticFile.Find(example);
-Console.WriteLine();
-
-var BStree = new BSTree<int>();
-var ControlArray = new List<int>();
-
 Console.Write("Zadaj celkovy pocet opercii: ");
 var pocetOperacii = Convert.ToInt32(Console.ReadLine());
 
@@ -31,13 +17,17 @@ var pocetNajdi = Convert.ToInt32(Console.ReadLine());
 Console.Write("Zadaj pomer opercii vymaz v %: ");
 var pocetVymaz = Convert.ToInt32(Console.ReadLine());
 
-Console.Write("Zadaj pomer opercii balancuj v %: ");
-var pocetBalancuj = Convert.ToInt32(Console.ReadLine());
-
 Console.Write("Zadaj pocet nahodne generovanych vkladanych cisel: ");
 var generovaneCisla = Convert.ToInt32(Console.ReadLine());
 
-if ((pocetVloz + pocetNajdi + pocetVymaz + pocetBalancuj) != 100)
+Console.Write("Zadaj block factor: ");
+var blockFactor = Convert.ToInt32(Console.ReadLine());
+
+var example = new Example();
+var staticFile = new StaticFile<Example>(blockFactor, "Data.dat");
+var ControlArray = new List<int>();
+
+if ((pocetVloz + pocetNajdi + pocetVymaz) != 100)
 {
     Console.WriteLine("Sucet pomerov poctu operacii musi byt 100%!");
     return;
@@ -50,7 +40,6 @@ var random = new Random();
 var celkovoVloz = 0;
 var celkovoVymaz = 0;
 var celkovoNajdi = 0;
-var celkovoBalancuj = 0;
 
 for (int i = 0; i < pocetOperacii; i++)
 {
@@ -59,15 +48,17 @@ for (int i = 0; i < pocetOperacii; i++)
     {
         celkovoVloz++;
         var vkladaneCislo = random.Next(1, generovaneCisla + 1);
-        if (BStree.Add(vkladaneCislo))
+        example.ID = vkladaneCislo;
+        if (staticFile.Add(example))
         {
             ControlArray.Add(vkladaneCislo);
             Console.WriteLine("Vklada {0}", vkladaneCislo);
-        }
-        if (BStree.Find(vkladaneCislo) != vkladaneCislo)
-        {
-            throw new InvalidOperationException("Cannot find inserted data!");
-        }
+            var found = staticFile.Find(example);
+            if (found == null || found.ID != vkladaneCislo)
+            {
+                throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
+            }
+        }        
     }
     else if (rand < pocetVloz + pocetNajdi)
     {
@@ -75,96 +66,54 @@ for (int i = 0; i < pocetOperacii; i++)
         if (ControlArray.Count > 0)
         {
             var hladaneCislo = Convert.ToInt32(ControlArray[random.Next(ControlArray.Count)]);
+            example.ID = hladaneCislo;
             Console.WriteLine("Hlada sa {0}", hladaneCislo);
-            if (BStree.Find(hladaneCislo) != hladaneCislo)
+            var found = staticFile.Find(example);
+            if (found == null || found.ID != hladaneCislo)
             {
-                throw new InvalidOperationException("Cannot find data!");
+                throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
             }
         }
         else
         {
-            BStree.Find(0);
+            staticFile.Find(example);
         }
     }
-    else if (rand < pocetVloz + pocetNajdi + pocetVymaz)
+    else
     {
         celkovoVymaz++;
         if (ControlArray.Count > 0)
         {
             var mazaneCislo = ControlArray[random.Next(ControlArray.Count)];
-            BStree.Delete(Convert.ToInt32(mazaneCislo));
+            example.ID = mazaneCislo;
+            staticFile.Delete(example);
             Console.WriteLine("Maze {0}", mazaneCislo);
-            if (BStree.Find(Convert.ToInt32(mazaneCislo)) != 0)
-            {
-                throw new InvalidOperationException("Cannot delete data!");
-            }
             ControlArray.Remove(mazaneCislo);
         }
         else
         {
-            BStree.Delete(0);
+            staticFile.Delete(example);
         }
-    }
-    else
-    {
-        celkovoBalancuj++;
-        Console.WriteLine("Pred");
-        Console.Write("\tBST:");
-        var iterator = new BSTIterator<int>(BStree);
-        while (iterator.HasNext())
-        {
-            var cislo = iterator.MoveNext();
-            var height = BStree.GetNodeHeight(cislo);
-            Console.Write(" {0}({1})", cislo, height);
-        }
-        BStree.BalanceTree();
-        if (BStree.CheckHeights() != null)
-        {
-            throw new InvalidOperationException("Tree is not balance!");
-        }
-        Console.WriteLine();
     }
 }
+
 Console.WriteLine("\nPocet operacii vloz: {0}", celkovoVloz);
 Console.WriteLine("Pocet operacii najdi: {0}", celkovoNajdi);
 Console.WriteLine("Pocet operacii vymaz: {0}", celkovoVymaz);
-Console.WriteLine("Pocet operacii balancuj: {0}", celkovoBalancuj);
 
 Console.WriteLine("Vsetky operacie prebehli uspesne!");
 
-Console.WriteLine("Prebieha konrola prvkov struktury, prosim cakajte!");
-
-if (ControlArray.Count == BStree.Count)
-{
-    Console.WriteLine("\nPocet prvkov struktury je spravny!" +
-        "\n\tBST:{0}\n\tPole:{1}", BStree.Count, ControlArray.Count);
-}
-else
-{
-    Console.WriteLine("\nPocet prvkov struktury nie je spravny!" +
-        "\n\tBST:{0}\n\tPole:{1}", BStree.Count, ControlArray.Count);
-}
-
 foreach (var data in ControlArray)
 {
-    if (BStree.Find((int)data) == 0)
+    example.ID = data;
+    var found = staticFile.Find(example);
+    if (found == null || found.ID != data)
     {
         Console.WriteLine("\t{0} sa v strukture nenasiel!", data);
+        throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
+
     }
+    staticFile.Delete(example);
 }
 
-Console.Write("\nPrvky v strukture:\n BST: \t");
-var BSTIterator = new BSTIterator<int>(BStree);
-while (BSTIterator.HasNext())
-{
-    Console.Write("{0} ", BSTIterator.MoveNext());
-}
-
-Console.Write("\nPole: \t");
-ControlArray.Sort();
-foreach (var data in ControlArray)
-{
-    Console.Write("{0} ", data);
-}
-
-Console.WriteLine();
+Console.WriteLine("Vsetky prvky sa v strukture nasli!");
