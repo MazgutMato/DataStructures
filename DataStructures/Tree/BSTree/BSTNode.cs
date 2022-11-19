@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DataStructures.Tree.BSTree
 {
-    public class BSTNode<T> : AbstractTreeNode<T> where T : IComparable<T>
+    public class BSTNode<T> : TreeNode<T> where T : IComparable<T>
     {
         public BSTNode<T> LeftNode { get; set; }
         public BSTNode<T> RightNode { get; set; }
