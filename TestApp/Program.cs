@@ -1,9 +1,11 @@
 ﻿using DataStructures.File;
 using DataStructures.Iterator;
 using DataStructures.Tree.BSTree;
+using DataStructures.Tree.DFTree;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
 
 Console.Write("Zadaj celkovy pocet opercii: ");
 var pocetOperacii = Convert.ToInt32(Console.ReadLine());
@@ -58,7 +60,7 @@ for (int i = 0; i < pocetOperacii; i++)
             {
                 throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
             }
-        }        
+        }
     }
     else if (rand < pocetVloz + pocetNajdi)
     {

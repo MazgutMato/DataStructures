@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataStructures.Tree
 {
-    public abstract class TreeNode<D>
+    public abstract class TreeNode<T>
     {
-        public TreeNode<D>? Parent { get; set; }
-        public D? Data { get; set; }
+        public TreeNode<T>? Parent { get; set; }
+        public T? Data { get; set; }
         public bool IsRoot()
         {
             return this.Parent == null;

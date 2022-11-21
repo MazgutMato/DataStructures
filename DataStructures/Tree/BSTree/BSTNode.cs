@@ -13,24 +13,24 @@ namespace DataStructures.Tree.BSTree
         public int LeftHeight { get; set; }
         public int RightHeight { get; set; }
 
-        public BSTNode(T paData) : base(paData)
+        public BSTNode(T paData)
         {
             LeftNode = null;
             RightNode = null;
         }
-        public BSTNode(T paData, BSTNode<T> paParent) : base(paData, paParent)
+        public BSTNode(T paData, BSTNode<T> paParent)
         {
             LeftNode = null;
             RightNode = null;
         }
 
-        public BSTNode(BSTNode<T> BSTNode) : base(BSTNode)
+        public BSTNode(BSTNode<T> BSTNode)
         {
             LeftNode = BSTNode.LeftNode;
             RightNode = BSTNode.RightNode;
         }
 
-        public override bool IsLeaf()
+        public bool IsLeaf()
         {
             if (RightNode == null && LeftNode == null)
             {

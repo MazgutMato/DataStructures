@@ -18,7 +18,7 @@ namespace DataStructures.File
 
         public BitArray GetHash()
         {
-            BitArray hash = new BitArray(new int[] { this.ID });
+            BitArray hash = new BitArray(new int[] { this.ID });            
             return hash;
         }
 
@@ -42,7 +42,7 @@ namespace DataStructures.File
             return new Example();
         }
 
-        public bool Compare(Example data)
+        public bool IsEqual(Example data)
         {
             return data.ID == this.ID;
         }

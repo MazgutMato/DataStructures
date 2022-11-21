@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataStructures.File
 {
-    public class StaticFile<T> where T : IData<T>
+    public class StaticFile<T> : Structure<T> where T : IData<T>
     {   
         public int BlockFactor { get; } 
         public FileStream File { get; }
@@ -40,7 +40,7 @@ namespace DataStructures.File
             
             for(int i = 0; i < block.ValidCount; i++)
             {
-                if (data.Compare(block.Records[i]) == true)
+                if (data.IsEqual(block.Records[i]) == true)
                 {
                     return block.Records[i];
                 }
@@ -84,7 +84,7 @@ namespace DataStructures.File
 
             for (int i = 0; i < block.ValidCount; i++)
             {
-                if (data.Compare(block.Records[i]) == true)
+                if (data.IsEqual(block.Records[i]) == true)
                 {
                     if (i == block.ValidCount - 1)
                     {
