@@ -97,6 +97,7 @@ for (int i = 0; i < pocetOperacii; i++)
             staticFile.Delete(example);
         }
     }
+    Console.WriteLine(staticFile.GetBlocks(example));
 }
 
 Console.WriteLine("\nPocet operacii vloz: {0}", celkovoVloz);
@@ -104,6 +105,8 @@ Console.WriteLine("Pocet operacii najdi: {0}", celkovoNajdi);
 Console.WriteLine("Pocet operacii vymaz: {0}", celkovoVymaz);
 
 Console.WriteLine("Vsetky operacie prebehli uspesne!");
+
+Console.WriteLine(staticFile.GetBlocks(example));
 
 foreach (var data in ControlArray)
 {

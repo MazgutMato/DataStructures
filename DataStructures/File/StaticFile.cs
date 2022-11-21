@@ -115,5 +115,39 @@ namespace DataStructures.File
             }
             return -1;
         }
+        public string GetBlocks(T data)
+        {
+            long adress = 0;
+            var fileSize = this.FileSize();
+            var result = "";
+
+            while(adress < fileSize)
+            {
+                var block = new Block<T>(BlockFactor, data.CreateClass());
+
+                byte[] blockBytes = new byte[block.GetSize()];
+
+                File.Seek(adress, SeekOrigin.Begin);
+                File.Read(blockBytes);
+
+                block.FromByteArray(blockBytes);
+
+                result += "Block na adrese " + adress + "\n";
+                result += "\t Pocet validnych: " + block.ValidCount + "\n";
+
+                if (block.ValidCount > 0)
+                {
+                    result += "\t Prvky: \n";
+
+                    for (int i = 0; i < block.ValidCount; i++)
+                    {
+                        result += "\t\tPrvok(" + i + "):\n\t\t\t" + block.Records[i].ToString() + "\n";
+                    }
+                }
+
+                adress += block.GetSize();
+            }
+            return result;
+        }
     }
 }

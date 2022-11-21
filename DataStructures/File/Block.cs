@@ -67,7 +67,7 @@ namespace DataStructures.File
 
         public int GetSize()
         {
-            return ClassType.GetSize() * BlockFactor + sizeof(int);
+            return ClassType.GetSize() * BlockFactor + 2 * sizeof(int);
         }
     }
 }

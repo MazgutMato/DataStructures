@@ -54,5 +54,9 @@ namespace DataStructures.File
 
             this.ID = binaryReader.ReadInt32();
         }
+        public override string ToString()
+        {
+            return "Id: " + this.ID;
+        }
     }
 }
