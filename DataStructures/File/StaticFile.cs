@@ -11,10 +11,12 @@ namespace DataStructures.File
     {   
         public int BlockFactor { get; } 
         public FileStream File { get; }
+        public T Class { get; }
         public StaticFile(int blockFactor, string fileName)
         {
             BlockFactor = blockFactor;
             File = new FileStream(fileName, FileMode.Create);
+            Class = Activator.CreateInstance<T>();
         }
         private int GetAdress(BitArray hash) {
             if (hash == null)
@@ -27,7 +29,7 @@ namespace DataStructures.File
         }
         public T? Find(T data)
         {
-            var block = new Block<T>(BlockFactor, data.CreateClass());
+            var block = new Block<T>(BlockFactor, Class.CreateClass());
             var hash = data.GetHash();
             var adress = this.GetAdress(hash);
 
@@ -49,7 +51,7 @@ namespace DataStructures.File
         }
         public bool Add(T data)
         {
-            var block = new Block<T>(BlockFactor, data.CreateClass());
+            var block = new Block<T>(BlockFactor, Class.CreateClass());
             var hash = data.GetHash();
             var adress = this.GetAdress(hash);
 
@@ -71,7 +73,7 @@ namespace DataStructures.File
         }
         public bool Delete(T data)
         {
-            var block = new Block<T>(BlockFactor, data.CreateClass());
+            var block = new Block<T>(BlockFactor, Class.CreateClass());
             var hash = data.GetHash();
             var adress = this.GetAdress(hash);
 
@@ -115,7 +117,7 @@ namespace DataStructures.File
             }
             return -1;
         }
-        public string GetBlocks(T data)
+        public string GetBlocks()
         {
             long adress = 0;
             var fileSize = this.FileSize();
@@ -123,7 +125,7 @@ namespace DataStructures.File
 
             while(adress < fileSize)
             {
-                var block = new Block<T>(BlockFactor, data.CreateClass());
+                var block = new Block<T>(BlockFactor, Class.CreateClass());
 
                 byte[] blockBytes = new byte[block.GetSize()];
 

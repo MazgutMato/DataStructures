@@ -13,13 +13,15 @@ namespace DataStructures.File
         public int BlockFactor { get; }
         public FileStream File { get; }
         public DFTree Indexes { get; }
+        public T Class { get; }
         public DynamicFile(int blockFactor, string fileName)
         {
             BlockFactor = blockFactor;
             File = new FileStream(fileName, FileMode.Create);
             Indexes = new DFTree(blockFactor);
+            Class = Activator.CreateInstance<T>();
         }
-        public DFNode? GetAdressNode(T data)
+        public ExternalNode? GetAdressNode(T data)
         {
             //Index
             var hash = data.GetHash();
@@ -34,18 +36,18 @@ namespace DataStructures.File
             {
                 return null;
             }
-            while (adressNode.LeftNode != null && adressNode.RightNode != null)
+            while (adressNode.GetType() !=  (new ExternalNode()).GetType())
             {
                 if (index[adressNode.BlockDepth] == false)
                 {
-                    adressNode = adressNode.LeftNode;
+                    adressNode = ((InternalNode)adressNode).LeftNode;
                 }
                 else
                 {
-                    adressNode = adressNode.RightNode;
+                    adressNode = ((InternalNode)adressNode).RightNode;
                 }
             }
-            return adressNode;
+            return (ExternalNode)adressNode;            
         }
         public T? Find(T data)
         {
@@ -53,14 +55,15 @@ namespace DataStructures.File
 
             var adressNode = this.GetAdressNode(data);
 
-            if(adressNode == null)
+            //File is empty
+            if (adressNode == null)
             {
                 return default(T);
             }
 
             byte[] blockBytes = new byte[block.GetSize()];
 
-            File.Seek(adressNode.Adress * block.GetSize(), SeekOrigin.Begin);
+            File.Seek(adressNode.Adress, SeekOrigin.Begin);
             File.Read(blockBytes);
 
             block.FromByteArray(blockBytes);
@@ -80,26 +83,37 @@ namespace DataStructures.File
 
             var adressNode = this.GetAdressNode(data);
 
-            if(adressNode == null)
+            //File is epmty
+            if (adressNode == null)
             {
-                adressNode = new DFNode();
+                adressNode = new ExternalNode();
+                adressNode.Adress = this.FileSize();
                 this.Indexes.Root = adressNode;
+
             }
 
             byte[] blockBytes = new byte[block.GetSize()];
 
-            File.Seek(adressNode.Adress * block.GetSize(), SeekOrigin.Begin);
+            File.Seek(adressNode.Adress, SeekOrigin.Begin);
             File.Read(blockBytes);
 
             block.FromByteArray(blockBytes);
-            block.ValidCount = adressNode.RecordCount;
 
+            //External node in full
             if (!block.InsertData(data))
             {
-                return false;
+                var interNode = new InternalNode();
+                //Node is root
+                if(adressNode.Parent == null)
+                {                  
+                    this.Indexes.Root = interNode;
+                } else
+                {
+                    interNode.Parent = adressNode.Parent;
+                }                
             }
 
-            //File.Seek(adress * block.GetSize(), SeekOrigin.Begin);
+            File.Seek(adressNode.Adress, SeekOrigin.Begin);
             File.Write(block.ToByteArray());
             return true;
         }

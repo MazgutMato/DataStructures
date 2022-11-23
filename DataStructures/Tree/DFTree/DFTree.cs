@@ -11,10 +11,11 @@ namespace DataStructures.Tree.DFTree
     {
         public int BlockFactror { get; }
         public int MaxBlockDepth { get; set; }
-        public DFNode Root { get; set; }
+        public DFNode? Root { get; set; }
         public DFTree(int blockFactor) 
         { 
             this.BlockFactror= blockFactor;
+            this.Root = null;
         }
     }
 }

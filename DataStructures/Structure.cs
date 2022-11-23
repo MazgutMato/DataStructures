@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataStructures
 {
-    public interface Structure<D>
+    public interface Structure<T>
     {
-        public bool Add(D data);
-        public bool Delete(D data);
-        public D Find(D data);
+        public bool Add(T data);
+        public bool Delete(T data);
+        public T? Find(T data);
     }
 }
