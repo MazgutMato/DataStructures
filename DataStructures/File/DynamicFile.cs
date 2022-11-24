@@ -25,10 +25,6 @@ namespace DataStructures.File
         {
             //Index
             var hash = data.GetHash();
-            var hashInt = new int[1];
-            hash.CopyTo(hashInt, 0);
-            hashInt[0] = hashInt[0] % 32;
-            var index = new BitArray(hashInt);
 
             //Find block adress
             var adressNode = Indexes.Root;
@@ -36,9 +32,9 @@ namespace DataStructures.File
             {
                 return null;
             }
-            while (adressNode.GetType() !=  (new ExternalNode()).GetType())
+            while (adressNode.GetType() != (new ExternalNode()).GetType())
             {
-                if (index[adressNode.BlockDepth] == false)
+                if (hash[adressNode.BlockDepth] == false)
                 {
                     adressNode = ((InternalNode)adressNode).LeftNode;
                 }
@@ -47,11 +43,11 @@ namespace DataStructures.File
                     adressNode = ((InternalNode)adressNode).RightNode;
                 }
             }
-            return (ExternalNode)adressNode;            
+            return (ExternalNode)adressNode;
         }
         public T? Find(T data)
         {
-            var block = new Block<T>(BlockFactor, data.CreateClass());
+            var block = new Block<T>(BlockFactor, Class.CreateClass());
 
             var adressNode = this.GetAdressNode(data);
 
@@ -79,7 +75,7 @@ namespace DataStructures.File
         }
         public bool Add(T data)
         {
-            var block = new Block<T>(BlockFactor, data.CreateClass());
+            var block = new Block<T>(BlockFactor, Class.CreateClass());
 
             var adressNode = this.GetAdressNode(data);
 
@@ -88,37 +84,62 @@ namespace DataStructures.File
             {
                 adressNode = new ExternalNode();
                 adressNode.Adress = this.FileSize();
+                adressNode.RecordCount++;
                 this.Indexes.Root = adressNode;
-
+                block.InsertData(data);
             }
-
-            byte[] blockBytes = new byte[block.GetSize()];
-
-            File.Seek(adressNode.Adress, SeekOrigin.Begin);
-            File.Read(blockBytes);
-
-            block.FromByteArray(blockBytes);
-
-            //External node in full
-            if (!block.InsertData(data))
+            else
             {
-                var interNode = new InternalNode();
-                //Node is root
-                if(adressNode.Parent == null)
-                {                  
-                    this.Indexes.Root = interNode;
-                } else
+                //External node in full
+                while (adressNode.RecordCount == BlockFactor)
                 {
-                    interNode.Parent = adressNode.Parent;
-                }                
-            }
+                    var interNode = new InternalNode();
+                    //Node is root
+                    if (adressNode.Parent == null)
+                    {
+                        this.Indexes.Root = interNode;
+                    }
+                    else
+                    {
+                        interNode.Parent = adressNode.Parent;
+                        //Left or right son of parent
+                        if (adressNode == ((InternalNode)adressNode.Parent).LeftNode)
+                        {
+                            ((InternalNode)adressNode.Parent).LeftNode = interNode;
+                        } else
+                        {
+                            ((InternalNode)adressNode.Parent).RightNode = interNode;
+                        }
+                        //Set blockDepth
+                        interNode.BlockDepth = adressNode.BlockDepth;
+                        //Set leftNode                        
+                        adressNode.Parent = interNode;
+                        adressNode.BlockDepth++;
+                        interNode.LeftNode = adressNode;
+                        //Set rightNode
+                        var rightNode = new ExternalNode();
+                        rightNode.Parent = interNode;
+                        rightNode.BlockDepth = adressNode.BlockDepth;
+                        rightNode.Adress = this.FileSize();
+                        interNode.RightNode = rightNode;
+                    }
+                }
+                byte[] blockBytes = new byte[block.GetSize()];
 
+                File.Seek(adressNode.Adress, SeekOrigin.Begin);
+                File.Read(blockBytes);
+
+                block.FromByteArray(blockBytes);
+                block.InsertData(data);
+
+            }
+            //Write block to file
             File.Seek(adressNode.Adress, SeekOrigin.Begin);
             File.Write(block.ToByteArray());
             return true;
         }
         public bool Delete(T data)
-        {           
+        {
             return false;
         }
         public long FileSize()

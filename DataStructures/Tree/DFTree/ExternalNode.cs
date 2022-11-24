@@ -15,5 +15,9 @@ namespace DataStructures.Tree.DFTree
             this.RecordCount = 0;
             this.Adress = -1;
         }
+        public bool isEqual(ExternalNode other)
+        {
+            return this.Adress == other.Adress;
+        }
     }
 }

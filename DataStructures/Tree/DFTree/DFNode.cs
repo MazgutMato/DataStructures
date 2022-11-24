@@ -8,12 +8,12 @@ namespace DataStructures.Tree.DFTree
 {
     public class DFNode
     {
-        public DFNode? Parent { get; set; }
         public int BlockDepth { get; set; }
+        public DFNode? Parent { get; set; }
         public DFNode()
         {
-            this.BlockDepth = 0;
             this.Parent = null;
+            this.BlockDepth = 0;
         }
     }
 }

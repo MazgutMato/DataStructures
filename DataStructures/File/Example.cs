@@ -18,7 +18,7 @@ namespace DataStructures.File
 
         public BitArray GetHash()
         {
-            BitArray hash = new BitArray(new int[] { this.ID });            
+            BitArray hash = new BitArray(BitConverter.GetBytes(this.ID));            
             return hash;
         }
 
