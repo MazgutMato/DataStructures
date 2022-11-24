@@ -44,7 +44,7 @@ namespace DataStructures.File
             BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
           
             binaryWriter.Write(this.ValidCount);
-            for (int i = 0; i < ValidCount; i++)
+            for (int i = 0; i < this.BlockFactor; i++)
             {
                 binaryWriter.Write(this.Records[i].ToByteArray());
             }
@@ -58,8 +58,7 @@ namespace DataStructures.File
             BinaryReader binaryReader= new BinaryReader(memoryStream);
 
             this.ValidCount = binaryReader.ReadInt32();
-
-            for (int i = 0; i < this.ValidCount; i++)
+            for (int i = 0; i < this.BlockFactor; i++)
             {
                 this.Records[i].FromByteArray(binaryReader.ReadBytes(this.ClassType.GetSize()));
             }
@@ -67,7 +66,7 @@ namespace DataStructures.File
 
         public int GetSize()
         {
-            return ClassType.GetSize() * BlockFactor + 2 * sizeof(int);
+            return ClassType.GetSize() * BlockFactor + sizeof(int);
         }
     }
 }

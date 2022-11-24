@@ -8,18 +8,12 @@ using System.Threading.Tasks;
 
 namespace DataStructures.File
 {
-    public class DynamicFile<T> : Structure<T> where T : IData<T>
+    public class DynamicFile<T> : BasicFile<T>, Structure<T> where T : IData<T>
     {
-        public int BlockFactor { get; }
-        public FileStream File { get; }
         public DFTree Indexes { get; }
-        public T Class { get; }
-        public DynamicFile(int blockFactor, string fileName)
+        public DynamicFile(int blockFactor, string fileName) : base(blockFactor, fileName)
         {
-            BlockFactor = blockFactor;
-            File = new FileStream(fileName, FileMode.Create);
             Indexes = new DFTree(blockFactor);
-            Class = Activator.CreateInstance<T>();
         }
         public ExternalNode? GetAdressNode(T data)
         {
@@ -47,8 +41,6 @@ namespace DataStructures.File
         }
         public T? Find(T data)
         {
-            var block = new Block<T>(BlockFactor, Class.CreateClass());
-
             var adressNode = this.GetAdressNode(data);
 
             //File is empty
@@ -56,13 +48,8 @@ namespace DataStructures.File
             {
                 return default(T);
             }
-
-            byte[] blockBytes = new byte[block.GetSize()];
-
-            File.Seek(adressNode.Adress, SeekOrigin.Begin);
-            File.Read(blockBytes);
-
-            block.FromByteArray(blockBytes);
+            
+            var block = this.LoadBlock(adressNode.Adress);
 
             for (int i = 0; i < block.ValidCount; i++)
             {
@@ -75,8 +62,6 @@ namespace DataStructures.File
         }
         public bool Add(T data)
         {
-            var block = new Block<T>(BlockFactor, Class.CreateClass());
-
             var adressNode = this.GetAdressNode(data);
 
             //File is epmty
@@ -84,9 +69,7 @@ namespace DataStructures.File
             {
                 adressNode = new ExternalNode();
                 adressNode.Adress = this.FileSize();
-                adressNode.RecordCount++;
                 this.Indexes.Root = adressNode;
-                block.InsertData(data);
             }
             else
             {
@@ -106,36 +89,91 @@ namespace DataStructures.File
                         if (adressNode == ((InternalNode)adressNode.Parent).LeftNode)
                         {
                             ((InternalNode)adressNode.Parent).LeftNode = interNode;
-                        } else
+                        }
+                        else
                         {
                             ((InternalNode)adressNode.Parent).RightNode = interNode;
                         }
-                        //Set blockDepth
-                        interNode.BlockDepth = adressNode.BlockDepth;
-                        //Set leftNode                        
-                        adressNode.Parent = interNode;
-                        adressNode.BlockDepth++;
-                        interNode.LeftNode = adressNode;
-                        //Set rightNode
-                        var rightNode = new ExternalNode();
-                        rightNode.Parent = interNode;
-                        rightNode.BlockDepth = adressNode.BlockDepth;
-                        rightNode.Adress = this.FileSize();
-                        interNode.RightNode = rightNode;
                     }
+                    //Set blockDepth
+                    interNode.BlockDepth = adressNode.BlockDepth;
+
+                    //Set leftNode
+                    var leftNode = adressNode;
+                    leftNode.Parent = interNode;
+                    leftNode.BlockDepth++;
+                    interNode.LeftNode = adressNode;
+
+                    //Set rightNode
+                    var rightNode = new ExternalNode();
+                    rightNode.Parent = interNode;
+                    rightNode.BlockDepth = adressNode.BlockDepth;
+                    interNode.RightNode = rightNode;
+
+                    //Reorganize adressNode records
+                    var leftBlock = this.LoadBlock(leftNode.Adress);
+                    var rightBlock = new Block<T>(BlockFactor, Class.CreateClass());
+
+                    var validCount = leftNode.RecordCount;
+                    for (int i = 0; i < validCount; i++)
+                    {
+                        if (leftBlock.Records[i].GetHash()[interNode.BlockDepth] == true)
+                        {
+                            rightBlock.InsertData(leftBlock.Records[i]);
+                            rightNode.RecordCount++;
+
+                            leftBlock.Records[i] = leftBlock.Records[leftBlock.ValidCount - 1];
+                            leftBlock.ValidCount--;
+                            leftNode.RecordCount--;
+                        }
+                    }
+                    //Check if block is empty
+                    if (leftNode.RecordCount < 1)
+                    {
+                        rightNode.Adress = leftNode.Adress;
+                        leftNode.Adress = -1;
+                        this.SaveBlock(rightNode.Adress, rightBlock);
+                    }
+                    else
+                    {
+                        this.SaveBlock(leftNode.Adress, leftBlock);
+                        if(rightNode.RecordCount > 0)
+                        {
+                            rightNode.Adress = this.FileSize();
+                            this.SaveBlock(rightNode.Adress, rightBlock);
+                        }
+                    }
+                    //Set another adress node
+                    if (data.GetHash()[interNode.BlockDepth] == true)
+                    {
+                        adressNode = rightNode;
+                    } else
+                    {
+                        adressNode = leftNode;
+                    }
+
                 }
-                byte[] blockBytes = new byte[block.GetSize()];
-
-                File.Seek(adressNode.Adress, SeekOrigin.Begin);
-                File.Read(blockBytes);
-
-                block.FromByteArray(blockBytes);
-                block.InsertData(data);
 
             }
+            //Read adress node and add data
+            var block = new Block<T>(this.BlockFactor, Class.CreateClass());
+            if(adressNode.Adress == -1)
+            {
+                adressNode.Adress = this.FileSize();
+            } else
+            {
+                block = this.LoadBlock(adressNode.Adress);
+            }
+            if (block.InsertData(data))
+            {
+                adressNode.RecordCount++;
+            } else
+            {
+                throw new InvalidOperationException("Data was not inserted!");                
+            }
+
             //Write block to file
-            File.Seek(adressNode.Adress, SeekOrigin.Begin);
-            File.Write(block.ToByteArray());
+            this.SaveBlock(adressNode.Adress, block);
             return true;
         }
         public bool Delete(T data)

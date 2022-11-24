@@ -6,11 +6,31 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+var dFile = new DynamicFile<Example>(2, "Data.dat");
 var example = new Example();
-example.ID = 5;
-var dFile = new DynamicFile<Example>(5, "Data.dat");
+
+example.ID = 53;
 dFile.Add(example);
-Console.WriteLine(dFile.Find(example));
+
+example.ID = 26;
+dFile.Add(example);
+
+example.ID = 15;
+dFile.Add(example);
+
+example.ID = 7;
+dFile.Add(example);
+
+example.ID = 31;
+dFile.Add(example);
+
+example.ID = 35;
+dFile.Add(example);
+
+example.ID = 14;
+dFile.Add(example);
+
+Console.WriteLine(dFile.GetBlocks());
 
 
 //Console.Write("Zadaj celkovy pocet opercii: ");

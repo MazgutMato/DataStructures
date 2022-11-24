@@ -7,17 +7,9 @@ using System.Threading.Tasks;
 
 namespace DataStructures.File
 {
-    public class StaticFile<T> : Structure<T> where T : IData<T>
-    {   
-        public int BlockFactor { get; } 
-        public FileStream File { get; }
-        public T Class { get; }
-        public StaticFile(int blockFactor, string fileName)
-        {
-            BlockFactor = blockFactor;
-            File = new FileStream(fileName, FileMode.Create);
-            Class = Activator.CreateInstance<T>();
-        }
+    public class StaticFile<T> : BasicFile<T>, Structure<T> where T : IData<T>
+    {
+        public StaticFile(int blockFactor, string fileName) : base(blockFactor, fileName) { }
         private int GetAdress(BitArray hash) {
             if (hash == null)
             {
@@ -29,16 +21,10 @@ namespace DataStructures.File
         }
         public T? Find(T data)
         {
-            var block = new Block<T>(BlockFactor, Class.CreateClass());
             var hash = data.GetHash();
-            var adress = this.GetAdress(hash);
+            var adress = this.GetAdress(hash) * (new Block<T>(this.BlockFactor, this.Class.CreateClass())).GetSize();
 
-            byte[] blockBytes = new byte[block.GetSize()];
-
-            File.Seek(adress*block.GetSize(), SeekOrigin.Begin);
-            File.Read(blockBytes);
-
-            block.FromByteArray(blockBytes);
+            var block = this.LoadBlock(adress);
             
             for(int i = 0; i < block.ValidCount; i++)
             {
@@ -51,38 +37,24 @@ namespace DataStructures.File
         }
         public bool Add(T data)
         {
-            var block = new Block<T>(BlockFactor, Class.CreateClass());
             var hash = data.GetHash();
-            var adress = this.GetAdress(hash);
+            var adress = this.GetAdress(hash) * (new Block<T>(this.BlockFactor, this.Class.CreateClass())).GetSize(); ;
 
-            byte[] blockBytes = new byte[block.GetSize()];
-
-            File.Seek(adress*block.GetSize(), SeekOrigin.Begin);
-            File.Read(blockBytes);
-
-            block.FromByteArray(blockBytes);
+            var block = this.LoadBlock(adress);
 
             if (!block.InsertData(data))
             {
                 return false;
             }
-
-            File.Seek(adress*block.GetSize(), SeekOrigin.Begin);
-            File.Write(block.ToByteArray());
-            return true;
+            
+            return this.SaveBlock(adress, block);
         }
         public bool Delete(T data)
-        {
-            var block = new Block<T>(BlockFactor, Class.CreateClass());
+        {            
             var hash = data.GetHash();
-            var adress = this.GetAdress(hash);
+            var adress = this.GetAdress(hash) * (new Block<T>(this.BlockFactor, this.Class.CreateClass())).GetSize(); ;
 
-            byte[] blockBytes = new byte[block.GetSize()];
-
-            File.Seek(adress * block.GetSize(), SeekOrigin.Begin);
-            File.Read(blockBytes);
-
-            block.FromByteArray(blockBytes);
+            var block = this.LoadBlock(adress);
 
             for (int i = 0; i < block.ValidCount; i++)
             {
@@ -98,58 +70,12 @@ namespace DataStructures.File
                         block.ValidCount--;
                     }
 
-                    File.Seek(adress * block.GetSize(), SeekOrigin.Begin);
-                    File.Write(block.ToByteArray());
+                    this.SaveBlock(adress, block);
                     return true;
                 }
             }
 
             return false;
-        }
-        public long FileSize()
-        {
-            try
-            {
-                return File.Length;
-            } catch (Exception ex)
-            {
-                var message = ex.Message.ToString();
-            }
-            return -1;
-        }
-        public string GetBlocks()
-        {
-            long adress = 0;
-            var fileSize = this.FileSize();
-            var result = "";
-
-            while(adress < fileSize)
-            {
-                var block = new Block<T>(BlockFactor, Class.CreateClass());
-
-                byte[] blockBytes = new byte[block.GetSize()];
-
-                File.Seek(adress, SeekOrigin.Begin);
-                File.Read(blockBytes);
-
-                block.FromByteArray(blockBytes);
-
-                result += "Block na adrese " + adress + "\n";
-                result += "\t Pocet validnych: " + block.ValidCount + "\n";
-
-                if (block.ValidCount > 0)
-                {
-                    result += "\t Prvky: \n";
-
-                    for (int i = 0; i < block.ValidCount; i++)
-                    {
-                        result += "\t\tPrvok(" + i + "):\n\t\t\t" + block.Records[i].ToString() + "\n";
-                    }
-                }
-
-                adress += block.GetSize();
-            }
-            return result;
         }
     }
 }
