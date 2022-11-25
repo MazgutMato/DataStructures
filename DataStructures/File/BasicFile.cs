@@ -55,7 +55,9 @@ namespace DataStructures.File
         {
             long adress = 0;
             var fileSize = this.FileSize();
-            var result = "";
+            var result = "--------------------------------------------------\n";
+            result += "Velkost suboru: " + fileSize + "\n";
+            result += "--------------------------------------------------\n";
 
             while (adress < fileSize)
             {

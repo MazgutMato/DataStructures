@@ -7,21 +7,35 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 //var example = new Example();
-//var file = new DynamicFile<Example>(5, "Data.dat");
+//var file = new DynamicFile<Example>(2, "Data.dat");
 
 //example.ID = 2;
 //file.Add(example);
 
-//example.ID = 10;
+//example.ID = 4;
 //file.Add(example);
 
-//example.ID = 5;
+//example.ID = 6;
 //file.Add(example);
+
+//Console.WriteLine(file.GetBlocks());
 
 //example.ID = 1;
 //file.Add(example);
 
-//example.ID = 9;
+//Console.WriteLine(file.GetBlocks());
+
+//example.ID = 3;
+//file.Add(example);
+
+//Console.WriteLine(file.GetBlocks());
+
+//example.ID = 5;
+//file.Add(example);
+
+//Console.WriteLine(file.GetBlocks());
+
+//example.ID = 7;
 //file.Add(example);
 
 //Console.WriteLine(file.GetBlocks());
@@ -77,9 +91,9 @@ for (int i = 0; i < pocetOperacii; i++)
         example.ID = vkladaneCislo;
         if (file.Find(example) == null)
         {
+            Console.WriteLine("Vklada {0}", vkladaneCislo);
             file.Add(example);
             ControlArray.Add(vkladaneCislo);
-            Console.WriteLine("Vklada {0}", vkladaneCislo);
             var found = file.Find(example);
             if (found == null || found.ID != vkladaneCislo)
             {
@@ -113,8 +127,8 @@ for (int i = 0; i < pocetOperacii; i++)
         {
             var mazaneCislo = ControlArray[random.Next(ControlArray.Count)];
             example.ID = mazaneCislo;
-            file.Delete(example);
             Console.WriteLine("Maze {0}", mazaneCislo);
+            file.Delete(example);
             ControlArray.Remove(mazaneCislo);
         }
         else
@@ -143,7 +157,9 @@ foreach (var data in ControlArray)
         throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
 
     }
+    Console.WriteLine("\tMazem {0}!", example.ID);
     file.Delete(example);
+    Console.WriteLine(file.GetBlocks());
 }
 
 Console.WriteLine("Vsetky prvky sa v strukture nasli!");
