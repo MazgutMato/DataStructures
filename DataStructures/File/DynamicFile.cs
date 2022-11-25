@@ -99,43 +99,44 @@ namespace DataStructures.File
                     interNode.BlockDepth = adressNode.BlockDepth;
 
                     //Set leftNode
-                    var leftNode = adressNode;
+                    var leftNode = new ExternalNode();
                     leftNode.Parent = interNode;
-                    leftNode.BlockDepth++;
-                    interNode.LeftNode = adressNode;
+                    leftNode.BlockDepth = adressNode.BlockDepth + 1;
+                    interNode.LeftNode = leftNode;
 
                     //Set rightNode
                     var rightNode = new ExternalNode();
                     rightNode.Parent = interNode;
-                    rightNode.BlockDepth = adressNode.BlockDepth;
+                    rightNode.BlockDepth = adressNode.BlockDepth + 1;
                     interNode.RightNode = rightNode;
 
-                    //Reorganize adressNode records
-                    var leftBlock = this.LoadBlock(leftNode.Adress);
+                    //Reorganize adressNode records                    
+                    var leftBlock = new Block<T>(BlockFactor, Class.CreateClass());
                     var rightBlock = new Block<T>(BlockFactor, Class.CreateClass());
 
-                    var validCount = leftNode.RecordCount;
-                    for (int i = 0; i < validCount; i++)
+                    var adressBlock = this.LoadBlock(adressNode.Adress);
+                    for (int i = 0; i < adressNode.RecordCount; i++)
                     {
-                        if (leftBlock.Records[i].GetHash()[interNode.BlockDepth] == true)
+                        if (adressBlock.Records[i].GetHash()[interNode.BlockDepth] == true)
                         {
-                            rightBlock.InsertData(leftBlock.Records[i]);
+                            rightBlock.InsertData(adressBlock.Records[i]);
                             rightNode.RecordCount++;
-
-                            leftBlock.Records[i] = leftBlock.Records[leftBlock.ValidCount - 1];
-                            leftBlock.ValidCount--;
-                            leftNode.RecordCount--;
+                        } else
+                        {
+                            leftBlock.InsertData(adressBlock.Records[i]);
+                            leftNode.RecordCount++;
                         }
                     }
                     //Check if block is empty
                     if (leftNode.RecordCount < 1)
                     {
-                        rightNode.Adress = leftNode.Adress;
+                        rightNode.Adress = adressNode.Adress;
                         leftNode.Adress = -1;
                         this.SaveBlock(rightNode.Adress, rightBlock);
                     }
                     else
                     {
+                        leftNode.Adress = adressNode.Adress;
                         this.SaveBlock(leftNode.Adress, leftBlock);
                         if(rightNode.RecordCount > 0)
                         {
@@ -178,6 +179,23 @@ namespace DataStructures.File
         }
         public bool Delete(T data)
         {
+            var adressNode = this.GetAdressNode(data);
+            if(adressNode == null)
+            {
+                return false;
+            }
+            var block = this.LoadBlock(adressNode.Adress);
+            for(var i = 0; i < this.BlockFactor; i++)
+            {
+                if (block.Records[i].IsEqual(data))
+                {
+                    block.Records[i] = block.Records[block.ValidCount - 1];
+                    block.ValidCount--;
+                    adressNode.RecordCount--;
+                    this.SaveBlock(adressNode.Adress, block);
+                    return true;
+                }
+            }
             return false;
         }
         public long FileSize()
