@@ -51,7 +51,7 @@ namespace DataStructures.File
             }
             return -1;
         }
-        public string GetBlocks()
+        public virtual string GetBlocks()
         {
             long adress = 0;
             var fileSize = this.FileSize();

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DataStructures.File
 {
@@ -188,16 +189,26 @@ namespace DataStructures.File
             //Delete node
             if(adressNode.RecordCount == 1)
             {
-                adressNode.RecordCount = 0;
-                //Insert into freeAdresses
-                this.FreeAdressInsert(adressNode.Adress);
-                //Disable adress
-                adressNode.Adress = -1;
+                //Is root
+                if(this.Indexes.Root == adressNode)
+                {
+                    this.Indexes.Root = null;
+                    return true;
+                }
+                else
+                {
+                    adressNode.RecordCount = 0;
+                    //Insert into freeAdresses
+                    this.FreeAdressInsert(adressNode.Adress);
+                    //Disable adress
+                    adressNode.Adress = -1;
+                }
             } else
             {
                 //Load block and delete data
                 var block = this.LoadBlock(adressNode.Adress);
-                for (var i = 0; i < this.BlockFactor; i++)
+                var blockValid = block.ValidCount;
+                for (var i = 0; i < blockValid; i++)
                 {
                     if (block.Records[i].IsEqual(data))
                     {
@@ -205,66 +216,93 @@ namespace DataStructures.File
                         block.ValidCount--;
                         adressNode.RecordCount--;
                         this.SaveBlock(adressNode.Adress, block);
-                    }
-                }
-                //Check brother node
-                while(adressNode.Parent != null)
-                {
-                    //Set brother
-                    DFNode brother = null; 
-                    if(((InternalNode)adressNode.Parent).LeftNode == adressNode)
-                    {
-                        brother = ((InternalNode)adressNode.Parent).RightNode;
-                    } else
-                    {
-                        brother = ((InternalNode)adressNode.Parent).LeftNode;
-                    }
-                    //Stop if brother is InterNode
-                    if (brother is InternalNode)
-                    {
                         break;
                     }
-                    var brotherExternal = (ExternalNode)brother;
-                    //Consolidate if possible
-                    if((adressNode.RecordCount + brotherExternal.RecordCount) <= BlockFactor)
+                }
+            }
+            //Check brother node
+            while (adressNode.Parent != null)
+            {
+                //Set brother
+                DFNode brother = null;
+                if (((InternalNode)adressNode.Parent).LeftNode == adressNode)
+                {
+                    brother = ((InternalNode)adressNode.Parent).RightNode;
+                }
+                else
+                {
+                    brother = ((InternalNode)adressNode.Parent).LeftNode;
+                }
+                //Stop if brother is InterNode
+                if (brother is InternalNode)
+                {
+                    break;
+                }
+                var brotherExternal = (ExternalNode)brother;
+                //Consolidate if possible
+                if ((adressNode.RecordCount + brotherExternal.RecordCount) <= BlockFactor)
+                {
+                    //Load blocks
+                    Block<T> adressBlock = null;
+                    if (adressNode.Adress != -1)
                     {
-                        //Load blocks
-                        var adressBlock = this.LoadBlock(adressNode.Adress);
-                        var brotherBlock = this.LoadBlock(brotherExternal.Adress);
-                        for(int i = 0; i < brotherBlock.ValidCount; i++)
-                        {
-                            adressBlock.InsertData(brotherBlock.Records[i]);
-                            adressNode.RecordCount++;
-                        }
-                        //Write new block
-                        this.SaveBlock(adressNode.Adress, adressBlock);
-                        //Insert freeAdress
-                        this.FreeAdressInsert(brotherExternal.Adress);
-                        //Set new reference
-                        if(adressNode.Parent.Parent == null)
-                        {
-                            this.Indexes.Root = adressNode;
-                            adressNode.Parent = null;
-                        }
-                        else
-                        {
-                            if(adressNode.Parent == ((InternalNode)adressNode.Parent.Parent).LeftNode)
-                            {
-                                ((InternalNode)adressNode.Parent.Parent).LeftNode = adressNode;
-                            } else
-                            {
-                                ((InternalNode)adressNode.Parent.Parent).RightNode = adressNode;
-                            }
-                            adressNode.Parent = adressNode.Parent.Parent;
-                        }                        
+                        adressBlock = this.LoadBlock(adressNode.Adress);
+                    }else
+                    {
+                        adressBlock = new Block<T>(this.BlockFactor, this.Class.CreateClass());
+                    }
+                    Block<T> brotherBlock = null;
+                    if (brotherExternal.Adress != -1)
+                    {
+                        brotherBlock = this.LoadBlock(brotherExternal.Adress);
                     }
                     else
                     {
-                        break;
+                        brotherBlock = new Block<T>(this.BlockFactor, this.Class.CreateClass());
                     }
+                    for (int i = 0; i < brotherBlock.ValidCount; i++)
+                    {
+                        adressBlock.InsertData(brotherBlock.Records[i]);
+                        adressNode.RecordCount++;
+                    }
+                    //Write new block
+                    if (adressNode.Adress == -1)
+                    {
+                        adressNode.Adress = this.FreeAdressGet();
+                    }
+                    this.SaveBlock(adressNode.Adress, adressBlock);
+                    //Insert freeAdress
+                    if (brotherExternal.Adress != -1)
+                    {
+                        this.FreeAdressInsert(brotherExternal.Adress);
+                    }                
+                    //Set new reference
+                    if (adressNode.Parent.Parent == null)
+                    {
+                        this.Indexes.Root = adressNode;
+                        adressNode.Parent = null;
+                    }
+                    else
+                    {
+                        if (adressNode.Parent == ((InternalNode)adressNode.Parent.Parent).LeftNode)
+                        {
+                            ((InternalNode)adressNode.Parent.Parent).LeftNode = adressNode;
+                        }
+                        else
+                        {
+                            ((InternalNode)adressNode.Parent.Parent).RightNode = adressNode;
+                        }
+                        adressNode.Parent = adressNode.Parent.Parent;
+                    }
+                    //New blockDepth
+                    adressNode.BlockDepth -= 1;
                 }
-            }            
-            return false;
+                else
+                {
+                    break;
+                }
+            }
+            return true;
         }
         private bool FreeAdressInsert(long newAdress)
         {
@@ -330,6 +368,71 @@ namespace DataStructures.File
                 var message = ex.Message.ToString();
             }
             return -1;
+        }
+        public override string GetBlocks()
+        {
+            var fileSize = this.FileSize();
+            var result = "--------------------------------------------------\n";
+            result += "Velkost suboru: " + fileSize + "\n";
+            result += "Pocet volnych blokov: " + FreeAdresses.Count + "\n";
+            if(FreeAdresses.Count > 0)
+            {
+                result += "Adresy volnych blokov: ";
+                foreach (var freeAdress in FreeAdresses)
+                {
+                    result += "[" + freeAdress + "] ";
+                }
+            }            
+            result += "\n--------------------------------------------------\n";
+
+            if(this.Indexes.Root != null)
+            {
+                Queue<DFNode> queue = new Queue<DFNode>();
+                queue.Enqueue(this.Indexes.Root);
+                while (queue.Count != 0)
+                {
+
+                    var node = queue.Dequeue();
+                    
+                    if(node is InternalNode)
+                    {
+                        var interNode = (InternalNode)node;
+                        queue.Enqueue(interNode.LeftNode);
+                        queue.Enqueue(interNode.RightNode);
+                    }
+                    else
+                    {
+                        var exterNode = (ExternalNode)node;
+                        if(exterNode.Adress != -1)
+                        {
+                            var block = new Block<T>(BlockFactor, Class.CreateClass());
+
+                            byte[] blockBytes = new byte[block.GetSize()];
+
+                            File.Seek(exterNode.Adress, SeekOrigin.Begin);
+                            File.Read(blockBytes);
+
+                            block.FromByteArray(blockBytes);
+
+                            result += "--------------------------------------------------\n";
+                            result += "Block na adrese " + exterNode.Adress + "\n";
+                            result += "\t Pocet validnych: " + block.ValidCount + "\n";
+
+                            if (block.ValidCount > 0)
+                            {
+                                result += "\t Prvky: \n";
+
+                                for (int i = 0; i < block.ValidCount; i++)
+                                {
+                                    result += "\t\tPrvok(" + i + "):\n\t\t\t" + block.Records[i].ToString() + "\n";
+                                }
+                            }
+                            result += "--------------------------------------------------\n";
+                        }
+                    }                                       
+                }
+            }
+            return result;
         }
     }
 }
