@@ -6,17 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-//var example = new Example();
-//var dFile = new DynamicFile<Example>(2, "Data");
-
-//example.ID = 8;
-//dFile.Add(example);
-
-//example.ID = 8;
-//dFile.Delete(example);
-
-//Console.WriteLine(dFile.GetBlocks());
-
 var again = true;
 
 Console.Write("Zadaj celkovy pocet opercii: ");
@@ -36,6 +25,13 @@ var generovaneCisla = Convert.ToInt32(Console.ReadLine());
 
 Console.Write("Zadaj block factor: ");
 var blockFactor = Convert.ToInt32(Console.ReadLine());
+
+Console.Write("Priebezne vypisy(a/n): ");
+var priebeznyVipis = false;
+if(Console.ReadLine() == "a")
+{
+    priebeznyVipis = true;
+}
 
 var example = new Example();
 var file = new DynamicFile<Example>(blockFactor, "Data.dat");
@@ -71,7 +67,10 @@ while (again)
             example.ID = vkladaneCislo;
             if (file.Find(example) == null)
             {
-                Console.WriteLine("Vklada {0}", vkladaneCislo);
+                if (priebeznyVipis)
+                {
+                    Console.WriteLine("Vklada {0}", vkladaneCislo);
+                }                
                 file.Add(example);
                 ControlArray.Add(vkladaneCislo);
                 var found = file.Find(example);
@@ -88,7 +87,9 @@ while (again)
             {
                 var hladaneCislo = Convert.ToInt32(ControlArray[random.Next(ControlArray.Count)]);
                 example.ID = hladaneCislo;
-                Console.WriteLine("Hlada sa {0}", hladaneCislo);
+                if (priebeznyVipis){
+                    Console.WriteLine("Hlada sa {0}", hladaneCislo);
+                }                
                 var found = file.Find(example);
                 if (found == null || found.ID != hladaneCislo)
                 {
@@ -103,7 +104,10 @@ while (again)
             {
                 var mazaneCislo = ControlArray[random.Next(ControlArray.Count)];
                 example.ID = mazaneCislo;
-                Console.WriteLine("Maze {0}", mazaneCislo);
+                if (priebeznyVipis)
+                {
+                    Console.WriteLine("Maze {0}", mazaneCislo);
+                }                
                 file.Delete(example);
                 ControlArray.Remove(mazaneCislo);
             }
@@ -112,7 +116,10 @@ while (again)
                 file.Delete(example);
             }
         }
-        Console.WriteLine(file.GetBlocks());
+        if (priebeznyVipis)
+        {
+            Console.WriteLine(file.GetBlocks());
+        }
     }
 
     Console.WriteLine("\nPocet operacii vloz: {0}", celkovoVloz);

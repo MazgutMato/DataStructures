@@ -13,10 +13,12 @@ namespace DataStructures.File
     {
         public DFTree Indexes { get; }
         public LinkedList<long> FreeAdresses { get; }
+        public int Count { get; set; }
         public DynamicFile(int blockFactor, string fileName) : base(blockFactor, fileName)
         {
             FreeAdresses = new LinkedList<long>();
             Indexes = new DFTree(blockFactor);
+            Count = 0;
         }
         public ExternalNode? GetAdressNode(T data)
         {
@@ -177,6 +179,7 @@ namespace DataStructures.File
 
             //Write block to file
             this.SaveBlock(adressNode.Adress, block);
+            this.Count++;
             return true;
         }
         public bool Delete(T data)
@@ -189,17 +192,18 @@ namespace DataStructures.File
             //Delete node
             if(adressNode.RecordCount == 1)
             {
+                //Insert into freeAdresses
+                this.FreeAdressInsert(adressNode.Adress);
                 //Is root
-                if(this.Indexes.Root == adressNode)
+                if (this.Indexes.Root == adressNode)
                 {
                     this.Indexes.Root = null;
+                    this.Count--;
                     return true;
                 }
                 else
                 {
-                    adressNode.RecordCount = 0;
-                    //Insert into freeAdresses
-                    this.FreeAdressInsert(adressNode.Adress);
+                    adressNode.RecordCount = 0;                    
                     //Disable adress
                     adressNode.Adress = -1;
                 }
@@ -302,6 +306,7 @@ namespace DataStructures.File
                     break;
                 }
             }
+            this.Count--;
             return true;
         }
         private bool FreeAdressInsert(long newAdress)
@@ -374,6 +379,7 @@ namespace DataStructures.File
             var fileSize = this.FileSize();
             var result = "--------------------------------------------------\n";
             result += "Velkost suboru: " + fileSize + "\n";
+            result += "Pocet prvkov: " + Count + "\n";
             result += "Pocet volnych blokov: " + FreeAdresses.Count + "\n";
             if(FreeAdresses.Count > 0)
             {
