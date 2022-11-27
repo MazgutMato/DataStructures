@@ -1,22 +1,56 @@
 ﻿@page "/"
+@inject PatientsController patients
 
 <PageTitle>ElectronicHelathCard</PageTitle>
 
-<h3 class="mt-2">Select structure</h3>
+<h3 class="mt-2">File type</h3>
 <hr />
-<h5>Selected Country is: @selectedString</h5>
-<select class="form-control" @onchange="@OnSelect" style="width:150px">
-    @foreach (var template in templates)
-    {
-        <option value=@template>@template</option>
-    }
-</select>
+@if (fileType == null)
+{    
+    <button type="submit" class="btn btn-primary" @onclick='(() => {
+            this.fileType = "Static";
+        })'>
+        Static file
+    </button>
+    <button type="submit" class="btn btn-primary" @onclick='(() => {
+            this.fileType = "Dynamic";
+        })'>
+        >
+        Dynamic file
+    </button>
+}
+@if (this.fileType != null)
+{
+    <h5 class="mt-2">Selected file type is: @fileType</h5>
+}
 
-<h3 class="mt-2">Delete data</h3>
-<hr />
-<button type="submit" class="btn btn-primary">
-    Delete
-</button>
+@if (!dataGenerated && fileType != null)
+{
+    <h3 class="mt-2">Data</h3>
+    <hr />
+    <button type="submit" class="btn btn-primary" @onclick='(() => {
+            if(this.fileType == "Static"){
+                patients.Patients = new StaticFile<Patient>(5,"StaticData.dat");
+            } else {
+                patients.Patients = new DynamicFile<Patient>(5,"DynamicData.dat");
+            }
+            this.dataGenerated = true;
+        })'>
+        >
+        New
+    </button>
+    <button type="submit" class="btn btn-primary">
+        Load
+    </button>
+}
+@if (dataGenerated && fileType != null)
+{
+    <h3 class="mt-2">Data</h3>
+    <hr />
+    <button type="submit" class="btn btn-primary">
+        Delete
+    </button>
+}
 
 @if (Message != null)
 {
@@ -26,13 +60,7 @@
 
 @code
 {
-    private string Message = null;
-    List<string> templates = new List<string>() { "Static", "Dynamic"};
-    string selectedString = "Static";
-
-    void OnSelect(ChangeEventArgs e)
-    {
-        selectedString = e.Value.ToString();
-        Console.WriteLine("The selected country is : " + selectedString);
-    }
+    string? Message = null;
+    string? fileType = null;
+    bool dataGenerated = false;
 }

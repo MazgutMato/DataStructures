@@ -8,17 +8,25 @@ namespace PatientCard.Controllers
 {
     public class PatientsController
     {
-        private Structure<Patient> Patients;
+        public BasicFile<Patient>? Patients;
         public PatientsController()
         {
-            Patients = new DynamicFile<Patient>(5,"Data");
+            Patients = null;
         }
         public bool AddPatient(Patient patient)
         {
+            if(Patients == null)
+            {
+                return false;
+            }
             return Patients.Add(patient);
         }
         public Patient? FindPatient(Patient patient)
         {
+            if (Patients == null)
+            {
+                return null;
+            }
             return Patients.Find(patient);
         }
     }

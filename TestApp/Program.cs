@@ -2,6 +2,7 @@
 using DataStructures.Iterator;
 using DataStructures.Tree.BSTree;
 using DataStructures.Tree.DFTree;
+using PatientCard.Models;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -26,21 +27,45 @@ var generovaneCisla = Convert.ToInt32(Console.ReadLine());
 Console.Write("Zadaj block factor: ");
 var blockFactor = Convert.ToInt32(Console.ReadLine());
 
+var example = new Example();
+BasicFile<Example> file = null;
+var ControlArray = new List<int>();
+
+Console.Write("Struktura na testovanie: \n\ta)StaticFile\n\tb)DynamicFile\n");
+var struktura = Console.ReadLine();
+if (struktura == "a")
+{
+    Console.WriteLine("\tStaticFile");
+}
+else if(struktura == "b")
+{
+    Console.WriteLine("\tDynamicFile");
+} else
+{
+    throw new InvalidOperationException("Nebolo zvolena struktura na test!");
+}
+
 Console.Write("Priebezne vypisy(a/n): ");
 var priebeznyVipis = false;
-if(Console.ReadLine() == "a")
+if (Console.ReadLine() == "a")
 {
     priebeznyVipis = true;
 }
 
-var example = new Example();
-var file = new DynamicFile<Example>(blockFactor, "Data.dat");
-var ControlArray = new List<int>();
-
 while (again)
 {
-    file.File.Close();
-    file = new DynamicFile<Example>(blockFactor, "Data.dat");
+    if (file != null)
+    {
+        file.File.Close();
+    }
+    if (struktura == "a")
+    {        
+        file = new StaticFile<Example>(blockFactor, "Data.dat");
+    }
+    else if (struktura == "b")
+    {
+        file = new DynamicFile<Example>(blockFactor, "Data.dat");
+    }
     ControlArray = new List<int>();
 
     if ((pocetVloz + pocetNajdi + pocetVymaz) != 100)
@@ -70,14 +95,16 @@ while (again)
                 if (priebeznyVipis)
                 {
                     Console.WriteLine("Vklada {0}", vkladaneCislo);
-                }                
-                file.Add(example);
-                ControlArray.Add(vkladaneCislo);
-                var found = file.Find(example);
-                if (found == null || found.ID != vkladaneCislo)
-                {
-                    throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
                 }
+                if (file.Add(example))
+                {
+                    ControlArray.Add(vkladaneCislo);
+                    var found = file.Find(example);
+                    if (found == null || found.ID != vkladaneCislo)
+                    {
+                        throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
+                    }
+                }                                
             }
         }
         else if (rand < pocetVloz + pocetNajdi)
@@ -87,9 +114,10 @@ while (again)
             {
                 var hladaneCislo = Convert.ToInt32(ControlArray[random.Next(ControlArray.Count)]);
                 example.ID = hladaneCislo;
-                if (priebeznyVipis){
+                if (priebeznyVipis)
+                {
                     Console.WriteLine("Hlada sa {0}", hladaneCislo);
-                }                
+                }
                 var found = file.Find(example);
                 if (found == null || found.ID != hladaneCislo)
                 {
@@ -107,7 +135,7 @@ while (again)
                 if (priebeznyVipis)
                 {
                     Console.WriteLine("Maze {0}", mazaneCislo);
-                }                
+                }
                 file.Delete(example);
                 ControlArray.Remove(mazaneCislo);
             }

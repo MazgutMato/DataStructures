@@ -9,16 +9,14 @@ using System.Xml.Linq;
 
 namespace DataStructures.File
 {
-    public class DynamicFile<T> : BasicFile<T>, Structure<T> where T : IData<T>
+    public class DynamicFile<T> : BasicFile<T> where T : IData<T>
     {
         public DFTree Indexes { get; }
         public LinkedList<long> FreeAdresses { get; }
-        public int Count { get; set; }
         public DynamicFile(int blockFactor, string fileName) : base(blockFactor, fileName)
         {
             FreeAdresses = new LinkedList<long>();
             Indexes = new DFTree(blockFactor);
-            Count = 0;
         }
         public ExternalNode? GetAdressNode(T data)
         {
@@ -44,7 +42,7 @@ namespace DataStructures.File
             }
             return (ExternalNode)adressNode;
         }
-        public T? Find(T data)
+        public override T? Find(T data)
         {
             var adressNode = this.GetAdressNode(data);
 
@@ -65,7 +63,7 @@ namespace DataStructures.File
             }
             return default(T);
         }
-        public bool Add(T data)
+        public override bool Add(T data)
         {
             var adressNode = this.GetAdressNode(data);
 
@@ -182,7 +180,7 @@ namespace DataStructures.File
             this.Count++;
             return true;
         }
-        public bool Delete(T data)
+        public override bool Delete(T data)
         {
             var adressNode = this.GetAdressNode(data);
             if(adressNode == null)
@@ -361,18 +359,6 @@ namespace DataStructures.File
             {
                 return this.FileSize();
             }
-        }
-        public long FileSize()
-        {
-            try
-            {
-                return File.Length;
-            }
-            catch (Exception ex)
-            {
-                var message = ex.Message.ToString();
-            }
-            return -1;
         }
         public override string GetBlocks()
         {

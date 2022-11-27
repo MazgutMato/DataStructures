@@ -7,16 +7,21 @@ using System.Threading.Tasks;
 
 namespace DataStructures.File
 {
-    public class BasicFile<T> where T : IData<T>
+    public abstract class BasicFile<T> : Structure<T> where T : IData<T>
     {
-        public int BlockFactor { get; }
+        public int BlockFactor { get; set; }
         public FileStream File { get; }
         public T Class { get; }
+        public int Count { get; set; }
         public BasicFile(int blockFactor, string fileName)
         {
             BlockFactor = blockFactor;
-            File = new FileStream(fileName, FileMode.Create);
+            File = new FileStream(fileName + ".dat", FileMode.Create);
             Class = Activator.CreateInstance<T>();
+        }
+        public BasicFile(string fileName)
+        {
+
         }
         public Block<T> LoadBlock(long adress)
         {
@@ -51,43 +56,9 @@ namespace DataStructures.File
             }
             return -1;
         }
-        public virtual string GetBlocks()
-        {
-            long adress = 0;
-            var fileSize = this.FileSize();
-            var result = "--------------------------------------------------\n";
-            result += "Velkost suboru: " + fileSize + "\n";
-            result += "--------------------------------------------------\n";
-
-            while (adress < fileSize)
-            {
-                var block = new Block<T>(BlockFactor, Class.CreateClass());
-
-                byte[] blockBytes = new byte[block.GetSize()];
-
-                File.Seek(adress, SeekOrigin.Begin);
-                File.Read(blockBytes);
-
-                block.FromByteArray(blockBytes);
-
-                result += "--------------------------------------------------\n";
-                result += "Block na adrese " + adress + "\n";
-                result += "\t Pocet validnych: " + block.ValidCount + "\n";
-
-                if (block.ValidCount > 0)
-                {
-                    result += "\t Prvky: \n";
-
-                    for (int i = 0; i < block.ValidCount; i++)
-                    {
-                        result += "\t\tPrvok(" + i + "):\n\t\t\t" + block.Records[i].ToString() + "\n";
-                    }
-                }
-
-                adress += block.GetSize();
-                result += "--------------------------------------------------\n";
-            }            
-            return result;
-        }
+        public abstract string GetBlocks();
+        public abstract bool Add(T data);
+        public abstract bool Delete(T data);
+        public abstract T? Find(T data);        
     }
 }

@@ -5,21 +5,37 @@ using DataStructures.File;
 namespace PatientCard.Models
 {
     public class Record : IData<Record>
-    {
-        [Required]
-        public int Id { get; set; }
-        [Required]
+    {        
+        public int Id { get; set; }        
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
-        [Required]
-        public char[] Diagnoze { get; set; }
+        private char[] _diagnoze;
+        public char[] Diagnoze {
+            get
+            {
+                return this._diagnoze;
+            }
+            set
+            {
+                if (value.Length > 20)
+                {
+                    Array.Copy(value, this._diagnoze, 20);
+                    this.DiagnozeSize = 20;
+                }
+                else
+                {
+                    Array.Copy(value, this._diagnoze, value.Length);
+                    this.DiagnozeSize = Convert.ToByte(value.Length);
+                }
+            }
+        }
         public byte DiagnozeSize { get; set; }
         public Record()
         {
             this.Id = 1;
             this.Start = DateTime.Now;
             this.End = DateTime.MinValue;
-            this.Diagnoze = new char[20];
+            this._diagnoze = new char[20];
             this.DiagnozeSize = 0;
         }
 
@@ -46,9 +62,9 @@ namespace PatientCard.Models
 
             binaryWriter.Write(this.Id);
             binaryWriter.Write(this.Start.ToBinary());
-            binaryWriter.Write(this.End.ToBinary());
-            binaryWriter.Write(this.DiagnozeSize);
+            binaryWriter.Write(this.End.ToBinary());            
             binaryWriter.Write(this.Diagnoze);
+            binaryWriter.Write(this.DiagnozeSize);
 
             return memoryStream.ToArray();
         }
@@ -60,15 +76,15 @@ namespace PatientCard.Models
 
             this.Id = binaryReader.ReadInt32();
             this.Start = DateTime.FromBinary(binaryReader.ReadInt64());
-            this.End = DateTime.FromBinary(binaryReader.ReadInt64());
-            this.DiagnozeSize = binaryReader.ReadByte();
+            this.End = DateTime.FromBinary(binaryReader.ReadInt64());            
             this.Diagnoze = binaryReader.ReadChars(20);
+            this.DiagnozeSize = binaryReader.ReadByte();
         }
 
         public int GetSize()
         {
             var dateTimeSize = 8;
-            return sizeof(int) + sizeof(byte) + 2* dateTimeSize + 20*sizeof(char);
+            return sizeof(int) + sizeof(byte) + 2* dateTimeSize + 20*(sizeof(char)/2);
         }
     }
 }
