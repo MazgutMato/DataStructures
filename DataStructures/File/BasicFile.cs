@@ -15,13 +15,15 @@ namespace DataStructures.File
         public int Count { get; set; }
         public BasicFile(int blockFactor, string fileName)
         {
+            Count = 0;
             BlockFactor = blockFactor;
             File = new FileStream(fileName + ".dat", FileMode.Create);
             Class = Activator.CreateInstance<T>();
         }
         public BasicFile(string fileName)
         {
-
+            File = new FileStream(fileName + ".dat", FileMode.Open);
+            Class = Activator.CreateInstance<T>();
         }
         public Block<T> LoadBlock(long adress)
         {
