@@ -60,11 +60,11 @@ while (again)
     }
     if (struktura == "a")
     {        
-        file = new StaticFile<Example>(blockFactor, "Data.dat");
+        file = new StaticFile<Example>(blockFactor, "Data");
     }
     else if (struktura == "b")
     {
-        file = new DynamicFile<Example>(blockFactor, "Data.dat");
+        file = new DynamicFile<Example>(blockFactor, "Data");
     }
     ControlArray = new List<int>();
 
@@ -154,9 +154,15 @@ while (again)
     Console.WriteLine("Pocet operacii najdi: {0}", celkovoNajdi);
     Console.WriteLine("Pocet operacii vymaz: {0}", celkovoVymaz);
 
+    
     Console.WriteLine("Vsetky operacie prebehli uspesne!");
 
-    Console.WriteLine(file.GetBlocks());
+    Console.Write("Sekvencny vypis (a/n) : ");
+    var vypis = Console.ReadLine();
+    if(vypis == "a")
+    {
+        Console.WriteLine(file.GetBlocks());
+    }   
 
     foreach (var data in ControlArray)
     {

@@ -9,37 +9,27 @@ namespace DataStructures.File
 {
     public class StaticFile<T> : BasicFile<T> where T : IData<T>
     {
-        public StaticFile(int blockFactor, string fileName) : base(blockFactor, fileName) {
-            this.File.SetLength(blockFactor * this.Class.GetSize());
-            //Create settings file
-            var settings = new FileStream(fileName + ".set",FileMode.Create);
-            MemoryStream memoryStream = new MemoryStream();
-            BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
-            binaryWriter.Write(this.BlockFactor);
-            //Save settings file
-            var bytes = memoryStream.ToArray();
-            File.Seek(0, SeekOrigin.Begin);
-            File.Write(bytes);
-        }
-        public StaticFile(string fileName) : base(fileName)
+        public StaticFile(int blockFactor, string fileName) : base(blockFactor, fileName)
         {
-            //Load .dat file
-            var settings = new FileStream(fileName + ".set", FileMode.Open);
-            settings.Seek(0,SeekOrigin.Begin);
-            var byteArray = new byte[sizeof(int)];
-            settings.Read(byteArray);
+            var block = new Block<T>(blockFactor, this.Class.CreateClass());
+            this.File.SetLength(blockFactor * block.GetSize());
 
-            //ReadBlockFactor
-            MemoryStream memoryStream = new MemoryStream(byteArray);
-            BinaryReader binaryReader = new BinaryReader(memoryStream);
-
-            this.BlockFactor = binaryReader.ReadInt32();
-        }                           
-        private int GetAdress(BitArray hash) {
+            ////Create settings file
+            //var settings = new FileStream(fileName + ".set",FileMode.Create);
+            //MemoryStream memoryStream = new MemoryStream();
+            //BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
+            //binaryWriter.Write(this.BlockFactor);
+            ////Save settings file
+            //var bytes = memoryStream.ToArray();
+            //File.Seek(0, SeekOrigin.Begin);
+            //File.Write(bytes);
+        }
+        private int GetAdress(BitArray hash)
+        {
             if (hash == null)
             {
                 throw new ArgumentException("Hash cannot be null!");
-            }              
+            }
             var result = new int[1];
             hash.CopyTo(result, 0);
             return result[0] % this.BlockFactor;
@@ -50,8 +40,8 @@ namespace DataStructures.File
             var adress = this.GetAdress(hash) * (new Block<T>(this.BlockFactor, this.Class.CreateClass())).GetSize();
 
             var block = this.LoadBlock(adress);
-            
-            for(int i = 0; i < block.ValidCount; i++)
+
+            for (int i = 0; i < block.ValidCount; i++)
             {
                 if (data.IsEqual(block.Records[i]) == true)
                 {
@@ -72,16 +62,16 @@ namespace DataStructures.File
                 return false;
             }
 
-            if(!this.SaveBlock(adress, block))
+            if (!this.SaveBlock(adress, block))
             {
                 return false;
             }
-            
+
             this.Count++;
             return true;
         }
         public override bool Delete(T data)
-        {            
+        {
             var hash = data.GetHash();
             var adress = this.GetAdress(hash) * (new Block<T>(this.BlockFactor, this.Class.CreateClass())).GetSize(); ;
 
@@ -101,7 +91,7 @@ namespace DataStructures.File
                         block.ValidCount--;
                     }
 
-                    if(!this.SaveBlock(adress, block))
+                    if (!this.SaveBlock(adress, block))
                     {
                         return false;
                     }
@@ -132,22 +122,23 @@ namespace DataStructures.File
 
                 block.FromByteArray(blockBytes);
 
-                result += "--------------------------------------------------\n";
-                result += "Block na adrese " + adress + "\n";
-                result += "\t Pocet validnych: " + block.ValidCount + "\n";
-
                 if (block.ValidCount > 0)
                 {
+
+                    result += "--------------------------------------------------\n";
+                    result += "Block na adrese " + adress + "\n";
+                    result += "\t Pocet validnych: " + block.ValidCount + "\n";
+
                     result += "\t Prvky: \n";
 
                     for (int i = 0; i < block.ValidCount; i++)
                     {
                         result += "\t\tPrvok(" + i + "):\n\t\t\t" + block.Records[i].ToString() + "\n";
                     }
+                    result += "--------------------------------------------------\n";
                 }
 
                 adress += block.GetSize();
-                result += "--------------------------------------------------\n";
             }
             return result;
         }

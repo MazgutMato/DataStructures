@@ -20,11 +20,11 @@ namespace DataStructures.File
             File = new FileStream(fileName + ".dat", FileMode.Create);
             Class = Activator.CreateInstance<T>();
         }
-        public BasicFile(string fileName)
-        {
-            File = new FileStream(fileName + ".dat", FileMode.Open);
-            Class = Activator.CreateInstance<T>();
-        }
+        //public BasicFile(string fileName)
+        //{
+        //    File = new FileStream(fileName + ".dat", FileMode.Open);
+        //    Class = Activator.CreateInstance<T>();
+        //}
         public Block<T> LoadBlock(long adress)
         {
             var block = new Block<T>(this.BlockFactor, Class.CreateClass());
