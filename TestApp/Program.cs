@@ -7,6 +7,33 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+//var example = new Example();
+//var file = new DynamicFile<Example>(1,"Skuska");
+
+//example.ID = 18;
+//file.Add(example);
+
+//example.ID = 27;
+//file.Add(example);
+
+//example.ID = 39;
+//file.Add(example);
+
+//example.ID = 15;
+//file.Add(example);
+
+//Console.WriteLine(file.GetBlocks());
+
+//example.ID = 27;
+//file.Delete(example);
+
+//Console.WriteLine(file.GetBlocks());
+
+//example.ID = 39;
+//file.Delete(example);
+
+//Console.WriteLine(file.GetBlocks());
+
 var again = true;
 
 Console.Write("Zadaj celkovy pocet opercii: ");
@@ -37,10 +64,11 @@ if (struktura == "a")
 {
     Console.WriteLine("\tStaticFile");
 }
-else if(struktura == "b")
+else if (struktura == "b")
 {
     Console.WriteLine("\tDynamicFile");
-} else
+}
+else
 {
     throw new InvalidOperationException("Nebolo zvolena struktura na test!");
 }
@@ -59,7 +87,7 @@ while (again)
         file.File.Close();
     }
     if (struktura == "a")
-    {        
+    {
         file = new StaticFile<Example>(blockFactor, "Data");
     }
     else if (struktura == "b")
@@ -104,7 +132,7 @@ while (again)
                     {
                         throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
                     }
-                }                                
+                }
             }
         }
         else if (rand < pocetVloz + pocetNajdi)
@@ -137,11 +165,11 @@ while (again)
                     Console.WriteLine("Maze {0}", mazaneCislo);
                 }
                 file.Delete(example);
+                if(file.Find(example) != null)
+                {
+                    throw new InvalidOperationException("Vymazany prvok sa v strukture nasiel!");
+                }
                 ControlArray.Remove(mazaneCislo);
-            }
-            else
-            {
-                file.Delete(example);
             }
         }
         if (priebeznyVipis)
@@ -154,15 +182,15 @@ while (again)
     Console.WriteLine("Pocet operacii najdi: {0}", celkovoNajdi);
     Console.WriteLine("Pocet operacii vymaz: {0}", celkovoVymaz);
 
-    
+
     Console.WriteLine("Vsetky operacie prebehli uspesne!");
 
     Console.Write("Sekvencny vypis (a/n) : ");
     var vypis = Console.ReadLine();
-    if(vypis == "a")
+    if (vypis == "a")
     {
         Console.WriteLine(file.GetBlocks());
-    }   
+    }
 
     foreach (var data in ControlArray)
     {
