@@ -155,7 +155,6 @@ while (again)
     Console.WriteLine("Pocet operacii najdi: {0}", celkovoNajdi);
     Console.WriteLine("Pocet operacii vymaz: {0}", celkovoVymaz);
 
-
     Console.WriteLine("Vsetky operacie prebehli uspesne!");
 
     Console.Write("Sekvencny vypis (a/n) : ");
@@ -175,10 +174,14 @@ while (again)
             throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
 
         }
-        file.Delete(example);
     }
 
     Console.WriteLine("Vsetky prvky sa v strukture nasli!");
+
+    if (file.Count != ControlArray.Count)
+    {
+        throw new InvalidOperationException("Pocet prvkov v subore a v pomocnej strukture sa nerovna!");
+    }
 
     Console.Write("Zopakovat test (a/n) : ");
     var opakovat = Console.ReadLine();
@@ -187,4 +190,5 @@ while (again)
     {
         again = false;
     }
+    file.SaveFile();
 }

@@ -19,28 +19,92 @@ namespace DataStructures.File
             Indexes = new DFTree(blockFactor);
         }
         public DynamicFile(string fileName) : base(fileName)
-        {
-            byte[] bytes = new byte[this.SettingsFile.Length];
-
-            DataFile.Seek(0, SeekOrigin.Begin);
-            DataFile.Read(bytes);
-
-            MemoryStream memoryStream = new MemoryStream(bytes);
-            BinaryReader binaryReader = new BinaryReader(memoryStream);
-
-            this.BlockFactor = binaryReader.ReadInt32();
-            this.Count = binaryReader.ReadInt32();
-
-            try
+        {            
+            var input = new StreamReader(this.SettingsFile);
+            //Read blockFactor and count
+            var line = input.ReadLine();
+            var values = line?.Split(';');
+            this.BlockFactor = Convert.ToInt32(values?[0]);
+            this.Count = Convert.ToInt32(values?[1]);
+            FreeAdresses = new LinkedList<long>();
+            Indexes = new DFTree(this.BlockFactor);
+            //Read free blocks
+            line = input.ReadLine();
+            values = line?.Split(';');
+            if (values[0] != "0")
             {
-                binaryReader.ReadInt32();
+                for(var i = 1; i < values.Length - 1; i++)
+                {
+                    this.FreeAdresses.AddLast(Convert.ToInt32(values[i]));
+                }
             }
-            catch
+            //Read externalNodes
+            line = input.ReadLine();
+            while (line != null)
             {
-
+                values = line?.Split(';');                
+                if (values[0] == "")
+                {
+                    var node = new ExternalNode();
+                    if (values[1] != "-1")
+                    {
+                        node.Adress = Convert.ToInt32(values[1]);
+                        node.RecordCount = Convert.ToInt32(values[2]);
+                    }
+                    this.Indexes.Root = node;
+                }
+                else
+                {
+                    if(this.Indexes.Root == null)
+                    {
+                        this.Indexes.Root = new InternalNode();
+                    }
+                    var node = this.Indexes.Root;
+                    for(var i = 0; i < values[0].Length - 1; i++)
+                    {
+                        if ((values[0])[i] == '0')
+                        {
+                            var nextNode = ((InternalNode)node).LeftNode;
+                            if(nextNode == null)
+                            {
+                                nextNode = new InternalNode();
+                                nextNode.Parent = node;
+                                nextNode.BlockDepth = node.BlockDepth + 1;
+                                ((InternalNode)node).LeftNode = nextNode;
+                            }
+                            node = nextNode;
+                        }
+                        else
+                        {
+                            var nextNode = ((InternalNode)node).RightNode;
+                            if (nextNode == null)
+                            {
+                                nextNode = new InternalNode();
+                                nextNode.Parent = node;
+                                nextNode.BlockDepth = node.BlockDepth + 1;
+                                ((InternalNode)node).RightNode = nextNode;
+                            }
+                            node = nextNode;
+                        }
+                    }
+                    var externalNode = new ExternalNode();                    
+                    if ((values[0])[values[0].Length - 1] == '0')
+                    {                                               
+                        ((InternalNode)node).LeftNode = externalNode;                        
+                    } else
+                    {
+                        ((InternalNode)node).RightNode = externalNode;
+                    }
+                    externalNode.Parent = node;
+                    externalNode.BlockDepth = node.BlockDepth + 1;
+                    if (values[1] != "-1")
+                    {
+                        externalNode.Adress = Convert.ToInt32(values[1]);
+                        externalNode.RecordCount = Convert.ToInt32(values[2]);
+                    }
+                }
+                line = input.ReadLine();
             }
-
-
         }
         public ExternalNode? GetAdressNode(T data)
         {
@@ -385,6 +449,7 @@ namespace DataStructures.File
             var fileSize = this.FileSize();
             var result = "--------------------------------------------------\n";
             result += "Velkost suboru: " + fileSize + "\n";
+            result += "Block factor: " + BlockFactor + "\n";
             result += "Pocet prvkov: " + Count + "\n";
             result += "Pocet volnych blokov: " + FreeAdresses.Count + "\n";
             if(FreeAdresses.Count > 0)
@@ -403,7 +468,14 @@ namespace DataStructures.File
         {
             StringBuilder output = new StringBuilder();
             //Save blockFactor and count
-            output.AppendLine(this.BlockFactor + ";" + this.Count);
+            output.AppendLine(this.BlockFactor + ";" + this.Count + ";");
+            //Save freeAdresses
+            var freeAdresse = "";
+            foreach(var adress in FreeAdresses)
+            {
+                freeAdresse += adress + ";";
+            }
+            output.AppendLine(FreeAdresses.Count + ";" + freeAdresse);
             //Save indexesTree
             if (this.Indexes.Root != null)
             {
@@ -424,13 +496,42 @@ namespace DataStructures.File
                     else
                     {
                         var exterNode = (ExternalNode)node;
+                        var index = "";
+                        DFNode indexNode = exterNode;
+                        while(indexNode.Parent != null)
+                        {
+                            if (((InternalNode)indexNode.Parent).LeftNode == indexNode)
+                            {
+                                index = "0" + index;
+                            }
+                            else
+                            {
+                                index = "1" + index;
+                            }
+                            indexNode = indexNode.Parent;
+                        }                        
+                        if(exterNode.Adress == -1)
+                        {
+                            output.AppendLine(index + ";" + "-1;");
+                        } else
+                        {
+                            output.AppendLine(index + ";" + exterNode.Adress + ";" + exterNode.RecordCount + ";");
+                        }
                     }
                 }
             }
-            //Save freeAdresses
-
             //Save settings to file
-
+            try
+            {
+                var bytes = Encoding.ASCII.GetBytes(output.ToString());
+                SettingsFile.Write(bytes, 0, bytes.Length);
+                SettingsFile.Close();
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            DataFile.Close();
             return true;
         }
     }

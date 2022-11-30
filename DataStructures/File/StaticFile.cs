@@ -103,6 +103,7 @@ namespace DataStructures.File
         {
             var result = "--------------------------------------------------\n";
             result += "Velkost suboru: " + this.FileSize() + "\n";
+            result += "Block factor: " + this.BlockFactor + "\n";
             result += "Pocet prvkov: " + this.Count + "\n";
             result += "--------------------------------------------------\n";
             result += this.GetBlocksSequense();
@@ -110,14 +111,21 @@ namespace DataStructures.File
         }
         public override bool SaveFile()
         {
+            //Save blockfactor and count
             var output = new StringBuilder();
             output.AppendLine(this.BlockFactor + ";" + this.Count + ";");
-
-            //Save settings file
-            var bytes = Encoding.ASCII.GetBytes(output.ToString());
-            SettingsFile.Write(bytes, 0, bytes.Length);
-            SettingsFile.Close();           
-
+            //Save to settings file
+            try
+            {
+                var bytes = Encoding.ASCII.GetBytes(output.ToString());
+                SettingsFile.Write(bytes, 0, bytes.Length);
+                SettingsFile.Close();
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            DataFile.Close();
             return true;
         }
     }
