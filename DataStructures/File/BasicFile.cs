@@ -10,28 +10,35 @@ namespace DataStructures.File
     public abstract class BasicFile<T> : Structure<T> where T : IData<T>
     {
         public int BlockFactor { get; set; }
-        public FileStream File { get; }
+        public FileStream DataFile { get; }
+        public FileStream SettingsFile { get; }
         public T Class { get; }
         public int Count { get; set; }
         public BasicFile(int blockFactor, string fileName)
         {
+            //Data
             Count = 0;
             BlockFactor = blockFactor;
-            File = new FileStream(fileName + ".dat", FileMode.Create);
+            DataFile = new FileStream(fileName + ".dat", FileMode.Create);
             Class = Activator.CreateInstance<T>();
+            //Settings
+            SettingsFile = new FileStream(fileName + ".set", FileMode.Create);
         }
-        //public BasicFile(string fileName)
-        //{
-        //    File = new FileStream(fileName + ".dat", FileMode.Open);
-        //    Class = Activator.CreateInstance<T>();
-        //}
+        public BasicFile(string fileName)
+        {
+            //Data
+            DataFile = new FileStream(fileName + ".dat", FileMode.Open);
+            Class = Activator.CreateInstance<T>();
+            //Settings
+            SettingsFile = new FileStream(fileName + ".set", FileMode.Open);
+        }
         public Block<T> LoadBlock(long adress)
         {
             var block = new Block<T>(this.BlockFactor, Class.CreateClass());
             byte[] blockBytes = new byte[block.GetSize()];
 
-            File.Seek(adress, SeekOrigin.Begin);
-            File.Read(blockBytes);
+            DataFile.Seek(adress, SeekOrigin.Begin);
+            DataFile.Read(blockBytes);
 
             block.FromByteArray(blockBytes);
             return block;
@@ -42,15 +49,15 @@ namespace DataStructures.File
             {
                 throw new InvalidOperationException("Adress cannot be negative number!");
             }
-            File.Seek(adress, SeekOrigin.Begin);
-            File.Write(block.ToByteArray());
+            DataFile.Seek(adress, SeekOrigin.Begin);
+            DataFile.Write(block.ToByteArray());
             return true;
         }
         public long FileSize()
         {
             try
             {
-                return File.Length;
+                return DataFile.Length;
             }
             catch (Exception ex)
             {
@@ -58,9 +65,45 @@ namespace DataStructures.File
             }
             return -1;
         }
-        public abstract string GetBlocks();
+        public string GetBlocksSequense() {
+            long adress = 0;
+            var fileSize = this.FileSize();
+            var result = "";
+
+            while (adress < fileSize)
+            {
+                var block = new Block<T>(BlockFactor, Class.CreateClass());
+
+                byte[] blockBytes = new byte[block.GetSize()];
+
+                DataFile.Seek(adress, SeekOrigin.Begin);
+                DataFile.Read(blockBytes);
+
+                block.FromByteArray(blockBytes);
+
+                if (block.ValidCount > 0)
+                {
+
+                    result += "--------------------------------------------------\n";
+                    result += "Block na adrese " + adress + "\n";
+                    result += "\t Pocet validnych: " + block.ValidCount + "\n";
+
+                    result += "\t Prvky: \n";
+
+                    for (int i = 0; i < block.ValidCount; i++)
+                    {
+                        result += "\t\tPrvok(" + i + "):\n\t\t\t" + block.Records[i].ToString() + "\n";
+                    }
+                    result += "--------------------------------------------------\n";
+                }
+
+                adress += block.GetSize();
+            }
+            return result;
+        }
         public abstract bool Add(T data);
         public abstract bool Delete(T data);
-        public abstract T? Find(T data);        
+        public abstract T? Find(T data);
+        public abstract bool SaveFile();
     }
 }

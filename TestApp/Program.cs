@@ -7,33 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-//var example = new Example();
-//var file = new DynamicFile<Example>(1,"Skuska");
-
-//example.ID = 18;
-//file.Add(example);
-
-//example.ID = 27;
-//file.Add(example);
-
-//example.ID = 39;
-//file.Add(example);
-
-//example.ID = 15;
-//file.Add(example);
-
-//Console.WriteLine(file.GetBlocks());
-
-//example.ID = 27;
-//file.Delete(example);
-
-//Console.WriteLine(file.GetBlocks());
-
-//example.ID = 39;
-//file.Delete(example);
-
-//Console.WriteLine(file.GetBlocks());
-
 var again = true;
 
 Console.Write("Zadaj celkovy pocet opercii: ");
@@ -84,15 +57,15 @@ while (again)
 {
     if (file != null)
     {
-        file.File.Close();
+        file.DataFile.Close();
     }
     if (struktura == "a")
     {
-        file = new StaticFile<Example>(blockFactor, "Data");
+        file = new StaticFile<Example>(blockFactor, "StaticFile");
     }
     else if (struktura == "b")
     {
-        file = new DynamicFile<Example>(blockFactor, "Data");
+        file = new DynamicFile<Example>(blockFactor, "DynamicFile");
     }
     ControlArray = new List<int>();
 
@@ -165,7 +138,7 @@ while (again)
                     Console.WriteLine("Maze {0}", mazaneCislo);
                 }
                 file.Delete(example);
-                if(file.Find(example) != null)
+                if (file.Find(example) != null)
                 {
                     throw new InvalidOperationException("Vymazany prvok sa v strukture nasiel!");
                 }
@@ -174,7 +147,7 @@ while (again)
         }
         if (priebeznyVipis)
         {
-            Console.WriteLine(file.GetBlocks());
+            Console.WriteLine(file.ToString());
         }
     }
 
@@ -189,7 +162,7 @@ while (again)
     var vypis = Console.ReadLine();
     if (vypis == "a")
     {
-        Console.WriteLine(file.GetBlocks());
+        Console.WriteLine(file.ToString());
     }
 
     foreach (var data in ControlArray)

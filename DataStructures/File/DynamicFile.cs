@@ -18,6 +18,30 @@ namespace DataStructures.File
             FreeAdresses = new LinkedList<long>();
             Indexes = new DFTree(blockFactor);
         }
+        public DynamicFile(string fileName) : base(fileName)
+        {
+            byte[] bytes = new byte[this.SettingsFile.Length];
+
+            DataFile.Seek(0, SeekOrigin.Begin);
+            DataFile.Read(bytes);
+
+            MemoryStream memoryStream = new MemoryStream(bytes);
+            BinaryReader binaryReader = new BinaryReader(memoryStream);
+
+            this.BlockFactor = binaryReader.ReadInt32();
+            this.Count = binaryReader.ReadInt32();
+
+            try
+            {
+                binaryReader.ReadInt32();
+            }
+            catch
+            {
+
+            }
+
+
+        }
         public ExternalNode? GetAdressNode(T data)
         {
             //Index
@@ -249,6 +273,8 @@ namespace DataStructures.File
                     if (adressNode.Adress != -1)
                     {
                         adressBlock = this.LoadBlock(adressNode.Adress);
+                        this.FreeAdressInsert(adressNode.Adress);
+                        adressNode.Adress = -1;
                     }else
                     {
                         adressBlock = new Block<T>(this.BlockFactor, this.Class.CreateClass());
@@ -257,6 +283,8 @@ namespace DataStructures.File
                     if (brotherExternal.Adress != -1)
                     {
                         brotherBlock = this.LoadBlock(brotherExternal.Adress);
+                        this.FreeAdressInsert(brotherExternal.Adress);
+                        brotherExternal.Adress = -1;
                     }
                     else
                     {
@@ -268,16 +296,8 @@ namespace DataStructures.File
                         adressNode.RecordCount++;
                     }
                     //Write new block
-                    if (adressNode.Adress == -1)
-                    {
-                        adressNode.Adress = this.FreeAdressGet();
-                    }
-                    this.SaveBlock(adressNode.Adress, adressBlock);
-                    //Insert freeAdress
-                    if (brotherExternal.Adress != -1)
-                    {
-                        this.FreeAdressInsert(brotherExternal.Adress);
-                    }                
+                    adressNode.Adress = this.FreeAdressGet();
+                    this.SaveBlock(adressNode.Adress, adressBlock);                               
                     //Set new reference
                     if (adressNode.Parent.Parent == null)
                     {
@@ -316,12 +336,12 @@ namespace DataStructures.File
             //FileCut
             var sampleBLock = new Block<T>(BlockFactor, Class.CreateClass());
             if(newAdress == (this.FileSize() - sampleBLock.GetSize()) ){
-                this.File.SetLength(newAdress);
+                this.DataFile.SetLength(newAdress);
                 var successorAdress = newAdress - sampleBLock.GetSize();
                 var successorNode = FreeAdresses.Find(successorAdress);
                 while(successorNode != null)
                 {
-                    this.File.SetLength(successorAdress);
+                    this.DataFile.SetLength(successorAdress);
                     FreeAdresses.Remove(successorAdress);
                     successorAdress = successorAdress - sampleBLock.GetSize();
                     successorNode = FreeAdresses.Find(successorAdress);
@@ -352,15 +372,15 @@ namespace DataStructures.File
         {
             if(FreeAdresses.Count > 0)
             {
-                var value = this.FreeAdresses.Last.Value;
-                FreeAdresses.RemoveLast();
+                var value = this.FreeAdresses.First.Value;
+                FreeAdresses.RemoveFirst();
                 return value;
             } else
             {
                 return this.FileSize();
             }
         }
-        public override string GetBlocks()
+        public override string ToString()
         {
             var fileSize = this.FileSize();
             var result = "--------------------------------------------------\n";
@@ -376,8 +396,16 @@ namespace DataStructures.File
                 }
             }            
             result += "\n--------------------------------------------------\n";
-
-            if(this.Indexes.Root != null)
+            result += this.GetBlocksSequense();
+            return result;
+        }
+        public override bool SaveFile()
+        {
+            StringBuilder output = new StringBuilder();
+            //Save blockFactor and count
+            output.AppendLine(this.BlockFactor + ";" + this.Count);
+            //Save indexesTree
+            if (this.Indexes.Root != null)
             {
                 Queue<DFNode> queue = new Queue<DFNode>();
                 queue.Enqueue(this.Indexes.Root);
@@ -385,46 +413,25 @@ namespace DataStructures.File
                 {
 
                     var node = queue.Dequeue();
-                    
-                    if(node is InternalNode)
+
+                    if (node is InternalNode)
                     {
                         var interNode = (InternalNode)node;
+
                         queue.Enqueue(interNode.LeftNode);
                         queue.Enqueue(interNode.RightNode);
                     }
                     else
                     {
                         var exterNode = (ExternalNode)node;
-                        if(exterNode.Adress != -1)
-                        {
-                            var block = new Block<T>(BlockFactor, Class.CreateClass());
-
-                            byte[] blockBytes = new byte[block.GetSize()];
-
-                            File.Seek(exterNode.Adress, SeekOrigin.Begin);
-                            File.Read(blockBytes);
-
-                            block.FromByteArray(blockBytes);
-
-                            result += "--------------------------------------------------\n";
-                            result += "Block na adrese " + exterNode.Adress + "\n";
-                            result += "\t Pocet validnych: " + block.ValidCount + "\n";
-
-                            if (block.ValidCount > 0)
-                            {
-                                result += "\t Prvky: \n";
-
-                                for (int i = 0; i < block.ValidCount; i++)
-                                {
-                                    result += "\t\tPrvok(" + i + "):\n\t\t\t" + block.Records[i].ToString() + "\n";
-                                }
-                            }
-                            result += "--------------------------------------------------\n";
-                        }
-                    }                                       
+                    }
                 }
             }
-            return result;
+            //Save freeAdresses
+
+            //Save settings to file
+
+            return true;
         }
     }
 }

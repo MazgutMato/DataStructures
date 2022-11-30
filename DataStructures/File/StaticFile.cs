@@ -12,17 +12,14 @@ namespace DataStructures.File
         public StaticFile(int blockFactor, string fileName) : base(blockFactor, fileName)
         {
             var block = new Block<T>(blockFactor, this.Class.CreateClass());
-            this.File.SetLength(blockFactor * block.GetSize());
-
-            ////Create settings file
-            //var settings = new FileStream(fileName + ".set",FileMode.Create);
-            //MemoryStream memoryStream = new MemoryStream();
-            //BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
-            //binaryWriter.Write(this.BlockFactor);
-            ////Save settings file
-            //var bytes = memoryStream.ToArray();
-            //File.Seek(0, SeekOrigin.Begin);
-            //File.Write(bytes);
+            this.DataFile.SetLength(blockFactor * block.GetSize());            
+        }
+        public StaticFile(string fileName) : base(fileName) {
+            var input = new StreamReader(this.SettingsFile);
+            var line = input.ReadLine();
+            var values = line?.Split(';');
+            this.BlockFactor = Convert.ToInt32(values?[0]);
+            this.Count= Convert.ToInt32(values?[1]);
         }
         private int GetAdress(BitArray hash)
         {
@@ -102,45 +99,26 @@ namespace DataStructures.File
 
             return false;
         }
-        public override string GetBlocks()
+        public override string ToString()
         {
-            long adress = 0;
-            var fileSize = this.FileSize();
             var result = "--------------------------------------------------\n";
-            result += "Velkost suboru: " + fileSize + "\n";
+            result += "Velkost suboru: " + this.FileSize() + "\n";
             result += "Pocet prvkov: " + this.Count + "\n";
             result += "--------------------------------------------------\n";
-
-            while (adress < fileSize)
-            {
-                var block = new Block<T>(BlockFactor, Class.CreateClass());
-
-                byte[] blockBytes = new byte[block.GetSize()];
-
-                File.Seek(adress, SeekOrigin.Begin);
-                File.Read(blockBytes);
-
-                block.FromByteArray(blockBytes);
-
-                if (block.ValidCount > 0)
-                {
-
-                    result += "--------------------------------------------------\n";
-                    result += "Block na adrese " + adress + "\n";
-                    result += "\t Pocet validnych: " + block.ValidCount + "\n";
-
-                    result += "\t Prvky: \n";
-
-                    for (int i = 0; i < block.ValidCount; i++)
-                    {
-                        result += "\t\tPrvok(" + i + "):\n\t\t\t" + block.Records[i].ToString() + "\n";
-                    }
-                    result += "--------------------------------------------------\n";
-                }
-
-                adress += block.GetSize();
-            }
+            result += this.GetBlocksSequense();
             return result;
+        }
+        public override bool SaveFile()
+        {
+            var output = new StringBuilder();
+            output.AppendLine(this.BlockFactor + ";" + this.Count + ";");
+
+            //Save settings file
+            var bytes = Encoding.ASCII.GetBytes(output.ToString());
+            SettingsFile.Write(bytes, 0, bytes.Length);
+            SettingsFile.Close();           
+
+            return true;
         }
     }
 }
