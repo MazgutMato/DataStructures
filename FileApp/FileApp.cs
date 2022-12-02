@@ -14,9 +14,9 @@ public partial class FileApp : Form
     public FileApp()
     {
         InitializeComponent();
-        InitializeNavigationControls();
-        InitializeNavigationButtons();
         InitializePatientsController();
+        InitializeNavigationControls();
+        InitializeNavigationButtons();        
     }
 
     private void InitializePatientsController()
@@ -27,7 +27,7 @@ public partial class FileApp : Form
     private void InitializeNavigationControls()
     {
         List<UserControl> userControls = new List<UserControl>()
-        { new Settings(patientsController) };
+        { new Settings(patientsController), new Patients(patientsController), new Records() };
 
         navigationControls = new NavigationControls(userControls, Panel);
         navigationControls.Display(0);
@@ -48,17 +48,24 @@ public partial class FileApp : Form
 
     private void PatientsButton_Click(object sender, EventArgs e)
     {
-
+        navigationButtons.Highlight(PatientsButton);
+        navigationControls.Display(1);
     }
 
     private void RecordsButton_Click(object sender, EventArgs e)
     {
-
+        navigationButtons.Highlight(RecordsButton);
+        navigationControls.Display(2);
     }
 
     private void SettingsButton_Click(object sender, EventArgs e)
     {
         navigationButtons.Highlight(SettingsButton);
         navigationControls.Display(0);
+    }
+
+    private void FileApp_FormClosing(object sender, FormClosingEventArgs e)
+    {        
+        patientsController.Save();
     }
 }

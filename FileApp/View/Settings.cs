@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DataStructures.File;
+using FileApp.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,20 +15,54 @@ namespace FileApp.View
     public partial class Settings : UserControl
     {
         PatientsController PatientsController;
+        private readonly int blockFactor = 5;
         public Settings(PatientsController patientsController)
         {
             InitializeComponent();
             this.PatientsController = patientsController;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Settings_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void Settings_Load(object sender, EventArgs e)
+        private void StaticFileButton_Click(object sender, EventArgs e)
         {
+            string message = "Do you want to load previous data?";
+            string title = "Data load";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show(message, title, buttons);
+            if (result == DialogResult.Yes)
+            {
+                PatientsController.Patients = new StaticFile<Patient>("StaticFile");
+            }
+            else
+            {
+                PatientsController.Patients = new StaticFile<Patient>(blockFactor,"StaticFile");
+            }
+            StaticFileButton.Enabled = false;
+            DynamicFileButton.Enabled = false;
+            StaticFileButton.BackColor = Color.FromKnownColor(KnownColor.ControlDark);
+        }
 
+        private void DynamicFileButton_Click(object sender, EventArgs e)
+        {
+            string message = "Do you want to load previous data?";
+            string title = "Data load";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show(message, title, buttons);
+            if (result == DialogResult.Yes)
+            {
+                PatientsController.Patients = new DynamicFile<Patient>("DynamicFile");
+            }
+            else
+            {
+                PatientsController.Patients = new DynamicFile<Patient>(blockFactor, "DynamicFile");
+            }
+            StaticFileButton.Enabled = false;
+            DynamicFileButton.Enabled = false;
+            DynamicFileButton.BackColor = Color.FromKnownColor(KnownColor.ControlDark);
         }
     }
 }

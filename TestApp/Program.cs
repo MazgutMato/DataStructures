@@ -172,7 +172,6 @@ while (again)
         {
             Console.WriteLine("\t{0} sa v strukture nenasiel!", data);
             throw new InvalidOperationException("Nenasiel sa vlozeny prvok!");
-
         }
     }
 

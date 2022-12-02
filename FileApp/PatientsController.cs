@@ -63,5 +63,12 @@ namespace FileApp
             }
             return findPatient.AddRecord(record);
         }
+        public void Save()
+        {
+            if(this.Patients != null)
+            {
+                Patients.SaveFile();
+            }
+        }
     }
 }
