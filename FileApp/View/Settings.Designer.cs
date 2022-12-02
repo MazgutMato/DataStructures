@@ -71,6 +71,7 @@
             this.Controls.Add(this.StaticFileButton);
             this.Name = "Settings";
             this.Size = new System.Drawing.Size(1028, 604);
+            this.Load += new System.EventHandler(this.Settings_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

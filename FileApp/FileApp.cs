@@ -6,6 +6,7 @@ public partial class FileApp : Form
 {
     NavigationControls navigationControls;
     NavigationButtons navigationButtons;
+    PatientsController patientsController;
 
     Color btnDefaultColor = Color.FromKnownColor(KnownColor.ControlLight);
     Color btnSelecedColor = Color.FromKnownColor(KnownColor.ControlDark);
@@ -15,12 +16,18 @@ public partial class FileApp : Form
         InitializeComponent();
         InitializeNavigationControls();
         InitializeNavigationButtons();
+        InitializePatientsController();
+    }
+
+    private void InitializePatientsController()
+    {
+        patientsController = new PatientsController();
     }
 
     private void InitializeNavigationControls()
     {
         List<UserControl> userControls = new List<UserControl>()
-        { new Settings() };
+        { new Settings(patientsController) };
 
         navigationControls = new NavigationControls(userControls, Panel);
         navigationControls.Display(0);

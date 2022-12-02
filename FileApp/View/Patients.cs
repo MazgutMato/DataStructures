@@ -10,21 +10,16 @@ using System.Windows.Forms;
 
 namespace FileApp.View
 {
-    public partial class Settings : UserControl
+    public partial class Patients : UserControl
     {
         PatientsController PatientsController;
-        public Settings(PatientsController patientsController)
+        public Patients(PatientsController patientsController)
         {
             InitializeComponent();
             this.PatientsController = patientsController;
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Settings_Load(object sender, EventArgs e)
+        private void Patients_Load(object sender, EventArgs e)
         {
 
         }
