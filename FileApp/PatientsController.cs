@@ -28,6 +28,10 @@ namespace FileApp
             {
                 return false;
             }
+            if(Patients.Find(patient) != null)
+            {
+                return false;
+            }
             return this.Patients.Add(patient);
         }
 

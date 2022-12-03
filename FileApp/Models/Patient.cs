@@ -107,7 +107,7 @@ namespace FileApp.Models
             Records = new Record[10];
             for (var i = 0; i < 10; i++)
             {
-                Records[i] = new Record(Records[i]);
+                Records[i] = new Record(other.Records[i]);
             }
             ValidRecords = other.ValidRecords;
         }
@@ -128,15 +128,15 @@ namespace FileApp.Models
 
         public BitArray GetHash()
         {
-            BitArray hash = new BitArray(Encoding.UTF8.GetBytes(Id));
-            return hash;
+            long hash = long.Parse(this.Id);           
+            return new BitArray(BitConverter.GetBytes(hash));
         }
 
         public int GetSize()
         {
             var dateTimeSize = 8;
-            return 10 + sizeof(char) / 2 + sizeof(byte) + 15 * (sizeof(char) / 2) + sizeof(byte) + 20 * (sizeof(char) / 2) + sizeof(byte) +
-                sizeof(byte) + dateTimeSize + 10 * new Record().GetSize() + sizeof(byte);
+            return (10 * (sizeof(char) / 2)) + sizeof(byte) + (15 * (sizeof(char) / 2)) + sizeof(byte) + (20 * (sizeof(char) / 2)) + sizeof(byte) +
+                sizeof(byte) + dateTimeSize + (10 * new Record().GetSize()) + sizeof(byte);
         }
 
         public bool IsEqual(Patient data)
@@ -193,6 +193,56 @@ namespace FileApp.Models
                 var bytes = binaryReader.ReadBytes(recordSize);
                 Records[i].FromByteArray(bytes);
             }
+        }
+
+        public override string ToString()
+        {
+            var result = new StringBuilder();
+            result.AppendLine("Patient ID: " + new string(this.Id));
+            result.AppendLine("First name: " + new string(this.FirstName,0,this.FirstNameSize));
+            result.AppendLine("Last name: " + new string(this.LastName,0,this.LastNameSize));
+            result.AppendLine("Birth date: " + this.BirthDate);
+            result.AppendLine("Insurance: " + this.Insurance);
+            result.AppendLine("Number of records: " + this.ValidRecords);
+            result.AppendLine("Records: ");
+            for (var i = 0; i < ValidRecords; i++)
+            {
+                result.Append("\t");
+                result.AppendLine(this.Records[i].ToString());
+            }
+            return result.ToString();
+        }
+
+        public string ToString(byte recordID)
+        {
+            var result = new StringBuilder();
+            result.AppendLine("Patient ID: " + new string(this.Id));
+            result.AppendLine("First name: " + new string(this.FirstName, 0, this.FirstNameSize));
+            result.AppendLine("Last name: " + new string(this.LastName, 0, this.LastNameSize));
+            result.AppendLine("Birth date: " + this.BirthDate);
+            result.AppendLine("Insurance: " + this.Insurance);
+            result.AppendLine("Number of records: " + this.ValidRecords);
+            result.AppendLine("Record: ");
+            Record findRecord = null;
+            for (var i = 0; i < ValidRecords; i++)
+            {
+                if (Records[i].Id == recordID)
+                {
+                    findRecord = Records[i];
+                    break;
+                }                
+            }
+            if (findRecord != null)
+            {
+                result.Append("\t");
+                result.AppendLine(findRecord.ToString());
+            }
+            else
+            {
+                result.Append("\t");
+                result.AppendLine("Record not found!");
+            }
+            return result.ToString();
         }
     }
 }

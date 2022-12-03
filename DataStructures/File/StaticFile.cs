@@ -21,15 +21,15 @@ namespace DataStructures.File
             this.BlockFactor = Convert.ToInt32(values?[0]);
             this.Count= Convert.ToInt32(values?[1]);
         }
-        private int GetAdress(BitArray hash)
+        private long GetAdress(BitArray hash)
         {
             if (hash == null)
             {
                 throw new ArgumentException("Hash cannot be null!");
             }
-            var result = new int[1];
-            hash.CopyTo(result, 0);
-            return result[0] % this.BlockFactor;
+            var array = new byte[8];
+            hash.CopyTo(array, 0);
+            return BitConverter.ToInt64(array, 0) % this.BlockFactor;
         }
         public override T? Find(T data)
         {

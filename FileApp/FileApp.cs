@@ -27,7 +27,7 @@ public partial class FileApp : Form
     private void InitializeNavigationControls()
     {
         List<UserControl> userControls = new List<UserControl>()
-        { new Settings(patientsController), new Patients(patientsController), new Records() };
+        { new Settings(patientsController), new Patients(patientsController), new Records() , new SearchPatient(patientsController)};
 
         navigationControls = new NavigationControls(userControls, Panel);
         navigationControls.Display(0);
@@ -35,7 +35,7 @@ public partial class FileApp : Form
 
     private void InitializeNavigationButtons()
     {
-        List<Button> buttons = new List<Button>() { SettingsButton, PatientsButton, RecordsButton };
+        List<Button> buttons = new List<Button>() { SettingsButton, PatientsButton, RecordsButton, SearchButton };
 
         navigationButtons = new NavigationButtons(buttons, btnDefaultColor, btnSelecedColor);
         navigationButtons.Highlight(SettingsButton);
@@ -67,5 +67,11 @@ public partial class FileApp : Form
     private void FileApp_FormClosing(object sender, FormClosingEventArgs e)
     {        
         patientsController.Save();
+    }
+
+    private void buttonSearch_Click(object sender, EventArgs e)
+    {
+        navigationButtons.Highlight(SearchButton);
+        navigationControls.Display(3);
     }
 }

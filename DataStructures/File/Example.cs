@@ -18,8 +18,8 @@ namespace DataStructures.File
 
         public BitArray GetHash()
         {
-            BitArray hash = new BitArray(BitConverter.GetBytes(this.ID));            
-            return hash;
+            long hash = Convert.ToInt64(this.ID);
+            return new BitArray(BitConverter.GetBytes(hash));
         }
 
         public int GetSize()

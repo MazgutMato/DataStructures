@@ -31,8 +31,12 @@ namespace FileApp.View
         {
             string message = "Do you want to load previous data?";
             string title = "Data load";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            MessageBoxButtons buttons = MessageBoxButtons.YesNoCancel;
             DialogResult result = MessageBox.Show(message, title, buttons);
+            if(result == DialogResult.Cancel)
+            {
+                return;
+            }
             if (result == DialogResult.Yes)
             {
                 PatientsController.Patients = new StaticFile<Patient>("StaticFile");
@@ -50,8 +54,12 @@ namespace FileApp.View
         {
             string message = "Do you want to load previous data?";
             string title = "Data load";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            MessageBoxButtons buttons = MessageBoxButtons.YesNoCancel;
             DialogResult result = MessageBox.Show(message, title, buttons);
+            if (result == DialogResult.Cancel)
+            {
+                return;
+            }
             if (result == DialogResult.Yes)
             {
                 PatientsController.Patients = new DynamicFile<Patient>("DynamicFile");
