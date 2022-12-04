@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataStructures\DataStructures.csproj" />
-    <ProjectReference Include="..\FileApp\FileApp.csproj" />
   </ItemGroup>
 
 </Project>

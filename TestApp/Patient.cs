@@ -3,7 +3,7 @@ using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace FileApp.Models
+namespace TestApp
 {
     public class Patient : IData<Patient>
     {
@@ -120,52 +120,9 @@ namespace FileApp.Models
             {
                 return false;
             }
-            var newId = 1;
-            for (var i = 0; i < ValidRecords; i++)
-            {
-                if(newId <= Records[i].Id)
-                {
-                    newId = Records[i].Id + 1;
-                }
-                if (Records[i].End == DateTime.MinValue)
-                {
-                    return false;
-                }
-            }
-            record.Id = newId;
             Records[ValidRecords] = record;
             ValidRecords++;
             return true;
-        }
-        public bool EndRecord(Record record)
-        {
-            for (var i = 0; i < ValidRecords; i++)
-            {
-                if (Records[i].Start.Date == record.Start.Date && Records[i].End.Date == DateTime.MinValue.Date)
-                {
-                    Records[i].End = record.End;
-                    return true;
-                }
-            }
-            return false;
-        }
-        public bool DeleteRecord(Record record)
-        {
-            if(this.ValidRecords == 1)
-            {
-                this.ValidRecords--;
-                return true;
-            }
-            for (var i = 0; i < ValidRecords; i++)
-            {
-                if (Records[i].Id == record.Id)
-                {
-                    Records[i] = Records[ValidRecords-1];
-                    ValidRecords--;
-                    return true;
-                }
-            }
-            return false;
         }
         public Patient CreateClass()
         {
@@ -174,15 +131,15 @@ namespace FileApp.Models
 
         public BitArray GetHash()
         {
-            long hash = long.Parse(this.Id);           
+            long hash = long.Parse(Id);
             return new BitArray(BitConverter.GetBytes(hash));
         }
 
         public int GetSize()
         {
             var dateTimeSize = 8;
-            return (10 * (sizeof(char) / 2)) + sizeof(byte) + (15 * (sizeof(char) / 2)) + sizeof(byte) + (20 * (sizeof(char) / 2)) + sizeof(byte) +
-                sizeof(byte) + dateTimeSize + (10 * new Record().GetSize()) + sizeof(byte);
+            return 10 * (sizeof(char) / 2) + sizeof(byte) + 15 * (sizeof(char) / 2) + sizeof(byte) + 20 * (sizeof(char) / 2) + sizeof(byte) +
+                sizeof(byte) + dateTimeSize + 10 * new Record().GetSize() + sizeof(byte);
         }
 
         public bool IsEqual(Patient data)
@@ -244,32 +201,30 @@ namespace FileApp.Models
         public override string ToString()
         {
             var result = new StringBuilder();
-            result.AppendLine("------------------------------------------------------------------");
-            result.AppendLine("Patient ID: " + new string(this.Id));
-            result.AppendLine("First name: " + new string(this.FirstName,0,this.FirstNameSize));
-            result.AppendLine("Last name: " + new string(this.LastName,0,this.LastNameSize));
-            result.AppendLine("Birth date: " + this.BirthDate.Date);
-            result.AppendLine("Insurance: " + this.Insurance);
-            result.AppendLine("Number of records: " + this.ValidRecords);
+            result.AppendLine("Patient ID: " + new string(Id));
+            result.AppendLine("First name: " + new string(FirstName, 0, FirstNameSize));
+            result.AppendLine("Last name: " + new string(LastName, 0, LastNameSize));
+            result.AppendLine("Birth date: " + BirthDate);
+            result.AppendLine("Insurance: " + Insurance);
+            result.AppendLine("Number of records: " + ValidRecords);
             result.AppendLine("Records: ");
             for (var i = 0; i < ValidRecords; i++)
             {
-                result.AppendLine(this.Records[i].ToString());
+                result.Append("\t");
+                result.AppendLine(Records[i].ToString());
             }
-            result.AppendLine("------------------------------------------------------------------");
             return result.ToString();
         }
 
         public string ToString(byte recordID)
         {
             var result = new StringBuilder();
-            result.AppendLine("------------------------------------------------------------------");
-            result.AppendLine("Patient ID: " + new string(this.Id));
-            result.AppendLine("First name: " + new string(this.FirstName, 0, this.FirstNameSize));
-            result.AppendLine("Last name: " + new string(this.LastName, 0, this.LastNameSize));
-            result.AppendLine("Birth date: " + this.BirthDate.Date);
-            result.AppendLine("Insurance: " + this.Insurance);
-            result.AppendLine("Number of records: " + this.ValidRecords);
+            result.AppendLine("Patient ID: " + new string(Id));
+            result.AppendLine("First name: " + new string(FirstName, 0, FirstNameSize));
+            result.AppendLine("Last name: " + new string(LastName, 0, LastNameSize));
+            result.AppendLine("Birth date: " + BirthDate);
+            result.AppendLine("Insurance: " + Insurance);
+            result.AppendLine("Number of records: " + ValidRecords);
             result.AppendLine("Record: ");
             Record findRecord = null;
             for (var i = 0; i < ValidRecords; i++)
@@ -278,17 +233,18 @@ namespace FileApp.Models
                 {
                     findRecord = Records[i];
                     break;
-                }                
+                }
             }
             if (findRecord != null)
             {
+                result.Append("\t");
                 result.AppendLine(findRecord.ToString());
             }
             else
             {
+                result.Append("\t");
                 result.AppendLine("Record not found!");
             }
-            result.AppendLine("------------------------------------------------------------------");
             return result.ToString();
         }
     }

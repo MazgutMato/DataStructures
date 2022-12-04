@@ -65,7 +65,59 @@ namespace FileApp
             {
                 return false;
             }
-            return findPatient.AddRecord(record);
+            if (findPatient.AddRecord(record))
+            {
+                this.Patients.Delete(findPatient);
+                this.Patients.Add(findPatient);
+            } else
+            {
+                return false;
+            }
+            return true;
+        }
+        public bool EndRecord(Patient patient, Record record)
+        {
+            if (Patients == null)
+            {
+                return false;
+            }
+            var findPatient = this.Patients.Find(patient);
+            if (findPatient == null)
+            {
+                return false;
+            }
+            if (findPatient.EndRecord(record))
+            {
+                this.Patients.Delete(findPatient);
+                this.Patients.Add(findPatient);
+            }
+            else
+            {
+                return false;
+            }
+            return true;            
+        }
+        public bool DeleteRecord(Patient patient, Record record)
+        {
+            if (Patients == null)
+            {
+                return false;
+            }
+            var findPatient = this.Patients.Find(patient);
+            if (findPatient == null)
+            {
+                return false;
+            }
+            if (findPatient.DeleteRecord(record))
+            {
+                this.Patients.Delete(findPatient);
+                this.Patients.Add(findPatient);
+            }
+            else
+            {
+                return false;
+            }
+            return true;
         }
         public void Save()
         {

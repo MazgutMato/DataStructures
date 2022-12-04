@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using DataStructures.File;
 
-namespace FileApp.Models
+namespace TestApp
 {
     public class Record : IData<Record>
     {
@@ -51,7 +51,7 @@ namespace FileApp.Models
         }
         public BitArray GetHash()
         {
-            long hash = Convert.ToInt64(this.Id);
+            long hash = Convert.ToInt64(Id);
             return new BitArray(BitConverter.GetBytes(hash));
         }
 
@@ -94,23 +94,23 @@ namespace FileApp.Models
         public int GetSize()
         {
             var dateTimeSize = 8;
-            return sizeof(int) + (2 * dateTimeSize) + (20 * (sizeof(char) / 2)) + sizeof(byte);
+            return sizeof(int) + 2 * dateTimeSize + 20 * (sizeof(char) / 2) + sizeof(byte);
         }
 
         public override string ToString()
         {
             var result = new StringBuilder();
-            result.AppendLine("ID: " + this.Id);
-            result.AppendLine("Start: " + this.Start.Date);
-            if(this.End == DateTime.MinValue)
+            result.AppendLine("ID: " + Id);
+            result.AppendLine("Start: " + Start);
+            if (End == DateTime.MinValue)
             {
                 result.AppendLine("End: not defined");
             }
             else
             {
-                result.AppendLine("End: " + this.End.Date);
+                result.AppendLine("End: " + End);
             }
-            result.AppendLine("Diagnosis: " + new string(this.Diagnoze,0,this.DiagnozeSize));
+            result.AppendLine("Diagnosis: " + new string(Diagnoze, 0, DiagnozeSize));
             return result.ToString();
         }
     }

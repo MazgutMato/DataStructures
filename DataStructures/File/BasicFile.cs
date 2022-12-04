@@ -11,7 +11,7 @@ namespace DataStructures.File
     {
         public int BlockFactor { get; set; }
         public FileStream DataFile { get; }
-        public FileStream SettingsFile { get; }
+        public FileStream SettingsFile { get; set; }
         public T Class { get; }
         public int Count { get; set; }
         public BasicFile(int blockFactor, string fileName)
@@ -81,21 +81,18 @@ namespace DataStructures.File
 
                 block.FromByteArray(blockBytes);
 
-                if (block.ValidCount > 0)
+
+                result += "--------------------------------------------------\r\n";
+                result += "Block na adrese " + adress + "\r\n";
+                result += "Pocet validnych: " + block.ValidCount + "\r\n";
+
+                result += "Prvky: \r\n";
+
+                for (int i = 0; i < block.ValidCount; i++)
                 {
-
-                    result += "--------------------------------------------------\n";
-                    result += "Block na adrese " + adress + "\n";
-                    result += "\t Pocet validnych: " + block.ValidCount + "\n";
-
-                    result += "\t Prvky: \n";
-
-                    for (int i = 0; i < block.ValidCount; i++)
-                    {
-                        result += "\t\tPrvok(" + i + "):\n\t\t\t" + block.Records[i].ToString() + "\n";
-                    }
-                    result += "--------------------------------------------------\n";
+                    result += "Prvok(" + i + "):\r\n" + block.Records[i].ToString() + "\n";
                 }
+                result += "--------------------------------------------------\r\n";
 
                 adress += block.GetSize();
             }

@@ -58,5 +58,15 @@ namespace FileApp.View
                 textResult.Text = findPatient.ToString();
             }
         }
+
+        private void labelHospitalization_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

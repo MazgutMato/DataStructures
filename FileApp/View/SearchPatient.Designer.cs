@@ -78,9 +78,8 @@
             this.tableLayoutPanel2.Location = new System.Drawing.Point(18, 54);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(336, 42);
             this.tableLayoutPanel2.TabIndex = 10;
             // 
@@ -91,7 +90,7 @@
             this.labelIdDelete.Location = new System.Drawing.Point(105, 0);
             this.labelIdDelete.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelIdDelete.Name = "labelIdDelete";
-            this.labelIdDelete.Size = new System.Drawing.Size(27, 22);
+            this.labelIdDelete.Size = new System.Drawing.Size(27, 42);
             this.labelIdDelete.TabIndex = 2;
             this.labelIdDelete.Text = "ID:";
             this.labelIdDelete.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -99,7 +98,7 @@
             // textIDDelete
             // 
             this.textIDDelete.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textIDDelete.Location = new System.Drawing.Point(136, 3);
+            this.textIDDelete.Location = new System.Drawing.Point(136, 7);
             this.textIDDelete.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.textIDDelete.Name = "textIDDelete";
             this.textIDDelete.Size = new System.Drawing.Size(193, 27);
@@ -150,6 +149,7 @@
             this.labelHospitalization.Size = new System.Drawing.Size(158, 28);
             this.labelHospitalization.TabIndex = 13;
             this.labelHospitalization.Text = "Hospitalization";
+            this.labelHospitalization.Click += new System.EventHandler(this.labelHospitalization_Click);
             // 
             // tableLayoutPanel3
             // 
@@ -166,6 +166,7 @@
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(336, 42);
             this.tableLayoutPanel3.TabIndex = 12;
+            this.tableLayoutPanel3.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel3_Paint);
             // 
             // label3
             // 
@@ -191,7 +192,7 @@
             // textResult
             // 
             this.textResult.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textResult.Location = new System.Drawing.Point(30, 114);
+            this.textResult.Location = new System.Drawing.Point(30, 135);
             this.textResult.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.textResult.Multiline = true;
             this.textResult.Name = "textResult";

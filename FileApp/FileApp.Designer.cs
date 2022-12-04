@@ -33,6 +33,7 @@ partial class FileApp
             this.RecordsButton = new System.Windows.Forms.Button();
             this.NavigationPanel = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.FileInfoButton = new System.Windows.Forms.Button();
             this.SearchButton = new System.Windows.Forms.Button();
             this.Panel = new System.Windows.Forms.Panel();
             this.NavigationPanel.SuspendLayout();
@@ -41,7 +42,7 @@ partial class FileApp
             // 
             // SettingsButton
             // 
-            this.SettingsButton.Location = new System.Drawing.Point(2, 156);
+            this.SettingsButton.Location = new System.Drawing.Point(2, 207);
             this.SettingsButton.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.SettingsButton.Name = "SettingsButton";
             this.SettingsButton.Size = new System.Drawing.Size(162, 45);
@@ -86,10 +87,11 @@ partial class FileApp
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.FileInfoButton, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.SearchButton, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.SettingsButton, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.RecordsButton, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.PatientsButton, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.SettingsButton, 0, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -108,6 +110,17 @@ partial class FileApp
             this.tableLayoutPanel1.Size = new System.Drawing.Size(166, 511);
             this.tableLayoutPanel1.TabIndex = 7;
             // 
+            // FileInfoButton
+            // 
+            this.FileInfoButton.Location = new System.Drawing.Point(2, 156);
+            this.FileInfoButton.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.FileInfoButton.Name = "FileInfoButton";
+            this.FileInfoButton.Size = new System.Drawing.Size(162, 45);
+            this.FileInfoButton.TabIndex = 1;
+            this.FileInfoButton.Text = "File info";
+            this.FileInfoButton.UseVisualStyleBackColor = true;
+            this.FileInfoButton.Click += new System.EventHandler(this.buttonFile_Click);
+            // 
             // SearchButton
             // 
             this.SearchButton.Location = new System.Drawing.Point(2, 54);
@@ -123,17 +136,17 @@ partial class FileApp
             // 
             this.Panel.BackColor = System.Drawing.SystemColors.Window;
             this.Panel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.Panel.Location = new System.Drawing.Point(162, 0);
+            this.Panel.Location = new System.Drawing.Point(160, 0);
             this.Panel.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Panel.Name = "Panel";
-            this.Panel.Size = new System.Drawing.Size(877, 507);
+            this.Panel.Size = new System.Drawing.Size(877, 491);
             this.Panel.TabIndex = 8;
             // 
             // FileApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1039, 507);
+            this.ClientSize = new System.Drawing.Size(1037, 491);
             this.Controls.Add(this.Panel);
             this.Controls.Add(this.NavigationPanel);
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
@@ -156,4 +169,5 @@ partial class FileApp
     private TableLayoutPanel tableLayoutPanel1;
     private Panel Panel;
     private Button SearchButton;
+    private Button FileInfoButton;
 }

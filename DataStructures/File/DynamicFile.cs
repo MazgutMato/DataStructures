@@ -105,6 +105,8 @@ namespace DataStructures.File
                 }
                 line = input.ReadLine();
             }
+            this.SettingsFile.Close();
+            this.SettingsFile = new FileStream(fileName + ".set", FileMode.Create);
         }
         public ExternalNode? GetAdressNode(T data)
         {

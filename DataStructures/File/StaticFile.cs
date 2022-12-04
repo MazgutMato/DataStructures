@@ -20,6 +20,8 @@ namespace DataStructures.File
             var values = line?.Split(';');
             this.BlockFactor = Convert.ToInt32(values?[0]);
             this.Count= Convert.ToInt32(values?[1]);
+            this.SettingsFile.Close();
+            this.SettingsFile = new FileStream(fileName + ".set", FileMode.Create);
         }
         private long GetAdress(BitArray hash)
         {
