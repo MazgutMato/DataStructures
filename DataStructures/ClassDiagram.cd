@@ -1,32 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="DataStructures.Tree.BSTree.BSTNode&lt;T&gt;">
-    <Position X="3" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAIBAACAAAAAABEABAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Tree\BSTree\BSTNode.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="DataStructures.Tree.BSTree.BSTree&lt;T&gt;">
     <Position X="9.75" Y="1" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABIAAAAAAAiAACAAAAAQABQAAAUIAAAASAAIAAQIIAA=</HashCode>
+      <HashCode>ABYAAAAAAIiAACAAAIAQABQAAAUIAAAASAAIAABAIAA=</HashCode>
       <FileName>Tree\BSTree\BSTree.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataStructures.Tree.AbstractTree&lt;T&gt;">
-    <Position X="6.25" Y="1.75" Width="1.5" />
+  <Class Name="DataStructures.File.BasicFile&lt;T&gt;">
+    <Position X="3" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Tree\AbstractTree.cs</FileName>
+      <HashCode>AAIAAAACAAAAAABCAIIAAAUIAAUIAAAABAAAAAAAAAA=</HashCode>
+      <FileName>File\BasicFile.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DataStructures.File.DynamicFile&lt;T&gt;">
+    <Position X="5.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAIAAgAAAAAgACAEAAAAAAAAAAEIAAAABAAAAAAAAAA=</HashCode>
+      <FileName>File\DynamicFile.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataStructures.Tree.AbstractTreeNode&lt;T&gt;">
-    <Position X="0.5" Y="0.75" Width="1.5" />
+  <Class Name="DataStructures.File.StaticFile&lt;T&gt;">
+    <Position X="0.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAUAAAAAAAABAAAQAAAAAAAAA=</HashCode>
-      <FileName>Tree\AbstractTreeNode.cs</FileName>
+      <HashCode>AAIAAAAAAAAAAAAEAAAAAAAAAAEIAAAABAAAAAAAAAI=</HashCode>
+      <FileName>File\StaticFile.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

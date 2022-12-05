@@ -15,7 +15,7 @@ namespace FileApp.View
     public partial class Settings : UserControl
     {
         PatientsController PatientsController;
-        private readonly int blockFactor = 100;
+        private readonly int blockFactor = 25;
         public Settings(PatientsController patientsController)
         {
             InitializeComponent();
