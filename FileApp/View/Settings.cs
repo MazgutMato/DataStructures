@@ -15,7 +15,7 @@ namespace FileApp.View
     public partial class Settings : UserControl
     {
         PatientsController PatientsController;
-        private readonly int blockFactor = 25;
+        private readonly int blockFactor = 50;
         public Settings(PatientsController patientsController)
         {
             InitializeComponent();
@@ -156,20 +156,20 @@ namespace FileApp.View
                     {
                         records--;
                     }
-                }
-                if(random.Next(0,2) == 0)
-                {
-                    var newRecord = new Record();
-                    var start = random.Next(50, 365);
-                    newRecord.Start = DateTime.Now.AddDays(-start);                    
-                    newRecord.Diagnoze = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 15, true, false).ToCharArray();
-                    if (newPatient.AddRecord(newRecord))
+
+                    if (random.Next(0, 2) == 0)
                     {
-                        records--;
+                        var actualRecord = new Record();
+                        var actualRecordStart = random.Next(50, 365);
+                        newRecord.Start = DateTime.Now.AddDays(-actualRecordStart);
+                        newRecord.Diagnoze = this.RandomString("abcdefghijklmnopqrstuvwxyz", 5, 15, true, false).ToCharArray();
+                        if (newPatient.AddRecord(actualRecord))
+                        {
+                            records--;
+                        }
                     }
                 }
-
-
+                
                 if (PatientsController.AddPatient(newPatient))
                 {
                     patients--;
